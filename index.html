@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f8f6;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --blue: #4a90e2;
+      --green: #27ae60;
+      --amber: #e67e22;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      border-radius: 8px;
+      animation: morphMark 4s ease-in-out infinite;
+    }
+
+    @keyframes morphMark {
+      0%, 100% { border-radius: 8px; transform: rotate(0deg); }
+      50% { border-radius: 50%; transform: rotate(180deg); }
+    }
+
+    .hero {
+      padding: 80px 48px 60px;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      height: 56px;
+      margin-bottom: 40px;
+    }
+
+    .bar {
+      width: 8px;
+      border-radius: 4px;
+      animation: barDance 1.4s ease-in-out infinite;
+    }
+
+    .bar:nth-child(1) { background: #4a90e2; height: 32px; animation-delay: 0.0s; }
+    .bar:nth-child(2) { background: #27ae60; height: 48px; animation-delay: 0.1s; }
+    .bar:nth-child(3) { background: #e67e22; height: 24px; animation-delay: 0.2s; }
+    .bar:nth-child(4) { background: #9b59b6; height: 40px; animation-delay: 0.3s; }
+    .bar:nth-child(5) { background: #e91e63; height: 16px; animation-delay: 0.4s; }
+    .bar:nth-child(6) { background: #1abc9c; height: 36px; animation-delay: 0.5s; }
+    .bar:nth-child(7) { background: #f39c12; height: 52px; animation-delay: 0.6s; }
+
+    @keyframes barDance {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.3); opacity: 0.6; }
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(120deg, #4a90e2 30%, #27ae60 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.9;
+    }
+
+    .cards-section {
+      padding: 0 48px 80px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card-css::after { background: linear-gradient(90deg, #4a90e2, #9b59b6); }
+    .card-git::after { background: linear-gradient(90deg, #e67e22, #e91e63); }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 2.6rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    .card:nth-child(2) .card-icon { animation-delay: 1.5s; }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-top: 18px;
+    }
+
+    .card-css .card-badge { background: #e8f1fb; color: #2563eb; }
+    .card-git .card-badge { background: #fef3e2; color: #b45309; }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0 20px; }
+      .hero { padding: 48px 20px 40px; }
+      .hero h1 { font-size: 2rem; }
+      .cards-section { padding: 0 20px 60px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">
+      <div class="logo-mark"></div>
+      Dev Motion Cheats
+    </a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-visual">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <h1>動いて<em>理解する</em><br>開発チートシート</h1>
+    <p>CSS アニメーション・Git の仕組みを<br>ビジュアルとコードで一緒に学ぼう。</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="section-label">チートシート一覧</div>
+    <div class="cards-grid">
+      <a href="css-animations.html" class="card card-css">
+        <span class="card-icon">✨</span>
+        <h2>CSS Animations</h2>
+        <p>@keyframes、animation プロパティ、timing-function、transform を動くデモで体感しよう。</p>
+        <span class="card-badge">CSS</span>
+      </a>
+      <a href="git.html" class="card card-git">
+        <span class="card-icon">🌿</span>
+        <h2>Git</h2>
+        <p>add・commit・branch・merge・push/pull の動作を CSS アニメーションで視覚化。</p>
+        <span class="card-badge">Git</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>&copy; 2024 Dev Motion Cheats</footer>
+
+</body>
+</html>

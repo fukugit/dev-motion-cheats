@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f8f6;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --amber: #e67e22;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Nav */
+    .nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+    }
+    .nav a { color: var(--muted); text-decoration: none; }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-current { font-weight: 600; color: var(--amber); }
+
+    /* Page hero */
+    .page-hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+    .page-hero-inner { max-width: 720px; margin: 0 auto; }
+    .page-badge {
+      display: inline-block;
+      background: #fef3e2;
+      color: #b45309;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .page-desc { color: var(--muted); font-size: 1rem; }
+
+    /* Content */
+    .content { max-width: 900px; margin: 0 auto; padding: 56px 48px; }
+
+    .section { margin-bottom: 72px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      background: var(--amber);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .section-title { font-size: 1.25rem; font-weight: 700; }
+
+    .demo-area {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 16px;
+    }
+
+    /* Code block */
+    .code {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Source Code Pro', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre;
+    }
+    .k  { color: #cba6f7; }
+    .v  { color: #a6e3a1; }
+    .p  { color: #89dceb; }
+    .c  { color: #585b70; }
+    .s  { color: #f9e2af; }
+    .cmd { color: #89b4fa; font-weight: 600; }
+    .arg { color: #fab387; }
+    .str { color: #a6e3a1; }
+
+    /* ===== SECTION 1: Three Areas ===== */
+    .workflow-areas {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .w-area {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .area-header {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .area-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .area-wd   { border-color: #fca5a5; }
+    .area-wd .area-header { background: #fff5f5; }
+    .dot-red   { background: #ef4444; }
+
+    .area-sa   { border-color: #fcd34d; }
+    .area-sa .area-header { background: #fffbeb; }
+    .dot-yellow { background: #f59e0b; }
+
+    .area-repo { border-color: #86efac; }
+    .area-repo .area-header { background: #f0fdf4; }
+    .dot-green { background: #22c55e; }
+
+    .area-body {
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* File cards */
+    .file-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: monospace;
+      cursor: default;
+      user-select: none;
+    }
+
+    .fc-modified {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+    }
+
+    .fc-untracked {
+      background: #f3f4f6;
+      border: 1px dashed #9ca3af;
+      color: #374151;
+    }
+
+    .fc-staged {
+      background: #fef9c3;
+      border: 1px solid #fde047;
+      color: #92400e;
+    }
+
+    .fc-status {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .fc-modified .fc-status  { background: #dc2626; color: white; }
+    .fc-untracked .fc-status { background: #6b7280; color: white; }
+    .fc-staged .fc-status    { background: #d97706; color: white; }
+
+    .area-empty {
+      font-size: 0.78rem;
+      color: #ccc;
+      font-style: italic;
+      padding: 8px;
+    }
+
+    /* Commit timeline (inside repo) */
+    .commit-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .commit-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+
+    .commit-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px #86efac;
+    }
+
+    .commit-hash {
+      font-family: monospace;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .commit-msg {
+      color: var(--text);
+      font-size: 0.75rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* new commit pop animation */
+    @keyframes commitPop {
+      from { opacity: 0; transform: scale(0.5) translateX(-10px); }
+      to   { opacity: 1; transform: scale(1) translateX(0); }
+    }
+
+    .commit-item.new-commit {
+      animation: commitPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* committing animation */
+    @keyframes commitFly {
+      0%   { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(60px); }
+    }
+
+    .file-card.committing {
+      animation: commitFly 0.4s ease-in forwards;
+    }
+
+    /* Controls */
+    .workflow-controls { margin-top: 20px; }
+
+    .cmd-display {
+      display: block;
+      background: #1e1e2e;
+      color: #a6e3a1;
+      font-family: monospace;
+      font-size: 0.85rem;
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      transition: color 0.1s;
+    }
+
+    .cmd-display.flash { color: #fff; }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .git-btn {
+      padding: 9px 18px;
+      background: #1e1e2e;
+      color: #89b4fa;
+      border: 1px solid #313244;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .git-btn:hover:not(:disabled) { background: #313244; transform: translateY(-1px); }
+    .git-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .reset-btn {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+      margin-left: auto;
+    }
+
+    .reset-btn:hover { background: var(--bg); }
+
+    /* ===== SECTION 2: Branch & Merge SVG ===== */
+    .branch-svg {
+      width: 100%;
+      max-width: 680px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .branch-line {
+      stroke-dasharray: var(--dl, 600);
+      stroke-dashoffset: var(--dl, 600);
+      transition: stroke-dashoffset 0.7s ease;
+      stroke-linecap: round;
+    }
+
+    .branch-line.draw { stroke-dashoffset: 0; }
+
+    .branch-circle {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      transform-box: fill-box;
+      transform-origin: center;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .branch-circle.pop { opacity: 1; transform: scale(1); }
+
+    .branch-text {
+      opacity: 0;
+      transition: opacity 0.4s;
+      font-family: -apple-system, BlinkMacSystemFont, monospace;
+    }
+
+    .branch-text.show { opacity: 1; }
+
+    .branch-play-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 28px;
+      background: var(--amber);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .branch-play-btn:hover { background: #d4691a; transform: translateY(-1px); }
+
+    /* ===== SECTION 3: Push / Pull ===== */
+    .remote-diagram {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      align-items: center;
+    }
+
+    .repo-box {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .repo-box-header {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .repo-local .repo-box-header { background: #f0f4ff; }
+    .repo-remote .repo-box-header { background: #f0fdf4; }
+
+    .repo-commits {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rc-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+
+    .rc-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .rc-local  .rc-dot { background: #4a90e2; }
+    .rc-remote .rc-dot { background: #22c55e; }
+    .rc-new .rc-dot    { background: #f59e0b; }
+
+    .push-pull-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pp-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--white);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .pp-btn:hover { background: var(--bg); transform: scale(1.03); }
+
+    .push-anim {
+      animation: flyUp 0.6s ease-in-out forwards;
+    }
+
+    .pull-anim {
+      animation: flyDown 0.6s ease-in-out forwards;
+    }
+
+    @keyframes flyUp {
+      0%   { opacity: 1; transform: translateY(0); }
+      50%  { opacity: 0.5; transform: translateY(-20px); }
+      100% { opacity: 0; transform: translateY(-40px); }
+    }
+
+    @keyframes flyDown {
+      0%   { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== SECTION 4: Quick Ref ===== */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .ref-group {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .ref-group-title {
+      padding: 12px 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ref-table { width: 100%; border-collapse: collapse; }
+
+    .ref-table td {
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.825rem;
+      vertical-align: middle;
+    }
+
+    .ref-table tr:last-child td { border-bottom: none; }
+
+    .ref-table td:first-child {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #2563eb;
+      white-space: nowrap;
+      width: 55%;
+    }
+
+    .ref-table td:last-child { color: var(--muted); }
+
+    @media (max-width: 700px) {
+      .nav, .page-hero { padding-left: 20px; padding-right: 20px; }
+      .content { padding: 32px 20px; }
+      .workflow-areas { grid-template-columns: 1fr; }
+      .remote-diagram { grid-template-columns: 1fr; gap: 12px; }
+      .push-pull-col { flex-direction: row; justify-content: center; }
+      .ref-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Dev Motion Cheats</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-current">Git</span>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <span class="page-badge">Git</span>
+      <h1 class="page-title">Git チートシート</h1>
+      <p class="page-desc">add・commit・branch・merge・push/pull の流れをアニメーションで視覚化。</p>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. Three Areas -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title">3 つのエリア — git add &amp; commit の流れ</h2>
+      </div>
+
+      <div class="demo-area">
+        <!-- Three area boxes -->
+        <div class="workflow-areas">
+          <!-- Working Directory -->
+          <div class="w-area area-wd">
+            <div class="area-header">
+              <span class="area-dot dot-red"></span>Working Directory
+            </div>
+            <div class="area-body" id="wd-body">
+              <div class="file-card fc-modified" id="file-feature">
+                <span class="fc-status">M</span>
+                <span>feature.js</span>
+              </div>
+              <div class="file-card fc-untracked" id="file-readme">
+                <span class="fc-status">?</span>
+                <span>readme.md</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Staging Area -->
+          <div class="w-area area-sa">
+            <div class="area-header">
+              <span class="area-dot dot-yellow"></span>Staging Area
+            </div>
+            <div class="area-body" id="sa-body">
+              <div class="area-empty" id="sa-empty">空です</div>
+            </div>
+          </div>
+
+          <!-- Repository -->
+          <div class="w-area area-repo">
+            <div class="area-header">
+              <span class="area-dot dot-green"></span>Repository (.git)
+            </div>
+            <div class="area-body">
+              <div class="commit-timeline" id="commit-timeline">
+                <div class="commit-item">
+                  <div class="commit-dot"></div>
+                  <div>
+                    <div class="commit-hash">f3a1b2c</div>
+                    <div class="commit-msg">Initial commit</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="workflow-controls">
+          <code class="cmd-display" id="cmd-display">$ _</code>
+          <div class="btn-row">
+            <button class="git-btn" id="btn-add-one">git add feature.js</button>
+            <button class="git-btn" id="btn-add-all">git add .</button>
+            <button class="git-btn" id="btn-commit" disabled>git commit -m "..."</button>
+            <button class="git-btn reset-btn" id="btn-reset">↺ リセット</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c"># ファイルをステージングエリアへ追加</span>
+<span class="cmd">git add</span> <span class="arg">feature.js</span>   <span class="c"># 特定ファイル</span>
+<span class="cmd">git add</span> <span class="arg">.</span>              <span class="c"># 全変更ファイル</span>
+<span class="cmd">git add</span> <span class="arg">-p</span>             <span class="c"># 変更を chunk 単位で選択</span>
+
+<span class="c"># コミット</span>
+<span class="cmd">git commit</span> <span class="arg">-m</span> <span class="str">"feat: add feature"</span>
+
+<span class="c"># 状態確認</span>
+<span class="cmd">git status</span>
+<span class="cmd">git log</span> <span class="arg">--oneline --graph</span></div>
+    </div>
+
+    <!-- 2. Branch & Merge -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title">ブランチ &amp; マージ — 分岐と合流</h2>
+      </div>
+
+      <div class="demo-area">
+        <svg class="branch-svg" viewBox="0 0 680 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- main branch line -->
+          <line id="bl-main" class="branch-line" x1="40" y1="75" x2="640" y2="75"
+            stroke="#4a90e2" stroke-width="3" />
+
+          <!-- feature branch curve -->
+          <path id="bl-fork" class="branch-line" d="M 220 75 C 250 75 250 155 280 155 L 480 155"
+            stroke="#27ae60" stroke-width="3" />
+
+          <!-- merge curve back -->
+          <path id="bl-merge-back" class="branch-line" d="M 480 155 C 510 155 510 75 540 75"
+            stroke="#27ae60" stroke-width="3" />
+
+          <!-- main commits -->
+          <circle id="bc-c1" class="branch-circle" cx="100" cy="75" r="16" fill="#4a90e2" />
+          <circle id="bc-c2" class="branch-circle" cx="220" cy="75" r="16" fill="#4a90e2" />
+
+          <!-- feature commits -->
+          <circle id="bc-f1" class="branch-circle" cx="330" cy="155" r="16" fill="#27ae60" />
+          <circle id="bc-f2" class="branch-circle" cx="430" cy="155" r="16" fill="#27ae60" />
+
+          <!-- merge commit -->
+          <circle id="bc-mc" class="branch-circle" cx="540" cy="75" r="16" fill="#9b59b6" />
+
+          <!-- Labels inside circles -->
+          <text id="bt-c1" class="branch-text" x="100" y="75" text-anchor="middle" dominant-baseline="central"
+            fill="white" font-size="11" font-weight="700">C1</text>
+          <text id="bt-c2" class="branch-text" x="220" y="75" text-anchor="middle" dominant-baseline="central"
+            fill="white" font-size="11" font-weight="700">C2</text>
+          <text id="bt-f1" class="branch-text" x="330" y="155" text-anchor="middle" dominant-baseline="central"
+            fill="white" font-size="11" font-weight="700">F1</text>
+          <text id="bt-f2" class="branch-text" x="430" y="155" text-anchor="middle" dominant-baseline="central"
+            fill="white" font-size="11" font-weight="700">F2</text>
+          <text id="bt-mc" class="branch-text" x="540" y="75" text-anchor="middle" dominant-baseline="central"
+            fill="white" font-size="11" font-weight="700">M</text>
+
+          <!-- Branch name labels -->
+          <text id="bl-main-label" class="branch-text" x="48" y="56"
+            fill="#4a90e2" font-size="13" font-weight="700">main</text>
+          <text id="bl-feat-label" class="branch-text" x="280" y="188"
+            fill="#27ae60" font-size="13" font-weight="700">feature</text>
+          <text id="bl-merge-label" class="branch-text" x="540" y="56"
+            fill="#9b59b6" font-size="13" font-weight="700">merge</text>
+
+          <!-- git branch label -->
+          <text id="bl-cmd1" class="branch-text" x="330" y="133"
+            fill="#27ae60" font-size="10.5" font-style="italic">git checkout -b feature</text>
+          <text id="bl-cmd2" class="branch-text" x="540" y="105"
+            fill="#9b59b6" font-size="10.5" font-style="italic">git merge feature</text>
+        </svg>
+        <button class="branch-play-btn" id="branch-play">▶ アニメーション再生</button>
+      </div>
+
+      <div class="code"><span class="c"># ブランチ操作</span>
+<span class="cmd">git branch</span>                  <span class="c"># ブランチ一覧</span>
+<span class="cmd">git branch</span> <span class="arg">feature</span>          <span class="c"># ブランチ作成</span>
+<span class="cmd">git switch</span> <span class="arg">feature</span>          <span class="c"># ブランチ切り替え (Git 2.23+)</span>
+<span class="cmd">git checkout</span> <span class="arg">-b feature</span>    <span class="c"># 作成 + 切り替え (旧来の方法)</span>
+
+<span class="c"># マージ</span>
+<span class="cmd">git switch</span> <span class="arg">main</span>
+<span class="cmd">git merge</span> <span class="arg">feature</span>           <span class="c"># feature を main にマージ</span>
+<span class="cmd">git merge</span> <span class="arg">--no-ff feature</span>   <span class="c"># マージコミットを必ず作成</span>
+
+<span class="c"># ブランチ削除</span>
+<span class="cmd">git branch</span> <span class="arg">-d feature</span>       <span class="c"># マージ済みのブランチを削除</span></div>
+    </div>
+
+    <!-- 3. Push / Pull -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title">リモートリポジトリ — push &amp; pull</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="remote-diagram">
+          <!-- Local -->
+          <div class="repo-box repo-local">
+            <div class="repo-box-header">
+              <span style="font-size:1rem">💻</span> Local
+            </div>
+            <div class="repo-commits" id="local-commits">
+              <div class="rc-item rc-local">
+                <div class="rc-dot"></div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted)">a1b2c3d</div>
+                  <div style="font-size:0.75rem">Initial commit</div>
+                </div>
+              </div>
+              <div class="rc-item rc-local">
+                <div class="rc-dot"></div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted)">e4f5a6b</div>
+                  <div style="font-size:0.75rem">feat: add feature</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Push / Pull buttons -->
+          <div class="push-pull-col">
+            <button class="pp-btn" id="pp-push">push →</button>
+            <button class="pp-btn" id="pp-pull">← pull</button>
+          </div>
+
+          <!-- Remote -->
+          <div class="repo-box repo-remote">
+            <div class="repo-box-header">
+              <span style="font-size:1rem">☁️</span> Remote (origin)
+            </div>
+            <div class="repo-commits" id="remote-commits">
+              <div class="rc-item rc-remote">
+                <div class="rc-dot"></div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted)">a1b2c3d</div>
+                  <div style="font-size:0.75rem">Initial commit</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c"># リモートを登録</span>
+<span class="cmd">git remote add</span> <span class="arg">origin</span> <span class="str">https://github.com/user/repo.git</span>
+
+<span class="c"># プッシュ</span>
+<span class="cmd">git push</span> <span class="arg">origin main</span>          <span class="c"># origin の main へ送信</span>
+<span class="cmd">git push</span> <span class="arg">-u origin main</span>       <span class="c"># 追跡ブランチを設定して push</span>
+
+<span class="c"># プル / フェッチ</span>
+<span class="cmd">git pull</span>                        <span class="c"># fetch + merge</span>
+<span class="cmd">git fetch</span>                       <span class="c"># リモートの変更を取得 (mergeしない)</span>
+<span class="cmd">git pull</span> <span class="arg">--rebase</span>              <span class="c"># fetch + rebase（履歴をきれいに保つ）</span></div>
+    </div>
+
+    <!-- 4. Quick Reference -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title">よく使うコマンド クイックリファレンス</h2>
+      </div>
+
+      <div class="ref-grid">
+        <div class="ref-group">
+          <div class="ref-group-title">セットアップ</div>
+          <table class="ref-table">
+            <tr><td>git init</td><td>リポジトリを初期化</td></tr>
+            <tr><td>git clone &lt;url&gt;</td><td>リポジトリをコピー</td></tr>
+            <tr><td>git config --global user.name</td><td>ユーザー名を設定</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">状態確認</div>
+          <table class="ref-table">
+            <tr><td>git status</td><td>作業ツリーの状態</td></tr>
+            <tr><td>git log --oneline</td><td>コミット履歴（簡易）</td></tr>
+            <tr><td>git diff</td><td>変更内容の差分</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">取り消し</div>
+          <table class="ref-table">
+            <tr><td>git restore &lt;file&gt;</td><td>作業ツリーの変更を破棄</td></tr>
+            <tr><td>git restore --staged &lt;file&gt;</td><td>ステージングを解除</td></tr>
+            <tr><td>git revert &lt;hash&gt;</td><td>コミットを打ち消す</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">スタッシュ</div>
+          <table class="ref-table">
+            <tr><td>git stash</td><td>変更を一時保存</td></tr>
+            <tr><td>git stash pop</td><td>最新スタッシュを復元</td></tr>
+            <tr><td>git stash list</td><td>スタッシュ一覧</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===== Three Areas ===== */
+    const wdBody    = document.getElementById('wd-body');
+    const saBody    = document.getElementById('sa-body');
+    const saEmpty   = document.getElementById('sa-empty');
+    const timeline  = document.getElementById('commit-timeline');
+    const cmdDisp   = document.getElementById('cmd-display');
+    const btnAddOne = document.getElementById('btn-add-one');
+    const btnAddAll = document.getElementById('btn-add-all');
+    const btnCommit = document.getElementById('btn-commit');
+    const btnReset  = document.getElementById('btn-reset');
+
+    function setCmd(text) {
+      cmdDisp.textContent = '$ ' + text;
+      cmdDisp.classList.add('flash');
+      setTimeout(() => cmdDisp.classList.remove('flash'), 400);
+    }
+
+    function flipMove(el, targetParent) {
+      const first = el.getBoundingClientRect();
+      if (saEmpty && saEmpty.parentNode === targetParent) saEmpty.remove();
+      targetParent.appendChild(el);
+      const last = el.getBoundingClientRect();
+      const dx = first.left - last.left;
+      const dy = first.top  - last.top;
+      el.style.transition = 'none';
+      el.style.transform  = `translate(${dx}px, ${dy}px)`;
+      // Change color class
+      el.classList.remove('fc-modified', 'fc-untracked');
+      el.classList.add('fc-staged');
+      el.querySelector('.fc-status').textContent = 'A';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+          el.style.transform  = '';
+        });
+      });
+      checkReady();
+    }
+
+    function checkReady() {
+      const staged = saBody.querySelectorAll('.file-card').length;
+      btnCommit.disabled = staged === 0;
+    }
+
+    btnAddOne.addEventListener('click', () => {
+      const file = document.getElementById('file-feature');
+      if (!file || file.parentNode !== wdBody) return;
+      setCmd('git add feature.js');
+      flipMove(file, saBody);
+    });
+
+    btnAddAll.addEventListener('click', () => {
+      setCmd('git add .');
+      const files = [...wdBody.querySelectorAll('.file-card')];
+      files.forEach((f, i) => {
+        setTimeout(() => {
+          flipMove(f, saBody);
+          if (i === files.length - 1) {
+            if (!wdBody.querySelector('.file-card')) {
+              const e = document.createElement('div');
+              e.className = 'area-empty';
+              e.textContent = 'クリーン';
+              wdBody.appendChild(e);
+            }
+          }
+        }, i * 150);
+      });
+    });
+
+    btnCommit.addEventListener('click', () => {
+      setCmd('git commit -m "feat: update feature"');
+      const files = [...saBody.querySelectorAll('.file-card')];
+      files.forEach(f => f.classList.add('committing'));
+      setTimeout(() => {
+        files.forEach(f => f.remove());
+        const e = document.createElement('div');
+        e.className = 'area-empty';
+        e.textContent = '空です';
+        saBody.appendChild(e);
+
+        const hash = Math.random().toString(16).slice(2, 9);
+        const ci = document.createElement('div');
+        ci.className = 'commit-item new-commit';
+        ci.innerHTML = `
+          <div class="commit-dot"></div>
+          <div>
+            <div class="commit-hash">${hash}</div>
+            <div class="commit-msg">feat: update feature</div>
+          </div>`;
+        timeline.appendChild(ci);
+        btnCommit.disabled = true;
+      }, 420);
+    });
+
+    btnReset.addEventListener('click', () => location.reload());
+
+
+    /* ===== Branch SVG Animation ===== */
+    const branchPlayBtn = document.getElementById('branch-play');
+    const svg = document.querySelector('.branch-svg');
+
+    // Set stroke-dasharray based on element lengths
+    function setupBranchLines() {
+      ['bl-main', 'bl-fork', 'bl-merge-back'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const len = el.getTotalLength ? el.getTotalLength() : 400;
+        el.style.setProperty('--dl', len);
+        el.style.strokeDasharray = len;
+        el.style.strokeDashoffset = len;
+      });
+    }
+
+    function resetBranch() {
+      setupBranchLines();
+      svg.querySelectorAll('.branch-line').forEach(el => el.classList.remove('draw'));
+      svg.querySelectorAll('.branch-circle').forEach(el => el.classList.remove('pop'));
+      svg.querySelectorAll('.branch-text').forEach(el => el.classList.remove('show'));
+    }
+
+    function playBranch() {
+      resetBranch();
+      branchPlayBtn.disabled = true;
+      const seq = [
+        { delay: 50,   ids: ['bl-main'],        type: 'line' },
+        { delay: 700,  ids: ['bl-main-label'],  type: 'text' },
+        { delay: 800,  ids: ['bc-c1'],           type: 'circle' },
+        { delay: 900,  ids: ['bt-c1'],           type: 'text' },
+        { delay: 1200, ids: ['bc-c2'],           type: 'circle' },
+        { delay: 1300, ids: ['bt-c2'],           type: 'text' },
+        { delay: 1500, ids: ['bl-fork'],         type: 'line' },
+        { delay: 1600, ids: ['bl-cmd1'],         type: 'text' },
+        { delay: 1650, ids: ['bl-feat-label'],   type: 'text' },
+        { delay: 2000, ids: ['bc-f1'],           type: 'circle' },
+        { delay: 2100, ids: ['bt-f1'],           type: 'text' },
+        { delay: 2400, ids: ['bc-f2'],           type: 'circle' },
+        { delay: 2500, ids: ['bt-f2'],           type: 'text' },
+        { delay: 2700, ids: ['bl-merge-back'],   type: 'line' },
+        { delay: 3200, ids: ['bc-mc'],           type: 'circle' },
+        { delay: 3300, ids: ['bt-mc', 'bl-merge-label', 'bl-cmd2'], type: 'text' },
+      ];
+
+      seq.forEach(({ delay, ids, type }) => {
+        setTimeout(() => {
+          ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (type === 'line')   el.classList.add('draw');
+            if (type === 'circle') el.classList.add('pop');
+            if (type === 'text')   el.classList.add('show');
+          });
+        }, delay);
+      });
+
+      setTimeout(() => { branchPlayBtn.disabled = false; }, 3800);
+    }
+
+    setupBranchLines();
+    branchPlayBtn.addEventListener('click', playBranch);
+
+
+    /* ===== Push / Pull ===== */
+    const localCommits  = document.getElementById('local-commits');
+    const remoteCommits = document.getElementById('remote-commits');
+    const ppPush = document.getElementById('pp-push');
+    const ppPull = document.getElementById('pp-pull');
+
+    ppPush.addEventListener('click', () => {
+      const items = localCommits.querySelectorAll('.rc-item');
+      const notYetPushed = [...items].filter(i => !i.dataset.pushed);
+      if (notYetPushed.length === 0) return;
+
+      notYetPushed.forEach((item, idx) => {
+        setTimeout(() => {
+          item.classList.add('push-anim');
+          item.dataset.pushed = '1';
+
+          const clone = item.cloneNode(true);
+          clone.classList.remove('rc-local', 'push-anim');
+          clone.classList.add('rc-remote', 'pull-anim');
+          setTimeout(() => {
+            clone.style.animation = 'none';
+            clone.classList.remove('pull-anim');
+            remoteCommits.appendChild(clone);
+          }, 600 + idx * 200);
+        }, idx * 200);
+      });
+    });
+
+    ppPull.addEventListener('click', () => {
+      const hash = Math.random().toString(16).slice(2, 9);
+      const newItem = document.createElement('div');
+      newItem.className = 'rc-item rc-new pull-anim';
+      newItem.innerHTML = `
+        <div class="rc-dot" style="background:#f59e0b"></div>
+        <div>
+          <div style="font-size:.72rem;color:var(--muted)">${hash}</div>
+          <div style="font-size:.75rem">remote: hotfix update</div>
+        </div>`;
+      remoteCommits.appendChild(newItem);
+
+      setTimeout(() => {
+        const localClone = newItem.cloneNode(true);
+        localClone.classList.remove('rc-new', 'pull-anim');
+        localClone.classList.add('rc-local', 'pull-anim');
+        localCommits.appendChild(localClone);
+        setTimeout(() => {
+          localClone.style.animation = 'none';
+          localClone.classList.remove('pull-anim');
+        }, 700);
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>

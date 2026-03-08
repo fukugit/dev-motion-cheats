@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Animations - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f8f6;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --blue: #4a90e2;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Nav */
+    .nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+    }
+
+    .nav a { color: var(--muted); text-decoration: none; }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-current { font-weight: 600; color: var(--blue); }
+
+    /* Page hero */
+    .page-hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+
+    .page-hero-inner { max-width: 720px; margin: 0 auto; }
+
+    .page-badge {
+      display: inline-block;
+      background: #e8f1fb;
+      color: #2563eb;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .page-desc { color: var(--muted); font-size: 1rem; }
+
+    /* Content */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 48px;
+    }
+
+    .section { margin-bottom: 72px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      background: var(--blue);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .section-title { font-size: 1.25rem; font-weight: 700; }
+
+    .demo-area {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      margin-bottom: 16px;
+    }
+
+    /* Code block */
+    .code {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Source Code Pro', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre;
+    }
+
+    .k  { color: #cba6f7; } /* keyword / at-rule */
+    .n  { color: #89b4fa; } /* name */
+    .v  { color: #a6e3a1; } /* value */
+    .p  { color: #89dceb; } /* property */
+    .c  { color: #585b70; } /* comment */
+    .s  { color: #cdd6f4; } /* selector */
+    .pct{ color: #fab387; } /* percentage */
+    .str{ color: #f9e2af; } /* string */
+
+    /* ========== SECTION 1: @keyframes ========== */
+    .bounce-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .bounce-ball {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #74b0f0, #2563eb);
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.45);
+      animation: bounceBall 0.9s ease-in-out infinite;
+    }
+
+    .bounce-shadow {
+      width: 52px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.15);
+      animation: bounceShadow 0.9s ease-in-out infinite;
+      margin-top: 0;
+    }
+
+    @keyframes bounceBall {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-80px); }
+    }
+
+    @keyframes bounceShadow {
+      0%, 100% { transform: scaleX(1); opacity: 0.3; }
+      50% { transform: scaleX(0.5); opacity: 0.1; }
+    }
+
+    /* ========== SECTION 2: Properties table ========== */
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.865rem;
+    }
+
+    .prop-table th {
+      text-align: left;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .prop-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .prop-table tr:last-child td { border-bottom: none; }
+
+    .prop-table td:first-child {
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #2563eb;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .prop-table td:nth-child(2) {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #e67e22;
+      white-space: nowrap;
+    }
+
+    /* ========== SECTION 3: timing-function race ========== */
+    .race-wrap { padding: 4px 0; }
+
+    .race-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .race-label {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .race-track {
+      height: 24px;
+      background: var(--bg);
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: visible;
+    }
+
+    .race-ball {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      position: absolute;
+      top: -1px;
+      left: -1px;
+    }
+
+    .rb-1 { background: radial-gradient(circle at 35% 35%, #74b0f0, #2563eb); }
+    .rb-2 { background: radial-gradient(circle at 35% 35%, #6ee7a0, #16a34a); }
+    .rb-3 { background: radial-gradient(circle at 35% 35%, #fbb96a, #c2570c); }
+    .rb-4 { background: radial-gradient(circle at 35% 35%, #d08aff, #7e22ce); }
+    .rb-5 { background: radial-gradient(circle at 35% 35%, #f87095, #be123c); }
+    .rb-6 { background: radial-gradient(circle at 35% 35%, #67e8f9, #0e7490); }
+
+    .race-ball.go {
+      animation: raceGo 2s var(--tf, ease) forwards;
+    }
+
+    @keyframes raceGo {
+      from { left: -1px; }
+      to   { left: calc(100% - 23px); }
+    }
+
+    .race-btn {
+      display: block;
+      margin: 24px auto 0;
+      padding: 10px 28px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .race-btn:hover { background: #357abd; transform: translateY(-1px); }
+    .race-btn:active { transform: translateY(0); }
+
+    /* ========== SECTION 4: transform ========== */
+    .transform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+    }
+
+    .tf-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 12px 14px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .tf-box {
+      width: 44px;
+      height: 44px;
+      background: var(--blue);
+      border-radius: 8px;
+      margin: 0 auto 12px;
+      transition: transform 0.4s ease;
+    }
+
+    .tf-card:hover .tf-tx   { transform: translateX(18px); }
+    .tf-card:hover .tf-ty   { transform: translateY(-18px); }
+    .tf-card:hover .tf-rot  { transform: rotate(45deg); }
+    .tf-card:hover .tf-scl  { transform: scale(1.45); }
+    .tf-card:hover .tf-skx  { transform: skewX(20deg); }
+    .tf-card:hover .tf-sky  { transform: skewY(20deg); }
+    .tf-card:hover .tf-rx   { transform: perspective(200px) rotateX(45deg); }
+    .tf-card:hover .tf-ry   { transform: perspective(200px) rotateY(45deg); }
+
+    .tf-box.tf-green  { background: #27ae60; }
+    .tf-box.tf-orange { background: #e67e22; }
+    .tf-box.tf-purple { background: #9b59b6; }
+    .tf-box.tf-red    { background: #e74c3c; }
+    .tf-box.tf-teal   { background: #1abc9c; }
+
+    .tf-name {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .tf-hint {
+      font-size: 0.68rem;
+      color: #ccc;
+      margin-top: 4px;
+    }
+
+    /* ========== SECTION 5: transition ========== */
+    .trans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .tr-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 16px 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .tr-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      margin: 0 auto 14px;
+      background: #cbd5e1;
+    }
+
+    .tr-name { font-size: 0.78rem; color: var(--muted); font-family: monospace; }
+
+    .tr-color .tr-box  { transition: background 0.45s ease; }
+    .tr-color:hover .tr-box { background: #4a90e2; }
+
+    .tr-size .tr-box   { transition: width 0.4s ease, height 0.4s ease, border-radius 0.4s ease; }
+    .tr-size:hover .tr-box { width: 70px; height: 70px; border-radius: 50%; }
+
+    .tr-shadow .tr-box { transition: box-shadow 0.35s ease, transform 0.35s ease; }
+    .tr-shadow:hover .tr-box { box-shadow: 0 14px 36px rgba(0,0,0,0.18); transform: translateY(-6px); }
+
+    .tr-rotate .tr-box { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s; }
+    .tr-rotate:hover .tr-box { transform: rotate(90deg); background: #27ae60; }
+
+    @media (max-width: 600px) {
+      .nav, .page-hero { padding-left: 20px; padding-right: 20px; }
+      .content { padding: 32px 20px; }
+      .race-row { grid-template-columns: 120px 1fr; }
+      .race-label { font-size: 0.68rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Dev Motion Cheats</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-current">CSS Animations</span>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <span class="page-badge">CSS</span>
+      <h1 class="page-title">CSS Animations チートシート</h1>
+      <p class="page-desc">@keyframes から transform まで、動くデモとコードで一緒に学ぼう。</p>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. @keyframes -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title">@keyframes — アニメーションの定義</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="bounce-stage">
+          <div class="bounce-ball"></div>
+          <div class="bounce-shadow"></div>
+        </div>
+      </div>
+
+      <div class="code"><span class="k">@keyframes</span> <span class="n">bounceBall</span> {
+  <span class="pct">0%</span>, <span class="pct">100%</span> { <span class="p">transform</span>: <span class="v">translateY(0)</span>; }
+  <span class="pct">50%</span>       { <span class="p">transform</span>: <span class="v">translateY(-80px)</span>; }
+}
+
+<span class="s">.ball</span> {
+  <span class="p">animation-name</span>:            <span class="v">bounceBall</span>;
+  <span class="p">animation-duration</span>:        <span class="v">0.9s</span>;
+  <span class="p">animation-timing-function</span>: <span class="v">ease-in-out</span>;
+  <span class="p">animation-iteration-count</span>: <span class="v">infinite</span>;
+
+  <span class="c">/* shorthand: name duration timing count */</span>
+  <span class="p">animation</span>: <span class="v">bounceBall 0.9s ease-in-out infinite</span>;
+}</div>
+    </div>
+
+    <!-- 2. Properties -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title">animation プロパティ一覧</h2>
+      </div>
+
+      <div class="demo-area" style="padding: 0; overflow: hidden;">
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>プロパティ</th>
+              <th>初期値</th>
+              <th>説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>animation-name</td><td>none</td><td>使用する @keyframes の名前</td></tr>
+            <tr><td>animation-duration</td><td>0s</td><td>1 サイクルの時間（例: 1s, 300ms）</td></tr>
+            <tr><td>animation-timing-function</td><td>ease</td><td>速度カーブ（ease / linear / cubic-bezier など）</td></tr>
+            <tr><td>animation-delay</td><td>0s</td><td>開始までの待ち時間。負値で途中から開始可能</td></tr>
+            <tr><td>animation-iteration-count</td><td>1</td><td>繰り返し回数。<code>infinite</code> で無限ループ</td></tr>
+            <tr><td>animation-direction</td><td>normal</td><td>再生方向 — normal / reverse / alternate / alternate-reverse</td></tr>
+            <tr><td>animation-fill-mode</td><td>none</td><td>終了後の状態 — none / forwards / backwards / both</td></tr>
+            <tr><td>animation-play-state</td><td>running</td><td>再生状態 — running / paused</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code"><span class="c">/* shorthand: name duration timing delay count direction fill play-state */</span>
+<span class="s">.element</span> {
+  <span class="p">animation</span>: <span class="v">fadeIn 0.5s ease-out 0.2s 1 normal forwards running</span>;
+
+  <span class="c">/* よく使うパターン */</span>
+  <span class="p">animation</span>: <span class="v">spin 2s linear infinite</span>;
+  <span class="p">animation</span>: <span class="v">slideUp 0.4s ease-out forwards</span>;
+  <span class="p">animation</span>: <span class="v">pulse 1.5s ease-in-out 0.5s infinite alternate</span>;
+}</div>
+    </div>
+
+    <!-- 3. timing-function -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title">timing-function — 速度カーブの比較</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="race-wrap">
+          <div class="race-row">
+            <span class="race-label">ease</span>
+            <div class="race-track"><div class="race-ball rb-1" style="--tf:ease"></div></div>
+          </div>
+          <div class="race-row">
+            <span class="race-label">linear</span>
+            <div class="race-track"><div class="race-ball rb-2" style="--tf:linear"></div></div>
+          </div>
+          <div class="race-row">
+            <span class="race-label">ease-in</span>
+            <div class="race-track"><div class="race-ball rb-3" style="--tf:ease-in"></div></div>
+          </div>
+          <div class="race-row">
+            <span class="race-label">ease-out</span>
+            <div class="race-track"><div class="race-ball rb-4" style="--tf:ease-out"></div></div>
+          </div>
+          <div class="race-row">
+            <span class="race-label">ease-in-out</span>
+            <div class="race-track"><div class="race-ball rb-5" style="--tf:ease-in-out"></div></div>
+          </div>
+          <div class="race-row">
+            <span class="race-label">cubic-bezier(.68,−.6,.32,1.6)</span>
+            <div class="race-track"><div class="race-ball rb-6" style="--tf:cubic-bezier(.68,-.6,.32,1.6)"></div></div>
+          </div>
+          <button class="race-btn" id="race-btn">▶ Race!</button>
+        </div>
+      </div>
+
+      <div class="code"><span class="p">animation-timing-function</span>: <span class="v">ease</span>;         <span class="c">/* デフォルト。滑らかに */</span>
+<span class="p">animation-timing-function</span>: <span class="v">linear</span>;       <span class="c">/* 等速 */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-in</span>;      <span class="c">/* 徐々に加速 */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-out</span>;     <span class="c">/* 徐々に減速 */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-in-out</span>;  <span class="c">/* 加速→減速 */</span>
+
+<span class="c">/* カスタム: cubic-bezier(x1, y1, x2, y2) */</span>
+<span class="p">animation-timing-function</span>: <span class="v">cubic-bezier(0.68, -0.6, 0.32, 1.6)</span>; <span class="c">/* バネ効果 */</span>
+
+<span class="c">/* ステップ: コマ送り風 */</span>
+<span class="p">animation-timing-function</span>: <span class="v">steps(4, end)</span>;  <span class="c">/* 4 コマ */</span></div>
+    </div>
+
+    <!-- 4. transform -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title">transform — 変形関数（ホバーで確認）</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="transform-grid">
+          <div class="tf-card">
+            <div class="tf-box tf-tx"></div>
+            <div class="tf-name">translateX()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-green tf-ty"></div>
+            <div class="tf-name">translateY()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-orange tf-rot"></div>
+            <div class="tf-name">rotate()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-purple tf-scl"></div>
+            <div class="tf-name">scale()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-red tf-skx"></div>
+            <div class="tf-name">skewX()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-teal tf-sky"></div>
+            <div class="tf-name">skewY()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-green tf-rx"></div>
+            <div class="tf-name">rotateX()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+          <div class="tf-card">
+            <div class="tf-box tf-orange tf-ry"></div>
+            <div class="tf-name">rotateY()</div>
+            <div class="tf-hint">hover</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">/* 2D */</span>
+<span class="p">transform</span>: <span class="v">translateX(20px)</span>;           <span class="c">/* 横移動 */</span>
+<span class="p">transform</span>: <span class="v">translateY(-20px)</span>;          <span class="c">/* 縦移動 */</span>
+<span class="p">transform</span>: <span class="v">translate(20px, -20px)</span>;     <span class="c">/* XY 同時 */</span>
+<span class="p">transform</span>: <span class="v">rotate(45deg)</span>;              <span class="c">/* 回転 */</span>
+<span class="p">transform</span>: <span class="v">scale(1.5)</span>;                 <span class="c">/* 拡大 */</span>
+<span class="p">transform</span>: <span class="v">scale(0.8, 1.2)</span>;            <span class="c">/* X / Y 個別に拡縮 */</span>
+<span class="p">transform</span>: <span class="v">skewX(20deg)</span>;               <span class="c">/* 傾斜 */</span>
+
+<span class="c">/* 3D */</span>
+<span class="p">transform</span>: <span class="v">perspective(400px) rotateX(45deg)</span>;
+<span class="p">transform</span>: <span class="v">perspective(400px) rotateY(45deg)</span>;
+
+<span class="c">/* 複数を組み合わせ（右から順に適用） */</span>
+<span class="p">transform</span>: <span class="v">rotate(45deg) scale(1.2) translateX(10px)</span>;</div>
+    </div>
+
+    <!-- 5. transition -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2 class="section-title">transition — 状態変化をなめらかに（ホバーで確認）</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="trans-grid">
+          <div class="tr-card tr-color">
+            <div class="tr-box"></div>
+            <div class="tr-name">background-color</div>
+          </div>
+          <div class="tr-card tr-size">
+            <div class="tr-box"></div>
+            <div class="tr-name">size + border-radius</div>
+          </div>
+          <div class="tr-card tr-shadow">
+            <div class="tr-box"></div>
+            <div class="tr-name">box-shadow + lift</div>
+          </div>
+          <div class="tr-card tr-rotate">
+            <div class="tr-box"></div>
+            <div class="tr-name">rotate + color</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">/* shorthand: property duration timing-function delay */</span>
+<span class="s">.element</span> {
+  <span class="p">transition</span>: <span class="v">all 0.3s ease</span>;
+
+  <span class="c">/* 複数のプロパティを個別に指定 */</span>
+  <span class="p">transition</span>: <span class="v">background 0.3s ease, transform 0.2s ease-out</span>;
+
+  <span class="c">/* 個別プロパティ */</span>
+  <span class="p">transition-property</span>:        <span class="v">background, transform</span>;
+  <span class="p">transition-duration</span>:        <span class="v">0.3s</span>;
+  <span class="p">transition-timing-function</span>: <span class="v">ease</span>;
+  <span class="p">transition-delay</span>:           <span class="v">0s</span>;
+}
+
+<span class="c">/* animation vs transition
+   animation  : @keyframes を参照。自動再生・ループが得意。
+   transition : 状態変化だけに反応。:hover や JS クラスと相性◎ */</span></div>
+    </div>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById('race-btn');
+    const balls = document.querySelectorAll('.race-ball');
+
+    btn.addEventListener('click', () => {
+      balls.forEach(b => {
+        b.classList.remove('go');
+        void b.offsetWidth;
+        b.classList.add('go');
+      });
+    });
+  </script>
+
+</body>
+</html>
