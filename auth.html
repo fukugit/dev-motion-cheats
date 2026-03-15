@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>認証 (JWT / OAuth 2.0) - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f8f6;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --purple: #7c3aed;
+      --teal: #0d9488;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Nav */
+    .nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+    }
+    .nav a { color: var(--muted); text-decoration: none; }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-current { font-weight: 600; color: var(--purple); }
+
+    /* Page hero */
+    .page-hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+    .page-hero-inner { max-width: 720px; margin: 0 auto; }
+    .page-badge {
+      display: inline-block;
+      background: #f3e8ff;
+      color: #6d28d9;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .page-desc { color: var(--muted); font-size: 1rem; }
+
+    /* Content */
+    .content { max-width: 900px; margin: 0 auto; padding: 56px 48px; }
+    .section { margin-bottom: 72px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .num-purple { background: var(--purple); }
+    .num-teal   { background: var(--teal); }
+
+    .section-title { font-size: 1.25rem; font-weight: 700; }
+
+    .demo-area {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 16px;
+    }
+
+    /* Code block */
+    .code {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Source Code Pro', Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre;
+    }
+    .k  { color: #cba6f7; }
+    .v  { color: #a6e3a1; }
+    .s  { color: #f9e2af; }
+    .c  { color: #585b70; }
+    .cmd { color: #89b4fa; font-weight: 600; }
+    .p  { color: #89dceb; }
+    .n  { color: #f38ba8; }
+
+    /* ===== SECTION 1: JWT ===== */
+    .jwt-token {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 0.78rem;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .jwt-part {
+      flex: 1;
+      padding: 14px 16px;
+      min-width: 180px;
+      cursor: pointer;
+      transition: filter 0.2s;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .jwt-part:hover { filter: brightness(1.08); }
+
+    .jwt-header  { background: #fee2e2; color: #dc2626; border-right: 1px solid #fca5a5; }
+    .jwt-payload { background: #fef9c3; color: #92400e; border-right: 1px solid #fde047; }
+    .jwt-sig     { background: #e0e7ff; color: #4338ca; }
+
+    .jwt-dot {
+      display: flex;
+      align-items: center;
+      padding: 0 2px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-weight: 800;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .jwt-part-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.7;
+    }
+
+    .jwt-decoded {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .jwt-decoded.visible { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    .decoded-box {
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .decoded-header { background: #fff1f2; border: 1px solid #fca5a5; }
+    .decoded-payload { background: #fefce8; border: 1px solid #fde047; }
+    .decoded-sig { background: #eef2ff; border: 1px solid #a5b4fc; }
+
+    .decoded-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .decoded-header .decoded-title { color: #dc2626; }
+    .decoded-payload .decoded-title { color: #92400e; }
+    .decoded-sig .decoded-title { color: #4338ca; }
+
+    .json-key { color: #6d28d9; font-weight: 600; }
+    .json-val { color: #059669; }
+    .json-str { color: #0284c7; }
+
+    .jwt-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* JWT Sequence Diagram */
+    .seq-wrap {
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+
+    .seq-svg {
+      display: block;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .seq-group {
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+
+    .seq-group.visible { opacity: 1; }
+
+    .jwt-step-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 9px 24px;
+      background: var(--purple);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .jwt-step-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+
+    .step-info {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      min-height: 1.4em;
+      transition: color 0.2s;
+    }
+
+    .step-info.active { color: var(--purple); font-weight: 600; }
+
+    /* ===== SECTION 2: OAuth 2.0 ===== */
+    .oauth-diagram {
+      position: relative;
+    }
+
+    .oauth-actors {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .oauth-actor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .oauth-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      border: 2px solid var(--border);
+      background: var(--white);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .oauth-icon.highlight {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+    }
+
+    .oauth-actor-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .oauth-actor-desc {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .oauth-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .oauth-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      opacity: 0.4;
+      transform: translateX(-8px);
+      transition: opacity 0.4s, transform 0.4s, border-color 0.3s, background 0.3s;
+    }
+
+    .oauth-step.active {
+      opacity: 1;
+      transform: translateX(0);
+      border-color: var(--teal);
+      background: var(--white);
+    }
+
+    .oauth-step.done {
+      opacity: 0.7;
+      transform: translateX(0);
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .oauth-step.active .step-num {
+      background: var(--teal);
+      color: white;
+    }
+
+    .oauth-step.done .step-num {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .step-from-to {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--teal);
+      white-space: nowrap;
+      min-width: 160px;
+    }
+
+    .step-desc {
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+
+    .step-data {
+      margin-left: auto;
+      font-size: 0.68rem;
+      font-family: monospace;
+      background: #f0fdf4;
+      color: #059669;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .oauth-play-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 9px 24px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .oauth-play-btn:hover { background: #0f766e; transform: translateY(-1px); }
+
+    /* ===== SECTION 3: Comparison ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .cmp-card {
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      overflow: hidden;
+    }
+
+    .cmp-header {
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cmp-jwt .cmp-header  { background: #f3e8ff; color: #6d28d9; border-bottom: 1px solid #ddd6fe; }
+    .cmp-oauth .cmp-header { background: #ccfbf1; color: #0f766e; border-bottom: 1px solid #99f6e4; }
+
+    .cmp-body { padding: 20px; }
+
+    .cmp-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+
+    .cmp-label {
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 70px;
+    }
+
+    .cmp-val { color: var(--text); }
+
+    .pro-list { list-style: none; }
+    .pro-list li { padding: 4px 0; font-size: 0.82rem; }
+    .pro-list li::before { content: '✓ '; color: #22c55e; font-weight: 700; }
+
+    .con-list { list-style: none; }
+    .con-list li { padding: 4px 0; font-size: 0.82rem; }
+    .con-list li::before { content: '✕ '; color: #ef4444; font-weight: 700; }
+
+    /* Quick ref */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .ref-group {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .ref-group-title {
+      padding: 12px 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ref-table { width: 100%; border-collapse: collapse; }
+    .ref-table td {
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      vertical-align: middle;
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table td:first-child {
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: #2563eb;
+      width: 40%;
+    }
+    .ref-table td:last-child { color: var(--muted); }
+
+    /* Storage tabs */
+    .storage-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stab {
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .stab:hover { background: var(--white); color: var(--text); }
+
+    .stab.active {
+      background: var(--purple);
+      color: white;
+      border-color: var(--purple);
+    }
+
+    .stab-panel { display: none; }
+    .stab-panel.active { display: block; }
+
+    .storage-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 10px;
+      font-size: 0.82rem;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      align-items: flex-start;
+    }
+
+    .meta-row.good { background: #f0fdf4; }
+    .meta-row.warn { background: #fff7ed; }
+
+    .meta-label {
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 70px;
+      font-size: 0.75rem;
+    }
+
+    .meta-val { color: var(--text); line-height: 1.5; }
+
+    @media (max-width: 700px) {
+      .nav, .page-hero { padding-left: 20px; padding-right: 20px; }
+      .content { padding: 32px 20px; }
+      .jwt-decoded.visible { grid-template-columns: 1fr; }
+      .oauth-actors { grid-template-columns: repeat(2, 1fr); }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .ref-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Dev Motion Cheats</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-current">認証</span>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <span class="page-badge">Auth</span>
+      <h1 class="page-title">認証チートシート</h1>
+      <p class="page-desc">JWT・OAuth 2.0 の仕組みをアニメーションで視覚化。トークンの構造からフローまで一目でわかる。</p>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. JWT -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num num-purple">1</div>
+        <h2 class="section-title">JWT (JSON Web Token) — トークンの構造</h2>
+      </div>
+
+      <div class="demo-area">
+        <p class="jwt-hint">各パートをクリックすると中身が展開されます</p>
+
+        <!-- Token display -->
+        <div class="jwt-token">
+          <div class="jwt-part jwt-header" id="jwt-header-part">
+            <div class="jwt-part-label">Header</div>
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+          </div>
+          <div class="jwt-dot">.</div>
+          <div class="jwt-part jwt-payload" id="jwt-payload-part">
+            <div class="jwt-part-label">Payload</div>
+            eyJzdWIiOiJ1c2VyXzEyMyIsIm5hbWUiOiJUYXJvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzE2MDAwMDAwLCJleHAiOjE3MTYwMDM2MDB9
+          </div>
+          <div class="jwt-dot">.</div>
+          <div class="jwt-part jwt-sig" id="jwt-sig-part">
+            <div class="jwt-part-label">Signature</div>
+            SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+          </div>
+        </div>
+
+        <!-- Decoded -->
+        <div class="jwt-decoded" id="jwt-decoded">
+          <div class="decoded-box decoded-header" id="dec-header">
+            <div class="decoded-title">Header — アルゴリズム</div>
+            <span class="json-key">"alg"</span>: <span class="json-str">"HS256"</span><br>
+            <span class="json-key">"typ"</span>: <span class="json-str">"JWT"</span>
+          </div>
+          <div class="decoded-box decoded-payload" id="dec-payload">
+            <div class="decoded-title">Payload — クレーム</div>
+            <span class="json-key">"sub"</span>: <span class="json-str">"user_123"</span><br>
+            <span class="json-key">"name"</span>: <span class="json-str">"Taro"</span><br>
+            <span class="json-key">"role"</span>: <span class="json-str">"admin"</span><br>
+            <span class="json-key">"iat"</span>: <span class="json-val">1716000000</span><br>
+            <span class="json-key">"exp"</span>: <span class="json-val">1716003600</span>
+          </div>
+          <div class="decoded-box decoded-sig" id="dec-sig">
+            <div class="decoded-title">Signature — 署名</div>
+            HMAC-SHA256(<br>
+            &nbsp;&nbsp;base64(header) + "." +<br>
+            &nbsp;&nbsp;base64(payload),<br>
+            &nbsp;&nbsp;<span class="json-str">SECRET_KEY</span><br>
+            )
+          </div>
+        </div>
+
+        <!-- JWT Sequence Diagram -->
+        <div style="margin-top: 24px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">認証フロー — シーケンス図</div>
+          <div class="seq-wrap">
+            <svg class="seq-svg" viewBox="0 0 680 410" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <!-- ===== Actor boxes ===== -->
+              <!-- Client -->
+              <rect x="20"  y="12" width="140" height="48" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+              <text x="90"  y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">🖥️</text>
+              <text x="90"  y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">クライアント</text>
+
+              <!-- Auth Server -->
+              <rect x="270" y="12" width="140" height="48" rx="8" fill="#fef3e2" stroke="#d97706" stroke-width="2"/>
+              <text x="340" y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">🔐</text>
+              <text x="340" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309" dominant-baseline="middle">認証サーバー</text>
+
+              <!-- API Server -->
+              <rect x="520" y="12" width="140" height="48" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+              <text x="590" y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">⚙️</text>
+              <text x="590" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">API サーバー</text>
+
+              <!-- ===== Lifelines ===== -->
+              <line x1="90"  y1="60" x2="90"  y2="405" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="340" y1="60" x2="340" y2="405" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="590" y1="60" x2="590" y2="405" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+
+              <!-- ===== Step 1: Client → Auth  POST /auth/login ===== -->
+              <g id="s1" class="seq-group">
+                <line x1="102" y1="108" x2="326" y2="108" stroke="#7c3aed" stroke-width="2"/>
+                <polygon points="328,103 341,108 328,113" fill="#7c3aed"/>
+                <circle cx="90" cy="108" r="11" fill="#7c3aed"/>
+                <text x="90" y="108" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">①</text>
+                <rect x="112" y="88" width="196" height="18" rx="4" fill="#f3e8ff"/>
+                <text x="210" y="97" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#6d28d9" font-weight="700">POST /auth/login</text>
+                <text x="210" y="120" text-anchor="middle" font-size="9.5" fill="#888">{ email: "taro@example.com", password: "••••" }</text>
+              </g>
+
+              <!-- ===== Step 2: Auth → Client  JWT 発行 ===== -->
+              <g id="s2" class="seq-group">
+                <line x1="104" y1="178" x2="327" y2="178" stroke="#d97706" stroke-width="2" stroke-dasharray="6 3"/>
+                <polygon points="102,173 90,178 102,183" fill="#d97706"/>
+                <circle cx="340" cy="178" r="11" fill="#d97706"/>
+                <text x="340" y="178" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">②</text>
+                <rect x="108" y="158" width="220" height="18" rx="4" fill="#fef3e2"/>
+                <text x="218" y="167" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#b45309" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
+                <text x="218" y="190" text-anchor="middle" font-size="9.5" fill="#888">署名付き JWT を生成して返す</text>
+              </g>
+
+              <!-- ===== Step 2b: Client note — JWT 保存 ===== -->
+              <g id="s2b" class="seq-group">
+                <rect x="20" y="206" width="140" height="36" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+                <text x="90" y="220" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">JWT を保存</text>
+                <text x="90" y="234" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#7c3aed">Cookie / localStorage</text>
+              </g>
+
+              <!-- ===== Step 3: Client → API  リクエスト + JWT ===== -->
+              <g id="s3" class="seq-group">
+                <line x1="102" y1="285" x2="576" y2="285" stroke="#7c3aed" stroke-width="2"/>
+                <polygon points="578,280 591,285 578,290" fill="#7c3aed"/>
+                <circle cx="90" cy="285" r="11" fill="#7c3aed"/>
+                <text x="90" y="285" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">③</text>
+                <rect x="112" y="265" width="200" height="18" rx="4" fill="#f3e8ff"/>
+                <text x="212" y="274" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#6d28d9" font-weight="700">GET /api/data</text>
+                <text x="300" y="297" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJhbGci…</text>
+              </g>
+
+              <!-- ===== Step 3b: API note — JWT 検証 ===== -->
+              <g id="s3b" class="seq-group">
+                <rect x="520" y="313" width="140" height="36" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+                <text x="590" y="327" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">JWT 署名を検証</text>
+                <text x="590" y="341" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#16a34a">ペイロード展開 → 認可</text>
+              </g>
+
+              <!-- ===== Step 4: API → Client  レスポンス ===== -->
+              <g id="s4" class="seq-group">
+                <line x1="104" y1="378" x2="577" y2="378" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 3"/>
+                <polygon points="102,373 90,378 102,383" fill="#22c55e"/>
+                <circle cx="590" cy="378" r="11" fill="#22c55e"/>
+                <text x="590" y="378" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">④</text>
+                <rect x="190" y="358" width="200" height="18" rx="4" fill="#f0fdf4"/>
+                <text x="290" y="367" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
+                <text x="290" y="390" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+              </g>
+
+            </svg>
+          </div>
+          <div class="step-info" id="step-info">▼ ボタンを押してフローを確認しよう</div>
+          <button class="jwt-step-btn" id="jwt-next-btn">▶ 次のステップ</button>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">// 1. JWT ライブラリ (Node.js: jsonwebtoken)</span>
+<span class="k">const</span> jwt = <span class="n">require</span>(<span class="s">'jsonwebtoken'</span>);
+
+<span class="c">// トークン生成</span>
+<span class="k">const</span> token = jwt.<span class="p">sign</span>(
+  { sub: <span class="s">'user_123'</span>, name: <span class="s">'Taro'</span>, role: <span class="s">'admin'</span> },
+  process.env.<span class="v">SECRET_KEY</span>,
+  { expiresIn: <span class="s">'1h'</span> }
+);
+
+<span class="c">// トークン検証</span>
+<span class="k">const</span> payload = jwt.<span class="p">verify</span>(token, process.env.<span class="v">SECRET_KEY</span>);
+
+<span class="c">// API リクエスト時: Authorization ヘッダーに付与</span>
+fetch(<span class="s">'/api/data'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${token}`</span> }
+});</div>
+    </div>
+
+    <!-- 2. OAuth 2.0 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num num-teal">2</div>
+        <h2 class="section-title">OAuth 2.0 — Authorization Code フロー</h2>
+      </div>
+
+      <div class="demo-area">
+        <!-- Actors -->
+        <div class="oauth-actors">
+          <div class="oauth-actor">
+            <div class="oauth-icon" id="oa-user">👤</div>
+            <div class="oauth-actor-name">ユーザー</div>
+            <div class="oauth-actor-desc">Resource Owner</div>
+          </div>
+          <div class="oauth-actor">
+            <div class="oauth-icon" id="oa-client">📱</div>
+            <div class="oauth-actor-name">クライアント</div>
+            <div class="oauth-actor-desc">あなたのアプリ</div>
+          </div>
+          <div class="oauth-actor">
+            <div class="oauth-icon" id="oa-authsrv">🔐</div>
+            <div class="oauth-actor-name">認可サーバー</div>
+            <div class="oauth-actor-desc">Google / GitHub 等</div>
+          </div>
+          <div class="oauth-actor">
+            <div class="oauth-icon" id="oa-rssrv">📦</div>
+            <div class="oauth-actor-name">リソースサーバー</div>
+            <div class="oauth-actor-desc">保護された API</div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="oauth-steps">
+          <div class="oauth-step" id="os-1">
+            <div class="step-num">1</div>
+            <div class="step-from-to">クライアント → 認可サーバー</div>
+            <div class="step-desc">認可リクエスト（ブラウザでリダイレクト）</div>
+            <div class="step-data">?response_type=code&amp;scope=…</div>
+          </div>
+          <div class="oauth-step" id="os-2">
+            <div class="step-num">2</div>
+            <div class="step-from-to">認可サーバー → ユーザー</div>
+            <div class="step-desc">ログイン画面 &amp; 権限の同意画面を表示</div>
+            <div class="step-data">同意 / 拒否</div>
+          </div>
+          <div class="oauth-step" id="os-3">
+            <div class="step-num">3</div>
+            <div class="step-from-to">認可サーバー → クライアント</div>
+            <div class="step-desc">認可コード (code) をリダイレクト URL に付与して返す</div>
+            <div class="step-data">?code=AUTH_CODE</div>
+          </div>
+          <div class="oauth-step" id="os-4">
+            <div class="step-num">4</div>
+            <div class="step-from-to">クライアント → 認可サーバー</div>
+            <div class="step-desc">認可コードをアクセストークンと交換（サーバー間通信）</div>
+            <div class="step-data">POST /token</div>
+          </div>
+          <div class="oauth-step" id="os-5">
+            <div class="step-num">5</div>
+            <div class="step-from-to">認可サーバー → クライアント</div>
+            <div class="step-desc">アクセストークン（＋リフレッシュトークン）を発行</div>
+            <div class="step-data">access_token, refresh_token</div>
+          </div>
+          <div class="oauth-step" id="os-6">
+            <div class="step-num">6</div>
+            <div class="step-from-to">クライアント → リソースサーバー</div>
+            <div class="step-desc">アクセストークンを使って保護されたリソースを取得</div>
+            <div class="step-data">Bearer {access_token}</div>
+          </div>
+        </div>
+
+        <button class="oauth-play-btn" id="oauth-play-btn">▶ フローを再生</button>
+      </div>
+
+      <div class="code"><span class="c">// OAuth 2.0 Authorization Code フロー例 (Next.js + NextAuth.js)</span>
+
+<span class="c">// next-auth の設定 (app/api/auth/[...nextauth]/route.ts)</span>
+<span class="k">import</span> NextAuth <span class="k">from</span> <span class="s">'next-auth'</span>;
+<span class="k">import</span> GitHubProvider <span class="k">from</span> <span class="s">'next-auth/providers/github'</span>;
+
+<span class="k">export const</span> { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    GitHubProvider({
+      clientId:     process.env.<span class="v">GITHUB_CLIENT_ID</span>,
+      clientSecret: process.env.<span class="v">GITHUB_CLIENT_SECRET</span>,
+    }),
+  ],
+});
+
+<span class="c">// アクセストークンで GitHub API を呼び出す</span>
+<span class="k">const</span> session = <span class="k">await</span> auth();
+<span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'https://api.github.com/user'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${session.accessToken}`</span> },
+});</div>
+    </div>
+
+    <!-- 3. Comparison -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num num-purple">3</div>
+        <h2 class="section-title">JWT vs OAuth 2.0 — 使い分けガイド</h2>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="cmp-card cmp-jwt">
+          <div class="cmp-header">🔑 JWT</div>
+          <div class="cmp-body">
+            <div class="cmp-row">
+              <div class="cmp-label">目的</div>
+              <div class="cmp-val">情報を安全に伝達・認証</div>
+            </div>
+            <div class="cmp-row">
+              <div class="cmp-label">形式</div>
+              <div class="cmp-val">署名付き JSON (Base64URL)</div>
+            </div>
+            <div class="cmp-row">
+              <div class="cmp-label">保存先</div>
+              <div class="cmp-val">localStorage / httpOnly Cookie</div>
+            </div>
+            <div style="margin-top:12px;">
+              <ul class="pro-list">
+                <li>サーバーレスで検証可能（ステートレス）</li>
+                <li>マイクロサービス間の認証に最適</li>
+                <li>有効期限・ロール情報を内包できる</li>
+              </ul>
+              <ul class="con-list" style="margin-top:8px;">
+                <li>トークン無効化が難しい（期限切れ待ち）</li>
+                <li>ペイロードが大きくなりがち</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="cmp-card cmp-oauth">
+          <div class="cmp-header">🔐 OAuth 2.0</div>
+          <div class="cmp-body">
+            <div class="cmp-row">
+              <div class="cmp-label">目的</div>
+              <div class="cmp-val">サードパーティへの認可委譲</div>
+            </div>
+            <div class="cmp-row">
+              <div class="cmp-label">形式</div>
+              <div class="cmp-val">フレームワーク（トークン形式は実装次第）</div>
+            </div>
+            <div class="cmp-row">
+              <div class="cmp-label">保存先</div>
+              <div class="cmp-val">サーバー側セッション or Cookie</div>
+            </div>
+            <div style="margin-top:12px;">
+              <ul class="pro-list">
+                <li>Google / GitHub 等の「ソーシャルログイン」に使える</li>
+                <li>スコープで権限を細かく制御</li>
+                <li>リフレッシュトークンで長期セッション管理</li>
+              </ul>
+              <ul class="con-list" style="margin-top:8px;">
+                <li>フローが複雑（複数リダイレクト）</li>
+                <li>認可サーバーへの依存が発生</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; padding:16px 20px; background:#f0fdf4; border-radius:10px; border:1px solid #86efac; font-size:0.85rem; line-height:1.8;">
+        <strong>💡 実際のプロダクトでは？</strong><br>
+        多くのシステムでは <strong>OAuth 2.0</strong> でユーザーを認証し、発行するトークンの形式として <strong>JWT</strong> を使う、という組み合わせが一般的です。<br>
+        例：GitHub でログイン (OAuth 2.0) → サーバーが JWT を発行 → 以降の API 呼び出しで JWT を使用
+      </div>
+    </div>
+
+    <!-- 4. Token Storage & Transport -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num num-purple">4</div>
+        <h2 class="section-title">トークン/ID の格納場所とサーバーへの送り方</h2>
+      </div>
+
+      <div class="demo-area">
+        <div class="storage-tabs">
+          <button class="stab active" data-tab="cookie">httpOnly Cookie</button>
+          <button class="stab" data-tab="localStorage">localStorage</button>
+          <button class="stab" data-tab="memory">メモリ (変数)</button>
+          <button class="stab" data-tab="db">サーバー DB</button>
+        </div>
+
+        <!-- ===== Cookie ===== -->
+        <div class="stab-panel active" id="tab-cookie">
+          <div class="seq-wrap">
+            <svg class="seq-svg" viewBox="0 0 560 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Actors -->
+              <rect x="15"  y="10" width="155" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+              <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ</text>
+              <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+              <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <!-- Lifelines -->
+              <line x1="92"  y1="56" x2="92"  y2="285" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="467" y1="56" x2="467" y2="285" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+
+              <!-- Step 1: Server→Browser  Set-Cookie (login response) -->
+              <line x1="107" y1="100" x2="453" y2="100" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,95 92,100 105,105" fill="#16a34a"/>
+              <circle cx="467" cy="100" r="10" fill="#16a34a"/>
+              <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
+              <rect x="115" y="81" width="248" height="17" rx="4" fill="#dcfce7"/>
+              <text x="239" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">Set-Cookie: jwt=eyJ…; HttpOnly; Secure</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">ログイン成功 — サーバーが Cookie を発行</text>
+
+              <!-- Note: Cookie store -->
+              <rect x="15" y="128" width="155" height="38" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">Cookie ストアに保存</text>
+              <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#7c3aed">JS から読めない (HttpOnly)</text>
+
+              <!-- Step 2: Browser→Server  次のリクエスト (Cookie 自動付与) -->
+              <line x1="106" y1="210" x2="453" y2="210" stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="454,205 467,210 454,215" fill="#7c3aed"/>
+              <circle cx="92" cy="210" r="10" fill="#7c3aed"/>
+              <text x="92" y="210" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
+              <rect x="115" y="191" width="160" height="17" rx="4" fill="#ede9fe"/>
+              <text x="195" y="200" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data</text>
+              <text x="280" y="223" text-anchor="middle" font-size="9.5" fill="#888">Cookie: jwt=eyJ…  ← ブラウザが自動付与</text>
+
+              <!-- Step 3: Server→Browser  response -->
+              <line x1="107" y1="265" x2="453" y2="265" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,260 92,265 105,270" fill="#16a34a"/>
+              <circle cx="467" cy="265" r="10" fill="#16a34a"/>
+              <text x="467" y="265" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
+              <rect x="165" y="246" width="175" height="17" rx="4" fill="#dcfce7"/>
+              <text x="252" y="255" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
+              <text x="280" y="278" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+            </svg>
+          </div>
+          <div class="storage-meta">
+            <div class="meta-row"><span class="meta-label">JS アクセス</span><span class="meta-val">不可（HttpOnly により XSS からトークンを保護）</span></div>
+            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val">ブラウザが自動で <code>Cookie:</code> ヘッダーに付与（コード不要）</span></div>
+            <div class="meta-row"><span class="meta-label">CSRF 対策</span><span class="meta-val"><code>SameSite=Strict</code> 属性、または CSRF トークンを併用</span></div>
+            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ 最も安全。本番 Web アプリの標準パターン</span></div>
+          </div>
+        </div>
+
+        <!-- ===== localStorage ===== -->
+        <div class="stab-panel" id="tab-localStorage">
+          <div class="seq-wrap">
+            <svg class="seq-svg" viewBox="0 0 560 295" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="15"  y="10" width="155" height="46" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+              <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e" dominant-baseline="middle">ブラウザ / JS</text>
+              <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+              <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <line x1="92"  y1="56" x2="92"  y2="290" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="467" y1="56" x2="467" y2="290" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+
+              <!-- Step 1: Server→Browser  token in body -->
+              <line x1="107" y1="100" x2="453" y2="100" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,95 92,100 105,105" fill="#16a34a"/>
+              <circle cx="467" cy="100" r="10" fill="#16a34a"/>
+              <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
+              <rect x="120" y="81" width="225" height="17" rx="4" fill="#dcfce7"/>
+              <text x="232" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">レスポンスボディにトークンを含めて返す</text>
+
+              <!-- Note: localStorage.setItem -->
+              <rect x="15" y="128" width="155" height="40" rx="6" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#92400e" font-weight="700">localStorage.setItem</text>
+              <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#78350f" font-family="monospace">('token', res.token)</text>
+
+              <!-- Step 2: Browser→Server  Authorization header (manual) -->
+              <line x1="106" y1="215" x2="453" y2="215" stroke="#ca8a04" stroke-width="2"/>
+              <polygon points="454,210 467,215 454,220" fill="#ca8a04"/>
+              <circle cx="92" cy="215" r="10" fill="#ca8a04"/>
+              <text x="92" y="215" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
+              <rect x="115" y="196" width="160" height="17" rx="4" fill="#fef9c3"/>
+              <text x="195" y="205" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#92400e" font-weight="700">GET /api/data</text>
+              <text x="280" y="228" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJ…  ← JS で手動付与</text>
+
+              <!-- Step 3: Server→Browser  response -->
+              <line x1="107" y1="270" x2="453" y2="270" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,265 92,270 105,275" fill="#16a34a"/>
+              <circle cx="467" cy="270" r="10" fill="#16a34a"/>
+              <text x="467" y="270" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
+              <rect x="165" y="251" width="175" height="17" rx="4" fill="#dcfce7"/>
+              <text x="252" y="260" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
+              <text x="280" y="283" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+            </svg>
+          </div>
+          <div class="storage-meta">
+            <div class="meta-row"><span class="meta-label">JS アクセス</span><span class="meta-val">可能（XSS でトークン盗難リスクあり）</span></div>
+            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val">fetch/axios で <code>Authorization: Bearer {token}</code> を手動でセット</span></div>
+            <div class="meta-row"><span class="meta-label">CSRF</span><span class="meta-val">Cookie でないため CSRF は発生しない</span></div>
+            <div class="meta-row warn"><span class="meta-label">注意</span><span class="meta-val">✕ XSS 攻撃でトークン盗難のリスク。機密情報は保存しない</span></div>
+          </div>
+        </div>
+
+        <!-- ===== Memory ===== -->
+        <div class="stab-panel" id="tab-memory">
+          <div class="seq-wrap">
+            <svg class="seq-svg" viewBox="0 0 560 295" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="15"  y="10" width="155" height="46" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+              <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ / JS</text>
+              <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+              <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <line x1="92"  y1="56" x2="92"  y2="290" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="467" y1="56" x2="467" y2="290" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+
+              <!-- Step 1: Server→Browser  token in body -->
+              <line x1="107" y1="100" x2="453" y2="100" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,95 92,100 105,105" fill="#16a34a"/>
+              <circle cx="467" cy="100" r="10" fill="#16a34a"/>
+              <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
+              <rect x="120" y="81" width="225" height="17" rx="4" fill="#dcfce7"/>
+              <text x="232" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">レスポンスボディにトークンを含めて返す</text>
+
+              <!-- Note: in-memory variable -->
+              <rect x="15" y="128" width="155" height="40" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700">変数に保持</text>
+              <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#7c3aed" font-family="monospace">let token = res.token</text>
+
+              <!-- Note: リロードで消える -->
+              <rect x="15" y="174" width="155" height="22" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+              <text x="92" y="185" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#dc2626">⚠ ページリロードで消える</text>
+
+              <!-- Step 2: Browser→Server  Authorization header -->
+              <line x1="106" y1="222" x2="453" y2="222" stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="454,217 467,222 454,227" fill="#7c3aed"/>
+              <circle cx="92" cy="222" r="10" fill="#7c3aed"/>
+              <text x="92" y="222" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
+              <rect x="115" y="203" width="160" height="17" rx="4" fill="#ede9fe"/>
+              <text x="195" y="212" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data</text>
+              <text x="280" y="235" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJ…  ← JS で手動付与</text>
+
+              <!-- Step 3: Server→Browser -->
+              <line x1="107" y1="272" x2="453" y2="272" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="105,267 92,272 105,277" fill="#16a34a"/>
+              <circle cx="467" cy="272" r="10" fill="#16a34a"/>
+              <text x="467" y="272" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
+              <rect x="165" y="253" width="175" height="17" rx="4" fill="#dcfce7"/>
+              <text x="252" y="262" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
+              <text x="280" y="285" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+            </svg>
+          </div>
+          <div class="storage-meta">
+            <div class="meta-row"><span class="meta-label">永続性</span><span class="meta-val">なし（ページリロード・タブを閉じると消える）</span></div>
+            <div class="meta-row"><span class="meta-label">XSS 耐性</span><span class="meta-val">localStorage より高い（他スクリプトから直接アクセスされにくい）</span></div>
+            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val"><code>Authorization: Bearer {token}</code> を手動でセット</span></div>
+            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ SPA でアクセストークンを短期保持する場合に有効</span></div>
+          </div>
+        </div>
+
+        <!-- ===== Server DB (3 actors) ===== -->
+        <div class="stab-panel" id="tab-db">
+          <div class="seq-wrap">
+            <svg class="seq-svg" viewBox="0 0 680 415" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Actors: Browser / Server / DB -->
+              <rect x="15"  y="10" width="130" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+              <text x="80"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
+              <text x="80"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ</text>
+              <rect x="265" y="10" width="150" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+              <text x="340" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
+              <text x="340" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <rect x="535" y="10" width="130" height="46" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="2"/>
+              <text x="600" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🗄️</text>
+              <text x="600" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309" dominant-baseline="middle">DB / Redis</text>
+              <!-- Lifelines -->
+              <line x1="80"  y1="56" x2="80"  y2="410" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="340" y1="56" x2="340" y2="410" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+              <line x1="600" y1="56" x2="600" y2="410" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
+
+              <!-- Step 1: Browser→Server  POST /login -->
+              <line x1="93"  y1="96"  x2="326" y2="96"  stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="328,91 341,96 328,101" fill="#7c3aed"/>
+              <circle cx="80" cy="96" r="10" fill="#7c3aed"/>
+              <text x="80" y="96" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
+              <rect x="105" y="77" width="210" height="17" rx="4" fill="#ede9fe"/>
+              <text x="210" y="86" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">POST /auth/login  { email, password }</text>
+
+              <!-- Step 2: Server→DB  セッション保存 -->
+              <line x1="353" y1="148" x2="586" y2="148" stroke="#d97706" stroke-width="2"/>
+              <polygon points="588,143 601,148 588,153" fill="#d97706"/>
+              <circle cx="340" cy="148" r="10" fill="#d97706"/>
+              <text x="340" y="148" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
+              <rect x="358" y="129" width="220" height="17" rx="4" fill="#fff7ed"/>
+              <text x="468" y="138" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#b45309" font-weight="700">INSERT sessions { session_id, user_id, token }</text>
+              <text x="468" y="161" text-anchor="middle" font-size="9.5" fill="#888">トークン本体を DB に保存</text>
+
+              <!-- Step 3: Server→Browser  Set-Cookie: session_id only -->
+              <line x1="95"  y1="205" x2="326" y2="205" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="93,200 80,205 93,210" fill="#16a34a"/>
+              <circle cx="340" cy="205" r="10" fill="#16a34a"/>
+              <text x="340" y="205" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
+              <rect x="98" y="186" width="225" height="17" rx="4" fill="#dcfce7"/>
+              <text x="210" y="195" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">Set-Cookie: session_id=abc123; HttpOnly</text>
+              <text x="210" y="218" text-anchor="middle" font-size="9.5" fill="#888">トークン本体は送らない — ID だけ</text>
+
+              <!-- Note: Browser stores session_id only -->
+              <rect x="15" y="230" width="130" height="38" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+              <text x="80" y="244" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700">session_id のみ保存</text>
+              <text x="80" y="259" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#7c3aed">トークン本体はサーバー側</text>
+
+              <!-- Step 4: Browser→Server  next request -->
+              <line x1="93"  y1="308" x2="326" y2="308" stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="328,303 341,308 328,313" fill="#7c3aed"/>
+              <circle cx="80" cy="308" r="10" fill="#7c3aed"/>
+              <text x="80" y="308" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">④</text>
+              <rect x="98" y="289" width="218" height="17" rx="4" fill="#ede9fe"/>
+              <text x="207" y="298" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data  Cookie: session_id=abc123</text>
+
+              <!-- Step 5: Server→DB  照合 -->
+              <line x1="353" y1="352" x2="586" y2="352" stroke="#d97706" stroke-width="2"/>
+              <polygon points="588,347 601,352 588,357" fill="#d97706"/>
+              <circle cx="340" cy="352" r="10" fill="#d97706"/>
+              <text x="340" y="352" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">⑤</text>
+              <rect x="358" y="333" width="225" height="17" rx="4" fill="#fff7ed"/>
+              <text x="468" y="342" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#b45309" font-weight="700">SELECT token WHERE session_id = 'abc123'</text>
+              <text x="468" y="365" text-anchor="middle" font-size="9.5" fill="#888">セッション照合 → トークン取得・検証</text>
+
+              <!-- Step 6: Server→Browser  response -->
+              <line x1="95"  y1="400" x2="326" y2="400" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="93,395 80,400 93,405" fill="#16a34a"/>
+              <circle cx="340" cy="400" r="10" fill="#16a34a"/>
+              <text x="340" y="400" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">⑥</text>
+              <rect x="100" y="381" width="170" height="17" rx="4" fill="#dcfce7"/>
+              <text x="185" y="390" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
+            </svg>
+          </div>
+          <div class="storage-meta">
+            <div class="meta-row"><span class="meta-label">仕組み</span><span class="meta-val">トークン本体は DB に保存。ブラウザは session_id（キー）だけを持つ</span></div>
+            <div class="meta-row"><span class="meta-label">無効化</span><span class="meta-val">DB レコードを削除するだけで即座にログアウト（JWT にはできない強制失効）</span></div>
+            <div class="meta-row"><span class="meta-label">スケール</span><span class="meta-val">水平スケール時は Redis 等の共有キャッシュが必要</span></div>
+            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ 強制ログアウト・セッション管理が重要なシステム向け</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">// ① Cookie (自動送信 — credentials: 'include' が必要)</span>
+fetch(<span class="s">'/api/user'</span>, {
+  credentials: <span class="s">'include'</span>  <span class="c">// ← これで Cookie が自動付与される</span>
+});
+
+<span class="c">// ② Authorization ヘッダー (localStorage / メモリ保存の場合)</span>
+<span class="k">const</span> token = localStorage.<span class="p">getItem</span>(<span class="s">'token'</span>);  <span class="c">// or let token = '...'</span>
+fetch(<span class="s">'/api/user'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${token}`</span> }
+});
+
+<span class="c">// ③ axios インターセプターで全リクエストに自動付与</span>
+axios.interceptors.request.<span class="p">use</span>(config => {
+  <span class="k">const</span> token = localStorage.<span class="p">getItem</span>(<span class="s">'token'</span>);
+  <span class="k">if</span> (token) config.headers.<span class="v">Authorization</span> = <span class="s">`Bearer ${token}`</span>;
+  <span class="k">return</span> config;
+});
+
+<span class="c">// ④ サーバー側での Cookie 発行 (Node.js / Express)</span>
+res.<span class="p">cookie</span>(<span class="s">'jwt'</span>, token, {
+  httpOnly: <span class="k">true</span>,   <span class="c">// JS から読めない</span>
+  secure:   <span class="k">true</span>,   <span class="c">// HTTPS のみ</span>
+  sameSite: <span class="s">'strict'</span>, <span class="c">// CSRF 対策</span>
+  maxAge:   <span class="v">3600000</span>  <span class="c">// 1 時間 (ms)</span>
+});</div>
+    </div>
+
+    <!-- 5. Quick Reference -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num num-teal">5</div>
+        <h2 class="section-title">クイックリファレンス</h2>
+      </div>
+
+      <div class="ref-grid">
+        <div class="ref-group">
+          <div class="ref-group-title">JWT クレーム</div>
+          <table class="ref-table">
+            <tr><td>iss</td><td>トークン発行者 (Issuer)</td></tr>
+            <tr><td>sub</td><td>主体 (Subject) — ユーザー ID 等</td></tr>
+            <tr><td>aud</td><td>対象 (Audience)</td></tr>
+            <tr><td>exp</td><td>有効期限 (Expiration) — Unix 時間</td></tr>
+            <tr><td>iat</td><td>発行時刻 (Issued At)</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">OAuth 2.0 グラントタイプ</div>
+          <table class="ref-table">
+            <tr><td>Authorization Code</td><td>Webアプリ向け（最も安全）</td></tr>
+            <tr><td>PKCE 拡張</td><td>SPAモバイルアプリ向け</td></tr>
+            <tr><td>Client Credentials</td><td>サーバー間 M2M 認証</td></tr>
+            <tr><td>Refresh Token</td><td>アクセストークンの更新</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">JWT アルゴリズム</div>
+          <table class="ref-table">
+            <tr><td>HS256</td><td>HMAC + SHA-256（共通鍵）</td></tr>
+            <tr><td>RS256</td><td>RSA + SHA-256（公開鍵/秘密鍵）</td></tr>
+            <tr><td>ES256</td><td>ECDSA + SHA-256（楕円曲線）</td></tr>
+          </table>
+        </div>
+        <div class="ref-group">
+          <div class="ref-group-title">セキュリティのベストプラクティス</div>
+          <table class="ref-table">
+            <tr><td>httpOnly Cookie</td><td>XSS から JWT を守る</td></tr>
+            <tr><td>短い有効期限</td><td>漏洩時のリスクを最小化</td></tr>
+            <tr><td>HTTPS 必須</td><td>通信経路での盗聴防止</td></tr>
+            <tr><td>PKCE</td><td>認可コード横取り攻撃を防ぐ</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===== JWT Token Click ===== */
+    const decoded = document.getElementById('jwt-decoded');
+    const parts = ['jwt-header-part', 'jwt-payload-part', 'jwt-sig-part'];
+    let decodedOpen = false;
+
+    parts.forEach(id => {
+      document.getElementById(id).addEventListener('click', () => {
+        decodedOpen = !decodedOpen;
+        decoded.className = 'jwt-decoded' + (decodedOpen ? ' visible' : '');
+      });
+    });
+
+    /* ===== JWT Sequence Steps ===== */
+    const stepInfoEl = document.getElementById('step-info');
+    const nextBtn    = document.getElementById('jwt-next-btn');
+
+    const seqSteps = [
+      { ids: ['s1'],       msg: '① クライアントがメール・パスワードを送信してログインリクエスト' },
+      { ids: ['s2','s2b'], msg: '② 認証サーバーが JWT を生成して返却。クライアントは Cookie / localStorage に保存' },
+      { ids: ['s3'],       msg: '③ JWT を Authorization ヘッダーに付けて API リクエスト' },
+      { ids: ['s3b','s4'], msg: '④ API サーバーが JWT 署名を検証し、認可済みレスポンスを返す' },
+    ];
+
+    let currentStep = -1;
+
+    nextBtn.addEventListener('click', () => {
+      currentStep++;
+      if (currentStep >= seqSteps.length) {
+        currentStep = -1;
+        document.querySelectorAll('.seq-group').forEach(g => g.classList.remove('visible'));
+        stepInfoEl.textContent = '▼ ボタンを押してフローを確認しよう';
+        stepInfoEl.classList.remove('active');
+        nextBtn.textContent = '▶ 次のステップ';
+        return;
+      }
+
+      seqSteps[currentStep].ids.forEach(id => {
+        document.getElementById(id).classList.add('visible');
+      });
+      stepInfoEl.textContent = seqSteps[currentStep].msg;
+      stepInfoEl.classList.add('active');
+      nextBtn.textContent = currentStep === seqSteps.length - 1 ? '↺ リセット' : '▶ 次のステップ';
+    });
+
+    /* ===== OAuth 2.0 Flow ===== */
+    const oauthPlayBtn = document.getElementById('oauth-play-btn');
+    const oauthSteps   = [1, 2, 3, 4, 5, 6].map(i => document.getElementById('os-' + i));
+
+    const actorMap = {
+      1: ['oa-client', 'oa-authsrv'],
+      2: ['oa-authsrv', 'oa-user'],
+      3: ['oa-authsrv', 'oa-client'],
+      4: ['oa-client', 'oa-authsrv'],
+      5: ['oa-authsrv', 'oa-client'],
+      6: ['oa-client', 'oa-rssrv'],
+    };
+
+    function resetOAuth() {
+      oauthSteps.forEach(s => {
+        s.classList.remove('active', 'done');
+      });
+      document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
+    }
+
+    function playOAuth() {
+      resetOAuth();
+      oauthPlayBtn.disabled = true;
+      oauthPlayBtn.textContent = '再生中…';
+
+      oauthSteps.forEach((step, idx) => {
+        const delay = idx * 900;
+        setTimeout(() => {
+          // Mark previous as done
+          if (idx > 0) oauthSteps[idx - 1].classList.remove('active'), oauthSteps[idx - 1].classList.add('done');
+          step.classList.add('active');
+
+          // Highlight actors
+          document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
+          const actors = actorMap[idx + 1] || [];
+          actors.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('highlight');
+          });
+        }, delay);
+      });
+
+      setTimeout(() => {
+        oauthSteps[oauthSteps.length - 1].classList.remove('active');
+        oauthSteps[oauthSteps.length - 1].classList.add('done');
+        document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
+        oauthPlayBtn.disabled = false;
+        oauthPlayBtn.textContent = '↺ もう一度再生';
+      }, oauthSteps.length * 900 + 400);
+    }
+
+    oauthPlayBtn.addEventListener('click', playOAuth);
+
+    /* ===== Storage Tabs ===== */
+    document.querySelectorAll('.stab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.stab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

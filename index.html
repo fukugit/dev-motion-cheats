@@ -136,6 +136,8 @@
       gap: 20px;
     }
 
+    .card:nth-child(3) .card-icon { animation-delay: 3s; }
+
     .card {
       background: var(--white);
       border: 1px solid var(--border);
@@ -161,8 +163,9 @@
       transition: transform 0.3s ease;
     }
 
-    .card-css::after { background: linear-gradient(90deg, #4a90e2, #9b59b6); }
-    .card-git::after { background: linear-gradient(90deg, #e67e22, #e91e63); }
+    .card-css::after  { background: linear-gradient(90deg, #4a90e2, #9b59b6); }
+    .card-git::after  { background: linear-gradient(90deg, #e67e22, #e91e63); }
+    .card-auth::after { background: linear-gradient(90deg, #7c3aed, #0d9488); }
 
     .card:hover {
       transform: translateY(-6px);
@@ -208,8 +211,9 @@
       margin-top: 18px;
     }
 
-    .card-css .card-badge { background: #e8f1fb; color: #2563eb; }
-    .card-git .card-badge { background: #fef3e2; color: #b45309; }
+    .card-css  .card-badge { background: #e8f1fb; color: #2563eb; }
+    .card-git  .card-badge { background: #fef3e2; color: #b45309; }
+    .card-auth .card-badge { background: #f3e8ff; color: #6d28d9; }
 
     footer {
       text-align: center;
@@ -265,6 +269,12 @@
         <h2>Git</h2>
         <p>add・commit・branch・merge・push/pull の動作を CSS アニメーションで視覚化。</p>
         <span class="card-badge">Git</span>
+      </a>
+      <a href="auth.html" class="card card-auth">
+        <span class="card-icon">🔐</span>
+        <h2>認証 (JWT / OAuth 2.0)</h2>
+        <p>JWT のトークン構造・認証フロー、OAuth 2.0 の認可コードフローをアニメーションで理解しよう。</p>
+        <span class="card-badge">Auth</span>
       </a>
     </div>
   </section>
