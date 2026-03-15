@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,6 +56,35 @@
     @keyframes morphMark {
       0%, 100% { border-radius: 8px; transform: rotate(0deg); }
       50% { border-radius: 50%; transform: rotate(180deg); }
+    }
+
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .lang-opt {
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-opt.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .lang-opt:hover:not(.active) {
+      background: var(--border);
+      color: var(--text);
     }
 
     .hero {
@@ -239,6 +268,10 @@
       <div class="logo-mark"></div>
       Dev Motion Cheats
     </a>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
   </header>
 
   <section class="hero">
@@ -251,35 +284,86 @@
       <div class="bar"></div>
       <div class="bar"></div>
     </div>
-    <h1>動いて<em>理解する</em><br>開発チートシート</h1>
-    <p>CSS アニメーション・Git の仕組みを<br>ビジュアルとコードで一緒に学ぼう。</p>
+    <h1 data-i18n="hero.title">Learn by <em>Seeing</em><br>Dev Cheat Sheets</h1>
+    <p data-i18n="hero.desc">Learn CSS Animations &amp; Git internals<br>with live demos and code side by side.</p>
   </section>
 
   <section class="cards-section">
-    <div class="section-label">チートシート一覧</div>
+    <div class="section-label" data-i18n="section.label">Cheat Sheets</div>
     <div class="cards-grid">
       <a href="css-animations.html" class="card card-css">
         <span class="card-icon">✨</span>
         <h2>CSS Animations</h2>
-        <p>@keyframes、animation プロパティ、timing-function、transform を動くデモで体感しよう。</p>
+        <p data-i18n="card.css.desc">Experience @keyframes, animation properties, timing-function, and transform with live demos.</p>
         <span class="card-badge">CSS</span>
       </a>
       <a href="git.html" class="card card-git">
         <span class="card-icon">🌿</span>
         <h2>Git</h2>
-        <p>add・commit・branch・merge・push/pull の動作を CSS アニメーションで視覚化。</p>
+        <p data-i18n="card.git.desc">Visualize add, commit, branch, merge, and push/pull flows with CSS animations.</p>
         <span class="card-badge">Git</span>
       </a>
       <a href="auth.html" class="card card-auth">
         <span class="card-icon">🔐</span>
-        <h2>認証 (JWT / OAuth 2.0)</h2>
-        <p>JWT のトークン構造・認証フロー、OAuth 2.0 の認可コードフローをアニメーションで理解しよう。</p>
+        <h2 data-i18n="card.auth.title">Authentication (JWT / OAuth 2.0)</h2>
+        <p data-i18n="card.auth.desc">Understand JWT token structure &amp; auth flow, and OAuth 2.0 Authorization Code flow through animations.</p>
         <span class="card-badge">Auth</span>
       </a>
     </div>
   </section>
 
   <footer>&copy; 2024 Dev Motion Cheats</footer>
+
+  <script>
+    const i18n = {
+      en: {
+        'hero.title': 'Learn by <em>Seeing</em><br>Dev Cheat Sheets',
+        'hero.desc': 'Learn CSS Animations &amp; Git internals<br>with live demos and code side by side.',
+        'section.label': 'Cheat Sheets',
+        'card.css.desc': 'Experience @keyframes, animation properties, timing-function, and transform with live demos.',
+        'card.git.desc': 'Visualize add, commit, branch, merge, and push/pull flows with CSS animations.',
+        'card.auth.title': 'Authentication (JWT / OAuth 2.0)',
+        'card.auth.desc': 'Understand JWT token structure &amp; auth flow, and OAuth 2.0 Authorization Code flow through animations.',
+      },
+      ja: {
+        'hero.title': '動いて<em>理解する</em><br>開発チートシート',
+        'hero.desc': 'CSS アニメーション・Git の仕組みを<br>ビジュアルとコードで一緒に学ぼう。',
+        'section.label': 'チートシート一覧',
+        'card.css.desc': '@keyframes、animation プロパティ、timing-function、transform を動くデモで体感しよう。',
+        'card.git.desc': 'add・commit・branch・merge・push/pull の動作を CSS アニメーションで視覚化。',
+        'card.auth.title': '認証 (JWT / OAuth 2.0)',
+        'card.auth.desc': 'JWT のトークン構造・認証フロー、OAuth 2.0 の認可コードフローをアニメーションで理解しよう。',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) {
+          if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+            el.textContent = i18n[l][key];
+          } else {
+            el.innerHTML = i18n[l][key];
+          }
+        }
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    applyLang(lang);
+  </script>
 
 </body>
 </html>

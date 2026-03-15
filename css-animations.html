@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +40,35 @@
     .nav a:hover { color: var(--text); }
     .nav-sep { color: var(--border); }
     .nav-current { font-weight: 600; color: var(--blue); }
+
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .lang-opt {
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-opt.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .lang-opt:hover:not(.active) {
+      background: var(--border);
+      color: var(--text);
+    }
 
     /* Page hero */
     .page-hero {
@@ -389,13 +418,17 @@
     <a href="index.html">Dev Motion Cheats</a>
     <span class="nav-sep">/</span>
     <span class="nav-current">CSS Animations</span>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
   </nav>
 
   <div class="page-hero">
     <div class="page-hero-inner">
       <span class="page-badge">CSS</span>
-      <h1 class="page-title">CSS Animations チートシート</h1>
-      <p class="page-desc">@keyframes から transform まで、動くデモとコードで一緒に学ぼう。</p>
+      <h1 class="page-title" data-i18n="page.title">CSS Animations Cheat Sheet</h1>
+      <p class="page-desc" data-i18n="page.desc">Learn everything from @keyframes to transform with live demos and code.</p>
     </div>
   </div>
 
@@ -405,7 +438,7 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">1</div>
-        <h2 class="section-title">@keyframes — アニメーションの定義</h2>
+        <h2 class="section-title" data-i18n="s1.title">@keyframes — Defining Animations</h2>
       </div>
 
       <div class="demo-area">
@@ -435,27 +468,27 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">2</div>
-        <h2 class="section-title">animation プロパティ一覧</h2>
+        <h2 class="section-title" data-i18n="s2.title">animation Properties Reference</h2>
       </div>
 
       <div class="demo-area" style="padding: 0; overflow: hidden;">
         <table class="prop-table">
           <thead>
             <tr>
-              <th>プロパティ</th>
-              <th>初期値</th>
-              <th>説明</th>
+              <th data-i18n="tbl.prop">Property</th>
+              <th data-i18n="tbl.default">Default</th>
+              <th data-i18n="tbl.desc">Description</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>animation-name</td><td>none</td><td>使用する @keyframes の名前</td></tr>
-            <tr><td>animation-duration</td><td>0s</td><td>1 サイクルの時間（例: 1s, 300ms）</td></tr>
-            <tr><td>animation-timing-function</td><td>ease</td><td>速度カーブ（ease / linear / cubic-bezier など）</td></tr>
-            <tr><td>animation-delay</td><td>0s</td><td>開始までの待ち時間。負値で途中から開始可能</td></tr>
-            <tr><td>animation-iteration-count</td><td>1</td><td>繰り返し回数。<code>infinite</code> で無限ループ</td></tr>
-            <tr><td>animation-direction</td><td>normal</td><td>再生方向 — normal / reverse / alternate / alternate-reverse</td></tr>
-            <tr><td>animation-fill-mode</td><td>none</td><td>終了後の状態 — none / forwards / backwards / both</td></tr>
-            <tr><td>animation-play-state</td><td>running</td><td>再生状態 — running / paused</td></tr>
+            <tr><td>animation-name</td><td>none</td><td data-i18n="anim.name.desc">Name of the @keyframes to use</td></tr>
+            <tr><td>animation-duration</td><td>0s</td><td data-i18n="anim.dur.desc">Duration of one cycle (e.g. 1s, 300ms)</td></tr>
+            <tr><td>animation-timing-function</td><td>ease</td><td data-i18n="anim.tf.desc">Speed curve (ease / linear / cubic-bezier, etc.)</td></tr>
+            <tr><td>animation-delay</td><td>0s</td><td data-i18n="anim.delay.desc">Delay before start. Negative values start mid-animation</td></tr>
+            <tr><td>animation-iteration-count</td><td>1</td><td data-i18n="anim.iter.desc">Iteration count. <code>infinite</code> for endless loop</td></tr>
+            <tr><td>animation-direction</td><td>normal</td><td data-i18n="anim.dir.desc">Playback direction — normal / reverse / alternate / alternate-reverse</td></tr>
+            <tr><td>animation-fill-mode</td><td>none</td><td data-i18n="anim.fill.desc">State after end — none / forwards / backwards / both</td></tr>
+            <tr><td>animation-play-state</td><td>running</td><td data-i18n="anim.play.desc">Play state — running / paused</td></tr>
           </tbody>
         </table>
       </div>
@@ -464,7 +497,7 @@
 <span class="s">.element</span> {
   <span class="p">animation</span>: <span class="v">fadeIn 0.5s ease-out 0.2s 1 normal forwards running</span>;
 
-  <span class="c">/* よく使うパターン */</span>
+  <span class="c" data-i18n="code.common">/* common patterns */</span>
   <span class="p">animation</span>: <span class="v">spin 2s linear infinite</span>;
   <span class="p">animation</span>: <span class="v">slideUp 0.4s ease-out forwards</span>;
   <span class="p">animation</span>: <span class="v">pulse 1.5s ease-in-out 0.5s infinite alternate</span>;
@@ -475,7 +508,7 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">3</div>
-        <h2 class="section-title">timing-function — 速度カーブの比較</h2>
+        <h2 class="section-title" data-i18n="s3.title">timing-function — Speed Curve Comparison</h2>
       </div>
 
       <div class="demo-area">
@@ -508,24 +541,24 @@
         </div>
       </div>
 
-      <div class="code"><span class="p">animation-timing-function</span>: <span class="v">ease</span>;         <span class="c">/* デフォルト。滑らかに */</span>
-<span class="p">animation-timing-function</span>: <span class="v">linear</span>;       <span class="c">/* 等速 */</span>
-<span class="p">animation-timing-function</span>: <span class="v">ease-in</span>;      <span class="c">/* 徐々に加速 */</span>
-<span class="p">animation-timing-function</span>: <span class="v">ease-out</span>;     <span class="c">/* 徐々に減速 */</span>
-<span class="p">animation-timing-function</span>: <span class="v">ease-in-out</span>;  <span class="c">/* 加速→減速 */</span>
+      <div class="code"><span class="p">animation-timing-function</span>: <span class="v">ease</span>;         <span class="c" data-i18n="c.ease">/* Default. Smooth. */</span>
+<span class="p">animation-timing-function</span>: <span class="v">linear</span>;       <span class="c" data-i18n="c.linear">/* Constant speed */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-in</span>;      <span class="c" data-i18n="c.easein">/* Gradually accelerate */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-out</span>;     <span class="c" data-i18n="c.easeout">/* Gradually decelerate */</span>
+<span class="p">animation-timing-function</span>: <span class="v">ease-in-out</span>;  <span class="c" data-i18n="c.easeinout">/* Accelerate → Decelerate */</span>
 
-<span class="c">/* カスタム: cubic-bezier(x1, y1, x2, y2) */</span>
-<span class="p">animation-timing-function</span>: <span class="v">cubic-bezier(0.68, -0.6, 0.32, 1.6)</span>; <span class="c">/* バネ効果 */</span>
+<span class="c" data-i18n="c.custom">/* Custom: cubic-bezier(x1, y1, x2, y2) */</span>
+<span class="p">animation-timing-function</span>: <span class="v">cubic-bezier(0.68, -0.6, 0.32, 1.6)</span>; <span class="c" data-i18n="c.spring">/* Spring effect */</span>
 
-<span class="c">/* ステップ: コマ送り風 */</span>
-<span class="p">animation-timing-function</span>: <span class="v">steps(4, end)</span>;  <span class="c">/* 4 コマ */</span></div>
+<span class="c" data-i18n="c.steps">/* Steps: frame-by-frame */</span>
+<span class="p">animation-timing-function</span>: <span class="v">steps(4, end)</span>;  <span class="c" data-i18n="c.frames">/* 4 frames */</span></div>
     </div>
 
     <!-- 4. transform -->
     <div class="section">
       <div class="section-header">
         <div class="section-num">4</div>
-        <h2 class="section-title">transform — 変形関数（ホバーで確認）</h2>
+        <h2 class="section-title" data-i18n="s4.title">transform — Transform Functions (hover to preview)</h2>
       </div>
 
       <div class="demo-area">
@@ -574,19 +607,19 @@
       </div>
 
       <div class="code"><span class="c">/* 2D */</span>
-<span class="p">transform</span>: <span class="v">translateX(20px)</span>;           <span class="c">/* 横移動 */</span>
-<span class="p">transform</span>: <span class="v">translateY(-20px)</span>;          <span class="c">/* 縦移動 */</span>
-<span class="p">transform</span>: <span class="v">translate(20px, -20px)</span>;     <span class="c">/* XY 同時 */</span>
-<span class="p">transform</span>: <span class="v">rotate(45deg)</span>;              <span class="c">/* 回転 */</span>
-<span class="p">transform</span>: <span class="v">scale(1.5)</span>;                 <span class="c">/* 拡大 */</span>
-<span class="p">transform</span>: <span class="v">scale(0.8, 1.2)</span>;            <span class="c">/* X / Y 個別に拡縮 */</span>
-<span class="p">transform</span>: <span class="v">skewX(20deg)</span>;               <span class="c">/* 傾斜 */</span>
+<span class="p">transform</span>: <span class="v">translateX(20px)</span>;           <span class="c" data-i18n="c.tx">/* Move horizontally */</span>
+<span class="p">transform</span>: <span class="v">translateY(-20px)</span>;          <span class="c" data-i18n="c.ty">/* Move vertically */</span>
+<span class="p">transform</span>: <span class="v">translate(20px, -20px)</span>;     <span class="c" data-i18n="c.txy">/* Move X and Y */</span>
+<span class="p">transform</span>: <span class="v">rotate(45deg)</span>;              <span class="c" data-i18n="c.rot">/* Rotate */</span>
+<span class="p">transform</span>: <span class="v">scale(1.5)</span>;                 <span class="c" data-i18n="c.scl">/* Scale up */</span>
+<span class="p">transform</span>: <span class="v">scale(0.8, 1.2)</span>;            <span class="c" data-i18n="c.sclxy">/* Scale X / Y individually */</span>
+<span class="p">transform</span>: <span class="v">skewX(20deg)</span>;               <span class="c" data-i18n="c.skew">/* Skew */</span>
 
 <span class="c">/* 3D */</span>
 <span class="p">transform</span>: <span class="v">perspective(400px) rotateX(45deg)</span>;
 <span class="p">transform</span>: <span class="v">perspective(400px) rotateY(45deg)</span>;
 
-<span class="c">/* 複数を組み合わせ（右から順に適用） */</span>
+<span class="c" data-i18n="c.combine">/* Combine multiple (applied right to left) */</span>
 <span class="p">transform</span>: <span class="v">rotate(45deg) scale(1.2) translateX(10px)</span>;</div>
     </div>
 
@@ -594,7 +627,7 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">5</div>
-        <h2 class="section-title">transition — 状態変化をなめらかに（ホバーで確認）</h2>
+        <h2 class="section-title" data-i18n="s5.title">transition — Smooth State Transitions (hover to preview)</h2>
       </div>
 
       <div class="demo-area">
@@ -622,19 +655,19 @@
 <span class="s">.element</span> {
   <span class="p">transition</span>: <span class="v">all 0.3s ease</span>;
 
-  <span class="c">/* 複数のプロパティを個別に指定 */</span>
+  <span class="c" data-i18n="c.multi">/* Specify multiple properties individually */</span>
   <span class="p">transition</span>: <span class="v">background 0.3s ease, transform 0.2s ease-out</span>;
 
-  <span class="c">/* 個別プロパティ */</span>
+  <span class="c" data-i18n="c.indiv">/* Individual properties */</span>
   <span class="p">transition-property</span>:        <span class="v">background, transform</span>;
   <span class="p">transition-duration</span>:        <span class="v">0.3s</span>;
   <span class="p">transition-timing-function</span>: <span class="v">ease</span>;
   <span class="p">transition-delay</span>:           <span class="v">0s</span>;
 }
 
-<span class="c">/* animation vs transition
-   animation  : @keyframes を参照。自動再生・ループが得意。
-   transition : 状態変化だけに反応。:hover や JS クラスと相性◎ */</span></div>
+<span class="c" data-i18n="c.vs">/* animation vs transition
+   animation  : References @keyframes. Great for auto-play and loops.
+   transition : Responds only to state changes. Works great with :hover and JS class toggles. */</span></div>
     </div>
 
   </div>
@@ -650,6 +683,120 @@
         b.classList.add('go');
       });
     });
+
+    /* ===== i18n ===== */
+    const i18n = {
+      en: {
+        'page.title': 'CSS Animations Cheat Sheet',
+        'page.desc': 'Learn everything from @keyframes to transform with live demos and code.',
+        's1.title': '@keyframes — Defining Animations',
+        's2.title': 'animation Properties Reference',
+        'tbl.prop': 'Property',
+        'tbl.default': 'Default',
+        'tbl.desc': 'Description',
+        'anim.name.desc': 'Name of the @keyframes to use',
+        'anim.dur.desc': 'Duration of one cycle (e.g. 1s, 300ms)',
+        'anim.tf.desc': 'Speed curve (ease / linear / cubic-bezier, etc.)',
+        'anim.delay.desc': 'Delay before start. Negative values start mid-animation',
+        'anim.iter.desc': 'Iteration count. <code>infinite</code> for endless loop',
+        'anim.dir.desc': 'Playback direction — normal / reverse / alternate / alternate-reverse',
+        'anim.fill.desc': 'State after end — none / forwards / backwards / both',
+        'anim.play.desc': 'Play state — running / paused',
+        'code.common': '/* common patterns */',
+        's3.title': 'timing-function — Speed Curve Comparison',
+        'c.ease': '/* Default. Smooth. */',
+        'c.linear': '/* Constant speed */',
+        'c.easein': '/* Gradually accelerate */',
+        'c.easeout': '/* Gradually decelerate */',
+        'c.easeinout': '/* Accelerate → Decelerate */',
+        'c.custom': '/* Custom: cubic-bezier(x1, y1, x2, y2) */',
+        'c.spring': '/* Spring effect */',
+        'c.steps': '/* Steps: frame-by-frame */',
+        'c.frames': '/* 4 frames */',
+        's4.title': 'transform — Transform Functions (hover to preview)',
+        'c.tx': '/* Move horizontally */',
+        'c.ty': '/* Move vertically */',
+        'c.txy': '/* Move X and Y */',
+        'c.rot': '/* Rotate */',
+        'c.scl': '/* Scale up */',
+        'c.sclxy': '/* Scale X / Y individually */',
+        'c.skew': '/* Skew */',
+        'c.combine': '/* Combine multiple (applied right to left) */',
+        's5.title': 'transition — Smooth State Transitions (hover to preview)',
+        'c.multi': '/* Specify multiple properties individually */',
+        'c.indiv': '/* Individual properties */',
+        'c.vs': '/* animation vs transition\n   animation  : References @keyframes. Great for auto-play and loops.\n   transition : Responds only to state changes. Works great with :hover and JS class toggles. */',
+      },
+      ja: {
+        'page.title': 'CSS Animations チートシート',
+        'page.desc': '@keyframes から transform まで、動くデモとコードで一緒に学ぼう。',
+        's1.title': '@keyframes — アニメーションの定義',
+        's2.title': 'animation プロパティ一覧',
+        'tbl.prop': 'プロパティ',
+        'tbl.default': '初期値',
+        'tbl.desc': '説明',
+        'anim.name.desc': '使用する @keyframes の名前',
+        'anim.dur.desc': '1 サイクルの時間（例: 1s, 300ms）',
+        'anim.tf.desc': '速度カーブ（ease / linear / cubic-bezier など）',
+        'anim.delay.desc': '開始までの待ち時間。負値で途中から開始可能',
+        'anim.iter.desc': '繰り返し回数。<code>infinite</code> で無限ループ',
+        'anim.dir.desc': '再生方向 — normal / reverse / alternate / alternate-reverse',
+        'anim.fill.desc': '終了後の状態 — none / forwards / backwards / both',
+        'anim.play.desc': '再生状態 — running / paused',
+        'code.common': '/* よく使うパターン */',
+        's3.title': 'timing-function — 速度カーブの比較',
+        'c.ease': '/* デフォルト。滑らかに */',
+        'c.linear': '/* 等速 */',
+        'c.easein': '/* 徐々に加速 */',
+        'c.easeout': '/* 徐々に減速 */',
+        'c.easeinout': '/* 加速→減速 */',
+        'c.custom': '/* カスタム: cubic-bezier(x1, y1, x2, y2) */',
+        'c.spring': '/* バネ効果 */',
+        'c.steps': '/* ステップ: コマ送り風 */',
+        'c.frames': '/* 4 コマ */',
+        's4.title': 'transform — 変形関数（ホバーで確認）',
+        'c.tx': '/* 横移動 */',
+        'c.ty': '/* 縦移動 */',
+        'c.txy': '/* XY 同時 */',
+        'c.rot': '/* 回転 */',
+        'c.scl': '/* 拡大 */',
+        'c.sclxy': '/* X / Y 個別に拡縮 */',
+        'c.skew': '/* 傾斜 */',
+        'c.combine': '/* 複数を組み合わせ（右から順に適用） */',
+        's5.title': 'transition — 状態変化をなめらかに（ホバーで確認）',
+        'c.multi': '/* 複数のプロパティを個別に指定 */',
+        'c.indiv': '/* 個別プロパティ */',
+        'c.vs': '/* animation vs transition\n   animation  : @keyframes を参照。自動再生・ループが得意。\n   transition : 状態変化だけに反応。:hover や JS クラスと相性◎ */',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) {
+          if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+            el.textContent = i18n[l][key];
+          } else {
+            el.innerHTML = i18n[l][key];
+          }
+        }
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    applyLang(lang);
   </script>
 
 </body>

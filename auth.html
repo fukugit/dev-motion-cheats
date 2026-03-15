@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>認証 (JWT / OAuth 2.0) - Dev Motion Cheats</title>
+  <title>Authentication (JWT / OAuth 2.0) - Dev Motion Cheats</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -40,6 +40,35 @@
     .nav a:hover { color: var(--text); }
     .nav-sep { color: var(--border); }
     .nav-current { font-weight: 600; color: var(--purple); }
+
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .lang-opt {
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-opt.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .lang-opt:hover:not(.active) {
+      background: var(--border);
+      color: var(--text);
+    }
 
     /* Page hero */
     .page-hero {
@@ -411,6 +440,14 @@
 
     .oauth-play-btn:hover { background: #0f766e; transform: translateY(-1px); }
 
+    /* OAuth sequence groups */
+    .oauth-sg {
+      opacity: 0.15;
+      transition: opacity 0.45s;
+    }
+    .oauth-sg.active { opacity: 1; }
+    .oauth-sg.done   { opacity: 1; }
+
     /* ===== SECTION 3: Comparison ===== */
     .comparison-grid {
       display: grid;
@@ -580,14 +617,18 @@
   <nav class="nav">
     <a href="index.html">Dev Motion Cheats</a>
     <span class="nav-sep">/</span>
-    <span class="nav-current">認証</span>
+    <span class="nav-current" data-i18n="nav.auth">Auth</span>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
   </nav>
 
   <div class="page-hero">
     <div class="page-hero-inner">
       <span class="page-badge">Auth</span>
-      <h1 class="page-title">認証チートシート</h1>
-      <p class="page-desc">JWT・OAuth 2.0 の仕組みをアニメーションで視覚化。トークンの構造からフローまで一目でわかる。</p>
+      <h1 class="page-title" data-i18n="page.title">Authentication Cheat Sheet</h1>
+      <p class="page-desc" data-i18n="page.desc">Visualize JWT and OAuth 2.0 with animations. Understand token structure and flows at a glance.</p>
     </div>
   </div>
 
@@ -597,11 +638,11 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num num-purple">1</div>
-        <h2 class="section-title">JWT (JSON Web Token) — トークンの構造</h2>
+        <h2 class="section-title" data-i18n="s1.title">JWT (JSON Web Token) — Token Structure</h2>
       </div>
 
       <div class="demo-area">
-        <p class="jwt-hint">各パートをクリックすると中身が展開されます</p>
+        <p class="jwt-hint" data-i18n="jwt.hint">Click each part to expand the contents</p>
 
         <!-- Token display -->
         <div class="jwt-token">
@@ -624,12 +665,12 @@
         <!-- Decoded -->
         <div class="jwt-decoded" id="jwt-decoded">
           <div class="decoded-box decoded-header" id="dec-header">
-            <div class="decoded-title">Header — アルゴリズム</div>
+            <div class="decoded-title" data-i18n="dec.header">Header — Algorithm</div>
             <span class="json-key">"alg"</span>: <span class="json-str">"HS256"</span><br>
             <span class="json-key">"typ"</span>: <span class="json-str">"JWT"</span>
           </div>
           <div class="decoded-box decoded-payload" id="dec-payload">
-            <div class="decoded-title">Payload — クレーム</div>
+            <div class="decoded-title" data-i18n="dec.payload">Payload — Claims</div>
             <span class="json-key">"sub"</span>: <span class="json-str">"user_123"</span><br>
             <span class="json-key">"name"</span>: <span class="json-str">"Taro"</span><br>
             <span class="json-key">"role"</span>: <span class="json-str">"admin"</span><br>
@@ -637,7 +678,7 @@
             <span class="json-key">"exp"</span>: <span class="json-val">1716003600</span>
           </div>
           <div class="decoded-box decoded-sig" id="dec-sig">
-            <div class="decoded-title">Signature — 署名</div>
+            <div class="decoded-title" data-i18n="dec.sig">Signature</div>
             HMAC-SHA256(<br>
             &nbsp;&nbsp;base64(header) + "." +<br>
             &nbsp;&nbsp;base64(payload),<br>
@@ -648,7 +689,7 @@
 
         <!-- JWT Sequence Diagram -->
         <div style="margin-top: 24px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">認証フロー — シーケンス図</div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;" data-i18n="seq.label">Authentication Flow — Sequence Diagram</div>
           <div class="seq-wrap">
             <svg class="seq-svg" viewBox="0 0 680 410" fill="none" xmlns="http://www.w3.org/2000/svg">
 
@@ -656,17 +697,17 @@
               <!-- Client -->
               <rect x="20"  y="12" width="140" height="48" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
               <text x="90"  y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">🖥️</text>
-              <text x="90"  y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">クライアント</text>
+              <text x="90"  y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle" data-i18n="seq.client">Client</text>
 
               <!-- Auth Server -->
               <rect x="270" y="12" width="140" height="48" rx="8" fill="#fef3e2" stroke="#d97706" stroke-width="2"/>
               <text x="340" y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">🔐</text>
-              <text x="340" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309" dominant-baseline="middle">認証サーバー</text>
+              <text x="340" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309" dominant-baseline="middle" data-i18n="seq.authsrv">Auth Server</text>
 
               <!-- API Server -->
               <rect x="520" y="12" width="140" height="48" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
               <text x="590" y="30" text-anchor="middle" font-size="18" dominant-baseline="middle">⚙️</text>
-              <text x="590" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">API サーバー</text>
+              <text x="590" y="50" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="seq.apisrv">API Server</text>
 
               <!-- ===== Lifelines ===== -->
               <line x1="90"  y1="60" x2="90"  y2="405" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
@@ -684,7 +725,7 @@
                 <text x="210" y="120" text-anchor="middle" font-size="9.5" fill="#888">{ email: "taro@example.com", password: "••••" }</text>
               </g>
 
-              <!-- ===== Step 2: Auth → Client  JWT 発行 ===== -->
+              <!-- ===== Step 2: Auth → Client  JWT issued ===== -->
               <g id="s2" class="seq-group">
                 <line x1="104" y1="178" x2="327" y2="178" stroke="#d97706" stroke-width="2" stroke-dasharray="6 3"/>
                 <polygon points="102,173 90,178 102,183" fill="#d97706"/>
@@ -692,17 +733,17 @@
                 <text x="340" y="178" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">②</text>
                 <rect x="108" y="158" width="220" height="18" rx="4" fill="#fef3e2"/>
                 <text x="218" y="167" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#b45309" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
-                <text x="218" y="190" text-anchor="middle" font-size="9.5" fill="#888">署名付き JWT を生成して返す</text>
+                <text x="218" y="190" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="seq.s2.note">Generate signed JWT and return</text>
               </g>
 
-              <!-- ===== Step 2b: Client note — JWT 保存 ===== -->
+              <!-- ===== Step 2b: Client note — Save JWT ===== -->
               <g id="s2b" class="seq-group">
                 <rect x="20" y="206" width="140" height="36" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
-                <text x="90" y="220" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">JWT を保存</text>
+                <text x="90" y="220" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700" data-i18n="seq.savejwt">Save JWT</text>
                 <text x="90" y="234" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#7c3aed">Cookie / localStorage</text>
               </g>
 
-              <!-- ===== Step 3: Client → API  リクエスト + JWT ===== -->
+              <!-- ===== Step 3: Client → API  Request + JWT ===== -->
               <g id="s3" class="seq-group">
                 <line x1="102" y1="285" x2="576" y2="285" stroke="#7c3aed" stroke-width="2"/>
                 <polygon points="578,280 591,285 578,290" fill="#7c3aed"/>
@@ -713,14 +754,14 @@
                 <text x="300" y="297" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJhbGci…</text>
               </g>
 
-              <!-- ===== Step 3b: API note — JWT 検証 ===== -->
+              <!-- ===== Step 3b: API note — Verify JWT ===== -->
               <g id="s3b" class="seq-group">
                 <rect x="520" y="313" width="140" height="36" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-                <text x="590" y="327" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">JWT 署名を検証</text>
-                <text x="590" y="341" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#16a34a">ペイロード展開 → 認可</text>
+                <text x="590" y="327" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700" data-i18n="seq.verifyjwt">Verify JWT Signature</text>
+                <text x="590" y="341" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#16a34a" data-i18n="seq.authorize">Expand payload → Authorize</text>
               </g>
 
-              <!-- ===== Step 4: API → Client  レスポンス ===== -->
+              <!-- ===== Step 4: API → Client  Response ===== -->
               <g id="s4" class="seq-group">
                 <line x1="104" y1="378" x2="577" y2="378" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 3"/>
                 <polygon points="102,373 90,378 102,383" fill="#22c55e"/>
@@ -728,30 +769,30 @@
                 <text x="590" y="378" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">④</text>
                 <rect x="190" y="358" width="200" height="18" rx="4" fill="#f0fdf4"/>
                 <text x="290" y="367" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
-                <text x="290" y="390" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+                <text x="290" y="390" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="seq.authresp">Return authenticated response</text>
               </g>
 
             </svg>
           </div>
-          <div class="step-info" id="step-info">▼ ボタンを押してフローを確認しよう</div>
-          <button class="jwt-step-btn" id="jwt-next-btn">▶ 次のステップ</button>
+          <div class="step-info" id="step-info" data-i18n="step.hint">▼ Press the button to explore the flow</div>
+          <button class="jwt-step-btn" id="jwt-next-btn" data-i18n="btn.next">▶ Next Step</button>
         </div>
       </div>
 
-      <div class="code"><span class="c">// 1. JWT ライブラリ (Node.js: jsonwebtoken)</span>
+      <div class="code"><span class="c" data-i18n="c.jwt1">// 1. JWT library (Node.js: jsonwebtoken)</span>
 <span class="k">const</span> jwt = <span class="n">require</span>(<span class="s">'jsonwebtoken'</span>);
 
-<span class="c">// トークン生成</span>
+<span class="c" data-i18n="c.jwt2">// Generate token</span>
 <span class="k">const</span> token = jwt.<span class="p">sign</span>(
   { sub: <span class="s">'user_123'</span>, name: <span class="s">'Taro'</span>, role: <span class="s">'admin'</span> },
   process.env.<span class="v">SECRET_KEY</span>,
   { expiresIn: <span class="s">'1h'</span> }
 );
 
-<span class="c">// トークン検証</span>
+<span class="c" data-i18n="c.jwt3">// Verify token</span>
 <span class="k">const</span> payload = jwt.<span class="p">verify</span>(token, process.env.<span class="v">SECRET_KEY</span>);
 
-<span class="c">// API リクエスト時: Authorization ヘッダーに付与</span>
+<span class="c" data-i18n="c.jwt4">// API request: attach to Authorization header</span>
 fetch(<span class="s">'/api/data'</span>, {
   headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${token}`</span> }
 });</div>
@@ -761,80 +802,116 @@ fetch(<span class="s">'/api/data'</span>, {
     <div class="section">
       <div class="section-header">
         <div class="section-num num-teal">2</div>
-        <h2 class="section-title">OAuth 2.0 — Authorization Code フロー</h2>
+        <h2 class="section-title" data-i18n="s2.title">OAuth 2.0 — Authorization Code Flow</h2>
       </div>
 
       <div class="demo-area">
-        <!-- Actors -->
-        <div class="oauth-actors">
-          <div class="oauth-actor">
-            <div class="oauth-icon" id="oa-user">👤</div>
-            <div class="oauth-actor-name">ユーザー</div>
-            <div class="oauth-actor-desc">Resource Owner</div>
-          </div>
-          <div class="oauth-actor">
-            <div class="oauth-icon" id="oa-client">📱</div>
-            <div class="oauth-actor-name">クライアント</div>
-            <div class="oauth-actor-desc">あなたのアプリ</div>
-          </div>
-          <div class="oauth-actor">
-            <div class="oauth-icon" id="oa-authsrv">🔐</div>
-            <div class="oauth-actor-name">認可サーバー</div>
-            <div class="oauth-actor-desc">Google / GitHub 等</div>
-          </div>
-          <div class="oauth-actor">
-            <div class="oauth-icon" id="oa-rssrv">📦</div>
-            <div class="oauth-actor-name">リソースサーバー</div>
-            <div class="oauth-actor-desc">保護された API</div>
-          </div>
+        <!-- Vertical Sequence Diagram -->
+        <div class="seq-wrap">
+          <svg class="seq-svg" viewBox="0 0 760 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- ===== Actor boxes (always visible) ===== -->
+            <!-- User -->
+            <rect x="5"   y="12" width="130" height="46" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+            <text x="70"  y="30" text-anchor="middle" font-size="16" dominant-baseline="middle">👤</text>
+            <text x="70"  y="50" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="oa.user">User</text>
+
+            <!-- Client -->
+            <rect x="200" y="12" width="130" height="46" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="265" y="30" text-anchor="middle" font-size="16" dominant-baseline="middle">📱</text>
+            <text x="265" y="50" text-anchor="middle" font-size="10.5" font-weight="700" fill="#6d28d9" dominant-baseline="middle" data-i18n="oa.client">Client</text>
+
+            <!-- Auth Server -->
+            <rect x="395" y="12" width="136" height="46" rx="8" fill="#fef3e2" stroke="#d97706" stroke-width="2"/>
+            <text x="463" y="30" text-anchor="middle" font-size="16" dominant-baseline="middle">🔐</text>
+            <text x="463" y="50" text-anchor="middle" font-size="10.5" font-weight="700" fill="#b45309" dominant-baseline="middle" data-i18n="oa.authsrv">Auth Server</text>
+
+            <!-- Resource Server -->
+            <rect x="600" y="12" width="155" height="46" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+            <text x="677" y="30" text-anchor="middle" font-size="16" dominant-baseline="middle">📦</text>
+            <text x="677" y="50" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1" dominant-baseline="middle" data-i18n="oa.rssrv">Resource Server</text>
+
+            <!-- ===== Lifelines (always visible) ===== -->
+            <line x1="70"  y1="58" x2="70"  y2="622" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.3"/>
+            <line x1="265" y1="58" x2="265" y2="622" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.3"/>
+            <line x1="463" y1="58" x2="463" y2="622" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.3"/>
+            <line x1="677" y1="58" x2="677" y2="622" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.3"/>
+
+            <!-- ===== Step 1: Client → Auth Server (Authorization Request) ===== -->
+            <g id="os-1" class="oauth-sg">
+              <circle cx="265" cy="112" r="11" fill="#7c3aed"/>
+              <text x="265" y="112" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">①</text>
+              <line x1="278" y1="112" x2="449" y2="112" stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="451,107 463,112 451,117" fill="#7c3aed"/>
+              <rect x="296" y="93" width="134" height="17" rx="4" fill="#f3e8ff"/>
+              <text x="363" y="101" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#6d28d9" font-weight="700">GET /authorize</text>
+              <text x="363" y="126" text-anchor="middle" font-size="9.5" fill="#888">?response_type=code&amp;scope=profile</text>
+            </g>
+
+            <!-- ===== Step 2: Auth Server → User (Login & Consent) ===== -->
+            <g id="os-2" class="oauth-sg">
+              <circle cx="463" cy="207" r="11" fill="#d97706"/>
+              <text x="463" y="207" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">②</text>
+              <line x1="83" y1="207" x2="449" y2="207" stroke="#d97706" stroke-width="2"/>
+              <polygon points="81,202 70,207 81,212" fill="#d97706"/>
+              <rect x="170" y="188" width="192" height="17" rx="4" fill="#fef3e2"/>
+              <text x="266" y="196" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#b45309" font-weight="700">Login &amp; Consent Screen</text>
+              <text x="266" y="220" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="os2.data">Allow / Deny</text>
+            </g>
+
+            <!-- ===== Step 3: Auth Server → Client (Authorization Code, redirect) ===== -->
+            <g id="os-3" class="oauth-sg">
+              <circle cx="463" cy="302" r="11" fill="#d97706"/>
+              <text x="463" y="302" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">③</text>
+              <line x1="278" y1="302" x2="449" y2="302" stroke="#d97706" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="276,297 265,302 276,307" fill="#d97706"/>
+              <rect x="285" y="283" width="155" height="17" rx="4" fill="#fef3e2"/>
+              <text x="362" y="291" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#b45309" font-weight="700">Redirect ?code=…</text>
+              <text x="362" y="315" text-anchor="middle" font-size="9.5" fill="#888">?code=AUTH_CODE</text>
+            </g>
+
+            <!-- ===== Step 4: Client → Auth Server (Token Exchange, server-to-server) ===== -->
+            <g id="os-4" class="oauth-sg">
+              <circle cx="265" cy="397" r="11" fill="#7c3aed"/>
+              <text x="265" y="397" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">④</text>
+              <line x1="278" y1="397" x2="449" y2="397" stroke="#7c3aed" stroke-width="2"/>
+              <polygon points="451,392 463,397 451,402" fill="#7c3aed"/>
+              <rect x="308" y="378" width="110" height="17" rx="4" fill="#f3e8ff"/>
+              <text x="363" y="386" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#6d28d9" font-weight="700">POST /token</text>
+              <text x="363" y="410" text-anchor="middle" font-size="9.5" fill="#888">code + client_secret  (server↔server)</text>
+            </g>
+
+            <!-- ===== Step 5: Auth Server → Client (Access Token issued) ===== -->
+            <g id="os-5" class="oauth-sg">
+              <circle cx="463" cy="487" r="11" fill="#d97706"/>
+              <text x="463" y="487" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">⑤</text>
+              <line x1="278" y1="487" x2="449" y2="487" stroke="#d97706" stroke-width="2" stroke-dasharray="6 3"/>
+              <polygon points="276,482 265,487 276,492" fill="#d97706"/>
+              <rect x="275" y="468" width="176" height="17" rx="4" fill="#fef3e2"/>
+              <text x="363" y="476" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#b45309" font-weight="700">access_token + refresh_token</text>
+              <text x="363" y="500" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="os5.desc">Issue access token (+ refresh token)</text>
+            </g>
+
+            <!-- ===== Step 6: Client → Resource Server (API call with token) ===== -->
+            <g id="os-6" class="oauth-sg">
+              <circle cx="265" cy="577" r="11" fill="#0284c7"/>
+              <text x="265" y="577" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-weight="800">⑥</text>
+              <line x1="278" y1="577" x2="662" y2="577" stroke="#0284c7" stroke-width="2"/>
+              <polygon points="664,572 677,577 664,582" fill="#0284c7"/>
+              <rect x="400" y="558" width="144" height="17" rx="4" fill="#e0f2fe"/>
+              <text x="472" y="566" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#0369a1" font-weight="700">GET /api/resource</text>
+              <text x="472" y="590" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer {access_token}</text>
+            </g>
+
+          </svg>
         </div>
 
-        <!-- Steps -->
-        <div class="oauth-steps">
-          <div class="oauth-step" id="os-1">
-            <div class="step-num">1</div>
-            <div class="step-from-to">クライアント → 認可サーバー</div>
-            <div class="step-desc">認可リクエスト（ブラウザでリダイレクト）</div>
-            <div class="step-data">?response_type=code&amp;scope=…</div>
-          </div>
-          <div class="oauth-step" id="os-2">
-            <div class="step-num">2</div>
-            <div class="step-from-to">認可サーバー → ユーザー</div>
-            <div class="step-desc">ログイン画面 &amp; 権限の同意画面を表示</div>
-            <div class="step-data">同意 / 拒否</div>
-          </div>
-          <div class="oauth-step" id="os-3">
-            <div class="step-num">3</div>
-            <div class="step-from-to">認可サーバー → クライアント</div>
-            <div class="step-desc">認可コード (code) をリダイレクト URL に付与して返す</div>
-            <div class="step-data">?code=AUTH_CODE</div>
-          </div>
-          <div class="oauth-step" id="os-4">
-            <div class="step-num">4</div>
-            <div class="step-from-to">クライアント → 認可サーバー</div>
-            <div class="step-desc">認可コードをアクセストークンと交換（サーバー間通信）</div>
-            <div class="step-data">POST /token</div>
-          </div>
-          <div class="oauth-step" id="os-5">
-            <div class="step-num">5</div>
-            <div class="step-from-to">認可サーバー → クライアント</div>
-            <div class="step-desc">アクセストークン（＋リフレッシュトークン）を発行</div>
-            <div class="step-data">access_token, refresh_token</div>
-          </div>
-          <div class="oauth-step" id="os-6">
-            <div class="step-num">6</div>
-            <div class="step-from-to">クライアント → リソースサーバー</div>
-            <div class="step-desc">アクセストークンを使って保護されたリソースを取得</div>
-            <div class="step-data">Bearer {access_token}</div>
-          </div>
-        </div>
-
-        <button class="oauth-play-btn" id="oauth-play-btn">▶ フローを再生</button>
+        <button class="oauth-play-btn" id="oauth-play-btn" data-i18n="btn.playflow">▶ Play Flow</button>
       </div>
 
-      <div class="code"><span class="c">// OAuth 2.0 Authorization Code フロー例 (Next.js + NextAuth.js)</span>
+      <div class="code"><span class="c" data-i18n="c.oauth1">// OAuth 2.0 Authorization Code Flow example (Next.js + NextAuth.js)</span>
 
-<span class="c">// next-auth の設定 (app/api/auth/[...nextauth]/route.ts)</span>
+<span class="c" data-i18n="c.oauth2">// next-auth config (app/api/auth/[...nextauth]/route.ts)</span>
 <span class="k">import</span> NextAuth <span class="k">from</span> <span class="s">'next-auth'</span>;
 <span class="k">import</span> GitHubProvider <span class="k">from</span> <span class="s">'next-auth/providers/github'</span>;
 
@@ -847,7 +924,7 @@ fetch(<span class="s">'/api/data'</span>, {
   ],
 });
 
-<span class="c">// アクセストークンで GitHub API を呼び出す</span>
+<span class="c" data-i18n="c.oauth3">// Call GitHub API with access token</span>
 <span class="k">const</span> session = <span class="k">await</span> auth();
 <span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'https://api.github.com/user'</span>, {
   headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${session.accessToken}`</span> },
@@ -858,7 +935,7 @@ fetch(<span class="s">'/api/data'</span>, {
     <div class="section">
       <div class="section-header">
         <div class="section-num num-purple">3</div>
-        <h2 class="section-title">JWT vs OAuth 2.0 — 使い分けガイド</h2>
+        <h2 class="section-title" data-i18n="s3.title">JWT vs OAuth 2.0 — Usage Guide</h2>
       </div>
 
       <div class="comparison-grid">
@@ -866,26 +943,26 @@ fetch(<span class="s">'/api/data'</span>, {
           <div class="cmp-header">🔑 JWT</div>
           <div class="cmp-body">
             <div class="cmp-row">
-              <div class="cmp-label">目的</div>
-              <div class="cmp-val">情報を安全に伝達・認証</div>
+              <div class="cmp-label" data-i18n="cmp.purpose">Purpose</div>
+              <div class="cmp-val" data-i18n="jwt.purpose">Securely transmit information &amp; authenticate</div>
             </div>
             <div class="cmp-row">
-              <div class="cmp-label">形式</div>
-              <div class="cmp-val">署名付き JSON (Base64URL)</div>
+              <div class="cmp-label" data-i18n="cmp.format">Format</div>
+              <div class="cmp-val" data-i18n="jwt.format">Signed JSON (Base64URL)</div>
             </div>
             <div class="cmp-row">
-              <div class="cmp-label">保存先</div>
+              <div class="cmp-label" data-i18n="cmp.storage">Storage</div>
               <div class="cmp-val">localStorage / httpOnly Cookie</div>
             </div>
             <div style="margin-top:12px;">
               <ul class="pro-list">
-                <li>サーバーレスで検証可能（ステートレス）</li>
-                <li>マイクロサービス間の認証に最適</li>
-                <li>有効期限・ロール情報を内包できる</li>
+                <li data-i18n="jwt.pro1">Verifiable without server (stateless)</li>
+                <li data-i18n="jwt.pro2">Ideal for microservice authentication</li>
+                <li data-i18n="jwt.pro3">Can embed expiry and role information</li>
               </ul>
               <ul class="con-list" style="margin-top:8px;">
-                <li>トークン無効化が難しい（期限切れ待ち）</li>
-                <li>ペイロードが大きくなりがち</li>
+                <li data-i18n="jwt.con1">Token revocation is difficult (must wait for expiry)</li>
+                <li data-i18n="jwt.con2">Payload tends to grow large</li>
               </ul>
             </div>
           </div>
@@ -894,36 +971,36 @@ fetch(<span class="s">'/api/data'</span>, {
           <div class="cmp-header">🔐 OAuth 2.0</div>
           <div class="cmp-body">
             <div class="cmp-row">
-              <div class="cmp-label">目的</div>
-              <div class="cmp-val">サードパーティへの認可委譲</div>
+              <div class="cmp-label" data-i18n="cmp.purpose">Purpose</div>
+              <div class="cmp-val" data-i18n="oauth.purpose">Delegate authorization to third parties</div>
             </div>
             <div class="cmp-row">
-              <div class="cmp-label">形式</div>
-              <div class="cmp-val">フレームワーク（トークン形式は実装次第）</div>
+              <div class="cmp-label" data-i18n="cmp.format">Format</div>
+              <div class="cmp-val" data-i18n="oauth.format">Framework (token format depends on implementation)</div>
             </div>
             <div class="cmp-row">
-              <div class="cmp-label">保存先</div>
-              <div class="cmp-val">サーバー側セッション or Cookie</div>
+              <div class="cmp-label" data-i18n="cmp.storage">Storage</div>
+              <div class="cmp-val" data-i18n="oauth.storage">Server-side session or Cookie</div>
             </div>
             <div style="margin-top:12px;">
               <ul class="pro-list">
-                <li>Google / GitHub 等の「ソーシャルログイン」に使える</li>
-                <li>スコープで権限を細かく制御</li>
-                <li>リフレッシュトークンで長期セッション管理</li>
+                <li data-i18n="oauth.pro1">Enables "Social Login" via Google / GitHub etc.</li>
+                <li data-i18n="oauth.pro2">Fine-grained permission control with scopes</li>
+                <li data-i18n="oauth.pro3">Long-term session management with refresh tokens</li>
               </ul>
               <ul class="con-list" style="margin-top:8px;">
-                <li>フローが複雑（複数リダイレクト）</li>
-                <li>認可サーバーへの依存が発生</li>
+                <li data-i18n="oauth.con1">Complex flow (multiple redirects)</li>
+                <li data-i18n="oauth.con2">Creates dependency on authorization server</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="margin-top:20px; padding:16px 20px; background:#f0fdf4; border-radius:10px; border:1px solid #86efac; font-size:0.85rem; line-height:1.8;">
-        <strong>💡 実際のプロダクトでは？</strong><br>
-        多くのシステムでは <strong>OAuth 2.0</strong> でユーザーを認証し、発行するトークンの形式として <strong>JWT</strong> を使う、という組み合わせが一般的です。<br>
-        例：GitHub でログイン (OAuth 2.0) → サーバーが JWT を発行 → 以降の API 呼び出しで JWT を使用
+      <div style="margin-top:20px; padding:16px 20px; background:#f0fdf4; border-radius:10px; border:1px solid #86efac; font-size:0.85rem; line-height:1.8;" data-i18n="cmp.note">
+        <strong>💡 In Real Products?</strong><br>
+        In many systems, <strong>OAuth 2.0</strong> is used to authenticate users, and <strong>JWT</strong> is used as the token format — a common combination.<br>
+        Example: Login with GitHub (OAuth 2.0) → Server issues JWT → Subsequent API calls use JWT
       </div>
     </div>
 
@@ -931,15 +1008,15 @@ fetch(<span class="s">'/api/data'</span>, {
     <div class="section">
       <div class="section-header">
         <div class="section-num num-purple">4</div>
-        <h2 class="section-title">トークン/ID の格納場所とサーバーへの送り方</h2>
+        <h2 class="section-title" data-i18n="s4.title">Token/ID Storage and Transport</h2>
       </div>
 
       <div class="demo-area">
         <div class="storage-tabs">
           <button class="stab active" data-tab="cookie">httpOnly Cookie</button>
           <button class="stab" data-tab="localStorage">localStorage</button>
-          <button class="stab" data-tab="memory">メモリ (変数)</button>
-          <button class="stab" data-tab="db">サーバー DB</button>
+          <button class="stab" data-tab="memory" data-i18n="tab.memory">Memory (Variable)</button>
+          <button class="stab" data-tab="db" data-i18n="tab.db">Server DB</button>
         </div>
 
         <!-- ===== Cookie ===== -->
@@ -949,10 +1026,10 @@ fetch(<span class="s">'/api/data'</span>, {
               <!-- Actors -->
               <rect x="15"  y="10" width="155" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
               <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
-              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle" data-i18n="actor.browser">Browser</text>
               <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
               <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
-              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="actor.server">Server</text>
               <!-- Lifelines -->
               <line x1="92"  y1="56" x2="92"  y2="285" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
               <line x1="467" y1="56" x2="467" y2="285" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
@@ -964,21 +1041,21 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
               <rect x="115" y="81" width="248" height="17" rx="4" fill="#dcfce7"/>
               <text x="239" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">Set-Cookie: jwt=eyJ…; HttpOnly; Secure</text>
-              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">ログイン成功 — サーバーが Cookie を発行</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="cookie.s1.note">Login success — server issues Cookie</text>
 
               <!-- Note: Cookie store -->
               <rect x="15" y="128" width="155" height="38" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
-              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">Cookie ストアに保存</text>
-              <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#7c3aed">JS から読めない (HttpOnly)</text>
+              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700" data-i18n="cookie.store">Stored in Cookie store</text>
+              <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#7c3aed" data-i18n="cookie.httponly">Not readable by JS (HttpOnly)</text>
 
-              <!-- Step 2: Browser→Server  次のリクエスト (Cookie 自動付与) -->
+              <!-- Step 2: Browser→Server  next request (Cookie auto-attach) -->
               <line x1="106" y1="210" x2="453" y2="210" stroke="#7c3aed" stroke-width="2"/>
               <polygon points="454,205 467,210 454,215" fill="#7c3aed"/>
               <circle cx="92" cy="210" r="10" fill="#7c3aed"/>
               <text x="92" y="210" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
               <rect x="115" y="191" width="160" height="17" rx="4" fill="#ede9fe"/>
               <text x="195" y="200" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data</text>
-              <text x="280" y="223" text-anchor="middle" font-size="9.5" fill="#888">Cookie: jwt=eyJ…  ← ブラウザが自動付与</text>
+              <text x="280" y="223" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="cookie.s2.note">Cookie: jwt=eyJ…  ← auto-attached by browser</text>
 
               <!-- Step 3: Server→Browser  response -->
               <line x1="107" y1="265" x2="453" y2="265" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
@@ -987,14 +1064,14 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="265" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
               <rect x="165" y="246" width="175" height="17" rx="4" fill="#dcfce7"/>
               <text x="252" y="255" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
-              <text x="280" y="278" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+              <text x="280" y="278" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="seq.authresp">Return authenticated response</text>
             </svg>
           </div>
           <div class="storage-meta">
-            <div class="meta-row"><span class="meta-label">JS アクセス</span><span class="meta-val">不可（HttpOnly により XSS からトークンを保護）</span></div>
-            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val">ブラウザが自動で <code>Cookie:</code> ヘッダーに付与（コード不要）</span></div>
-            <div class="meta-row"><span class="meta-label">CSRF 対策</span><span class="meta-val"><code>SameSite=Strict</code> 属性、または CSRF トークンを併用</span></div>
-            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ 最も安全。本番 Web アプリの標準パターン</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.jsaccess">JS Access</span><span class="meta-val" data-i18n="cookie.jsaccess">Not allowed (HttpOnly protects token from XSS)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.transport">Transport</span><span class="meta-val" data-i18n="cookie.transport">Browser auto-attaches via <code>Cookie:</code> header (no code needed)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.csrf">CSRF Protection</span><span class="meta-val" data-i18n="cookie.csrf">Use <code>SameSite=Strict</code> attribute or combine with CSRF token</span></div>
+            <div class="meta-row good"><span class="meta-label" data-i18n="meta.rec">Recommendation</span><span class="meta-val" data-i18n="cookie.rec">✓ Most secure. Standard pattern for production web apps</span></div>
           </div>
         </div>
 
@@ -1004,10 +1081,10 @@ fetch(<span class="s">'/api/data'</span>, {
             <svg class="seq-svg" viewBox="0 0 560 295" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="15"  y="10" width="155" height="46" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
               <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
-              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e" dominant-baseline="middle">ブラウザ / JS</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e" dominant-baseline="middle" data-i18n="actor.browserjs">Browser / JS</text>
               <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
               <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
-              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="actor.server">Server</text>
               <line x1="92"  y1="56" x2="92"  y2="290" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
               <line x1="467" y1="56" x2="467" y2="290" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
 
@@ -1018,7 +1095,7 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
               <rect x="120" y="81" width="225" height="17" rx="4" fill="#dcfce7"/>
               <text x="232" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
-              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">レスポンスボディにトークンを含めて返す</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="ls.s1.note">Return token in response body</text>
 
               <!-- Note: localStorage.setItem -->
               <rect x="15" y="128" width="155" height="40" rx="6" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
@@ -1032,7 +1109,7 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="92" y="215" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
               <rect x="115" y="196" width="160" height="17" rx="4" fill="#fef9c3"/>
               <text x="195" y="205" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#92400e" font-weight="700">GET /api/data</text>
-              <text x="280" y="228" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJ…  ← JS で手動付与</text>
+              <text x="280" y="228" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="ls.s2.note">Authorization: Bearer eyJ…  ← manually set by JS</text>
 
               <!-- Step 3: Server→Browser  response -->
               <line x1="107" y1="270" x2="453" y2="270" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
@@ -1041,14 +1118,14 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="270" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
               <rect x="165" y="251" width="175" height="17" rx="4" fill="#dcfce7"/>
               <text x="252" y="260" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
-              <text x="280" y="283" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+              <text x="280" y="283" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="seq.authresp">Return authenticated response</text>
             </svg>
           </div>
           <div class="storage-meta">
-            <div class="meta-row"><span class="meta-label">JS アクセス</span><span class="meta-val">可能（XSS でトークン盗難リスクあり）</span></div>
-            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val">fetch/axios で <code>Authorization: Bearer {token}</code> を手動でセット</span></div>
-            <div class="meta-row"><span class="meta-label">CSRF</span><span class="meta-val">Cookie でないため CSRF は発生しない</span></div>
-            <div class="meta-row warn"><span class="meta-label">注意</span><span class="meta-val">✕ XSS 攻撃でトークン盗難のリスク。機密情報は保存しない</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.jsaccess">JS Access</span><span class="meta-val" data-i18n="ls.jsaccess">Accessible (risk of token theft via XSS)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.transport">Transport</span><span class="meta-val" data-i18n="ls.transport">Manually set <code>Authorization: Bearer {token}</code> via fetch/axios</span></div>
+            <div class="meta-row"><span class="meta-label">CSRF</span><span class="meta-val" data-i18n="ls.csrf">Not a Cookie, so no CSRF risk</span></div>
+            <div class="meta-row warn"><span class="meta-label" data-i18n="meta.warn">Warning</span><span class="meta-val" data-i18n="ls.warn">✕ Risk of token theft via XSS attack. Avoid storing sensitive data</span></div>
           </div>
         </div>
 
@@ -1058,10 +1135,10 @@ fetch(<span class="s">'/api/data'</span>, {
             <svg class="seq-svg" viewBox="0 0 560 295" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="15"  y="10" width="155" height="46" rx="8" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
               <text x="92"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
-              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ / JS</text>
+              <text x="92"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle" data-i18n="actor.browserjs">Browser / JS</text>
               <rect x="390" y="10" width="155" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
               <text x="467" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
-              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <text x="467" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="actor.server">Server</text>
               <line x1="92"  y1="56" x2="92"  y2="290" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
               <line x1="467" y1="56" x2="467" y2="290" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.35"/>
 
@@ -1072,16 +1149,16 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="100" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">①</text>
               <rect x="120" y="81" width="225" height="17" rx="4" fill="#dcfce7"/>
               <text x="232" y="90" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { token: "eyJhbGci…" }</text>
-              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888">レスポンスボディにトークンを含めて返す</text>
+              <text x="280" y="113" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="ls.s1.note">Return token in response body</text>
 
               <!-- Note: in-memory variable -->
               <rect x="15" y="128" width="155" height="40" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
-              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700">変数に保持</text>
+              <text x="92" y="142" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700" data-i18n="mem.store">Store in variable</text>
               <text x="92" y="157" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#7c3aed" font-family="monospace">let token = res.token</text>
 
-              <!-- Note: リロードで消える -->
+              <!-- Note: lost on reload -->
               <rect x="15" y="174" width="155" height="22" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
-              <text x="92" y="185" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#dc2626">⚠ ページリロードで消える</text>
+              <text x="92" y="185" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#dc2626" data-i18n="mem.reload">⚠ Lost on page reload</text>
 
               <!-- Step 2: Browser→Server  Authorization header -->
               <line x1="106" y1="222" x2="453" y2="222" stroke="#7c3aed" stroke-width="2"/>
@@ -1090,7 +1167,7 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="92" y="222" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
               <rect x="115" y="203" width="160" height="17" rx="4" fill="#ede9fe"/>
               <text x="195" y="212" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data</text>
-              <text x="280" y="235" text-anchor="middle" font-size="9.5" fill="#888">Authorization: Bearer eyJ…  ← JS で手動付与</text>
+              <text x="280" y="235" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="ls.s2.note">Authorization: Bearer eyJ…  ← manually set by JS</text>
 
               <!-- Step 3: Server→Browser -->
               <line x1="107" y1="272" x2="453" y2="272" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
@@ -1099,14 +1176,14 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="467" y="272" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
               <rect x="165" y="253" width="175" height="17" rx="4" fill="#dcfce7"/>
               <text x="252" y="262" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">200 OK  { data: […] }</text>
-              <text x="280" y="285" text-anchor="middle" font-size="9.5" fill="#888">認証済みレスポンスを返す</text>
+              <text x="280" y="285" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="seq.authresp">Return authenticated response</text>
             </svg>
           </div>
           <div class="storage-meta">
-            <div class="meta-row"><span class="meta-label">永続性</span><span class="meta-val">なし（ページリロード・タブを閉じると消える）</span></div>
-            <div class="meta-row"><span class="meta-label">XSS 耐性</span><span class="meta-val">localStorage より高い（他スクリプトから直接アクセスされにくい）</span></div>
-            <div class="meta-row"><span class="meta-label">送信方法</span><span class="meta-val"><code>Authorization: Bearer {token}</code> を手動でセット</span></div>
-            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ SPA でアクセストークンを短期保持する場合に有効</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.persist">Persistence</span><span class="meta-val" data-i18n="mem.persist">None (lost on page reload or tab close)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.xss">XSS Resistance</span><span class="meta-val" data-i18n="mem.xss">Higher than localStorage (less directly accessible by other scripts)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.transport">Transport</span><span class="meta-val" data-i18n="ls.transport">Manually set <code>Authorization: Bearer {token}</code> via fetch/axios</span></div>
+            <div class="meta-row good"><span class="meta-label" data-i18n="meta.rec">Recommendation</span><span class="meta-val" data-i18n="mem.rec">✓ Effective for short-term access token storage in SPAs</span></div>
           </div>
         </div>
 
@@ -1117,10 +1194,10 @@ fetch(<span class="s">'/api/data'</span>, {
               <!-- Actors: Browser / Server / DB -->
               <rect x="15"  y="10" width="130" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
               <text x="80"  y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🌐</text>
-              <text x="80"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle">ブラウザ</text>
+              <text x="80"  y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" dominant-baseline="middle" data-i18n="actor.browser">Browser</text>
               <rect x="265" y="10" width="150" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
               <text x="340" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">⚙️</text>
-              <text x="340" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle">サーバー</text>
+              <text x="340" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" dominant-baseline="middle" data-i18n="actor.server">Server</text>
               <rect x="535" y="10" width="130" height="46" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="2"/>
               <text x="600" y="29" text-anchor="middle" font-size="16" dominant-baseline="middle">🗄️</text>
               <text x="600" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309" dominant-baseline="middle">DB / Redis</text>
@@ -1137,14 +1214,14 @@ fetch(<span class="s">'/api/data'</span>, {
               <rect x="105" y="77" width="210" height="17" rx="4" fill="#ede9fe"/>
               <text x="210" y="86" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">POST /auth/login  { email, password }</text>
 
-              <!-- Step 2: Server→DB  セッション保存 -->
+              <!-- Step 2: Server→DB  Save session -->
               <line x1="353" y1="148" x2="586" y2="148" stroke="#d97706" stroke-width="2"/>
               <polygon points="588,143 601,148 588,153" fill="#d97706"/>
               <circle cx="340" cy="148" r="10" fill="#d97706"/>
               <text x="340" y="148" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">②</text>
               <rect x="358" y="129" width="220" height="17" rx="4" fill="#fff7ed"/>
               <text x="468" y="138" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#b45309" font-weight="700">INSERT sessions { session_id, user_id, token }</text>
-              <text x="468" y="161" text-anchor="middle" font-size="9.5" fill="#888">トークン本体を DB に保存</text>
+              <text x="468" y="161" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="db.s2.note">Store token body in DB</text>
 
               <!-- Step 3: Server→Browser  Set-Cookie: session_id only -->
               <line x1="95"  y1="205" x2="326" y2="205" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
@@ -1153,12 +1230,12 @@ fetch(<span class="s">'/api/data'</span>, {
               <text x="340" y="205" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">③</text>
               <rect x="98" y="186" width="225" height="17" rx="4" fill="#dcfce7"/>
               <text x="210" y="195" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#15803d" font-weight="700">Set-Cookie: session_id=abc123; HttpOnly</text>
-              <text x="210" y="218" text-anchor="middle" font-size="9.5" fill="#888">トークン本体は送らない — ID だけ</text>
+              <text x="210" y="218" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="db.s3.note">Don't send token body — ID only</text>
 
               <!-- Note: Browser stores session_id only -->
               <rect x="15" y="230" width="130" height="38" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
-              <text x="80" y="244" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700">session_id のみ保存</text>
-              <text x="80" y="259" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#7c3aed">トークン本体はサーバー側</text>
+              <text x="80" y="244" text-anchor="middle" dominant-baseline="central" font-size="9.5" fill="#6d28d9" font-weight="700" data-i18n="db.note1">Store session_id only</text>
+              <text x="80" y="259" text-anchor="middle" dominant-baseline="central" font-size="8.5" fill="#7c3aed" data-i18n="db.note2">Token body stays server-side</text>
 
               <!-- Step 4: Browser→Server  next request -->
               <line x1="93"  y1="308" x2="326" y2="308" stroke="#7c3aed" stroke-width="2"/>
@@ -1168,14 +1245,14 @@ fetch(<span class="s">'/api/data'</span>, {
               <rect x="98" y="289" width="218" height="17" rx="4" fill="#ede9fe"/>
               <text x="207" y="298" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6d28d9" font-weight="700">GET /api/data  Cookie: session_id=abc123</text>
 
-              <!-- Step 5: Server→DB  照合 -->
+              <!-- Step 5: Server→DB  Lookup -->
               <line x1="353" y1="352" x2="586" y2="352" stroke="#d97706" stroke-width="2"/>
               <polygon points="588,347 601,352 588,357" fill="#d97706"/>
               <circle cx="340" cy="352" r="10" fill="#d97706"/>
               <text x="340" y="352" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-weight="800">⑤</text>
               <rect x="358" y="333" width="225" height="17" rx="4" fill="#fff7ed"/>
               <text x="468" y="342" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#b45309" font-weight="700">SELECT token WHERE session_id = 'abc123'</text>
-              <text x="468" y="365" text-anchor="middle" font-size="9.5" fill="#888">セッション照合 → トークン取得・検証</text>
+              <text x="468" y="365" text-anchor="middle" font-size="9.5" fill="#888" data-i18n="db.s5.note">Session lookup → fetch &amp; verify token</text>
 
               <!-- Step 6: Server→Browser  response -->
               <line x1="95"  y1="400" x2="326" y2="400" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 3"/>
@@ -1187,38 +1264,38 @@ fetch(<span class="s">'/api/data'</span>, {
             </svg>
           </div>
           <div class="storage-meta">
-            <div class="meta-row"><span class="meta-label">仕組み</span><span class="meta-val">トークン本体は DB に保存。ブラウザは session_id（キー）だけを持つ</span></div>
-            <div class="meta-row"><span class="meta-label">無効化</span><span class="meta-val">DB レコードを削除するだけで即座にログアウト（JWT にはできない強制失効）</span></div>
-            <div class="meta-row"><span class="meta-label">スケール</span><span class="meta-val">水平スケール時は Redis 等の共有キャッシュが必要</span></div>
-            <div class="meta-row good"><span class="meta-label">推奨度</span><span class="meta-val">✓ 強制ログアウト・セッション管理が重要なシステム向け</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.how">How it works</span><span class="meta-val" data-i18n="db.how">Token body stored in DB. Browser only holds session_id (key)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.revoke">Revocation</span><span class="meta-val" data-i18n="db.revoke">Instant logout by deleting DB record (forced revocation impossible with JWT)</span></div>
+            <div class="meta-row"><span class="meta-label" data-i18n="meta.scale">Scaling</span><span class="meta-val" data-i18n="db.scale">Horizontal scaling requires shared cache like Redis</span></div>
+            <div class="meta-row good"><span class="meta-label" data-i18n="meta.rec">Recommendation</span><span class="meta-val" data-i18n="db.rec">✓ For systems requiring forced logout and session management</span></div>
           </div>
         </div>
       </div>
 
-      <div class="code"><span class="c">// ① Cookie (自動送信 — credentials: 'include' が必要)</span>
+      <div class="code"><span class="c" data-i18n="c.st1">// ① Cookie (auto-send — credentials: 'include' required)</span>
 fetch(<span class="s">'/api/user'</span>, {
-  credentials: <span class="s">'include'</span>  <span class="c">// ← これで Cookie が自動付与される</span>
+  credentials: <span class="s">'include'</span>  <span class="c" data-i18n="c.st1b">// ← this auto-attaches the Cookie</span>
 });
 
-<span class="c">// ② Authorization ヘッダー (localStorage / メモリ保存の場合)</span>
+<span class="c" data-i18n="c.st2">// ② Authorization header (for localStorage / memory storage)</span>
 <span class="k">const</span> token = localStorage.<span class="p">getItem</span>(<span class="s">'token'</span>);  <span class="c">// or let token = '...'</span>
 fetch(<span class="s">'/api/user'</span>, {
   headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${token}`</span> }
 });
 
-<span class="c">// ③ axios インターセプターで全リクエストに自動付与</span>
+<span class="c" data-i18n="c.st3">// ③ Auto-attach to all requests with axios interceptor</span>
 axios.interceptors.request.<span class="p">use</span>(config => {
   <span class="k">const</span> token = localStorage.<span class="p">getItem</span>(<span class="s">'token'</span>);
   <span class="k">if</span> (token) config.headers.<span class="v">Authorization</span> = <span class="s">`Bearer ${token}`</span>;
   <span class="k">return</span> config;
 });
 
-<span class="c">// ④ サーバー側での Cookie 発行 (Node.js / Express)</span>
+<span class="c" data-i18n="c.st4">// ④ Issuing Cookie server-side (Node.js / Express)</span>
 res.<span class="p">cookie</span>(<span class="s">'jwt'</span>, token, {
-  httpOnly: <span class="k">true</span>,   <span class="c">// JS から読めない</span>
-  secure:   <span class="k">true</span>,   <span class="c">// HTTPS のみ</span>
-  sameSite: <span class="s">'strict'</span>, <span class="c">// CSRF 対策</span>
-  maxAge:   <span class="v">3600000</span>  <span class="c">// 1 時間 (ms)</span>
+  httpOnly: <span class="k">true</span>,   <span class="c" data-i18n="c.st4a">// JS cannot read this</span>
+  secure:   <span class="k">true</span>,   <span class="c" data-i18n="c.st4b">// HTTPS only</span>
+  sameSite: <span class="s">'strict'</span>, <span class="c" data-i18n="c.st4c">// CSRF protection</span>
+  maxAge:   <span class="v">3600000</span>  <span class="c" data-i18n="c.st4d">// 1 hour (ms)</span>
 });</div>
     </div>
 
@@ -1226,44 +1303,44 @@ res.<span class="p">cookie</span>(<span class="s">'jwt'</span>, token, {
     <div class="section">
       <div class="section-header">
         <div class="section-num num-teal">5</div>
-        <h2 class="section-title">クイックリファレンス</h2>
+        <h2 class="section-title" data-i18n="s5.title">Quick Reference</h2>
       </div>
 
       <div class="ref-grid">
         <div class="ref-group">
-          <div class="ref-group-title">JWT クレーム</div>
+          <div class="ref-group-title" data-i18n="ref.claims">JWT Claims</div>
           <table class="ref-table">
-            <tr><td>iss</td><td>トークン発行者 (Issuer)</td></tr>
-            <tr><td>sub</td><td>主体 (Subject) — ユーザー ID 等</td></tr>
-            <tr><td>aud</td><td>対象 (Audience)</td></tr>
-            <tr><td>exp</td><td>有効期限 (Expiration) — Unix 時間</td></tr>
-            <tr><td>iat</td><td>発行時刻 (Issued At)</td></tr>
+            <tr><td>iss</td><td data-i18n="ref.iss">Token issuer (Issuer)</td></tr>
+            <tr><td>sub</td><td data-i18n="ref.sub">Subject — User ID etc.</td></tr>
+            <tr><td>aud</td><td data-i18n="ref.aud">Audience</td></tr>
+            <tr><td>exp</td><td data-i18n="ref.exp">Expiration — Unix timestamp</td></tr>
+            <tr><td>iat</td><td data-i18n="ref.iat">Issued At time</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">OAuth 2.0 グラントタイプ</div>
+          <div class="ref-group-title" data-i18n="ref.grants">OAuth 2.0 Grant Types</div>
           <table class="ref-table">
-            <tr><td>Authorization Code</td><td>Webアプリ向け（最も安全）</td></tr>
-            <tr><td>PKCE 拡張</td><td>SPAモバイルアプリ向け</td></tr>
-            <tr><td>Client Credentials</td><td>サーバー間 M2M 認証</td></tr>
-            <tr><td>Refresh Token</td><td>アクセストークンの更新</td></tr>
+            <tr><td>Authorization Code</td><td data-i18n="ref.authcode">For web apps (most secure)</td></tr>
+            <tr><td>PKCE</td><td data-i18n="ref.pkce">For SPAs and mobile apps</td></tr>
+            <tr><td>Client Credentials</td><td data-i18n="ref.cc">Server-to-server M2M auth</td></tr>
+            <tr><td>Refresh Token</td><td data-i18n="ref.refresh">Refresh access token</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">JWT アルゴリズム</div>
+          <div class="ref-group-title" data-i18n="ref.algos">JWT Algorithms</div>
           <table class="ref-table">
-            <tr><td>HS256</td><td>HMAC + SHA-256（共通鍵）</td></tr>
-            <tr><td>RS256</td><td>RSA + SHA-256（公開鍵/秘密鍵）</td></tr>
-            <tr><td>ES256</td><td>ECDSA + SHA-256（楕円曲線）</td></tr>
+            <tr><td>HS256</td><td data-i18n="ref.hs256">HMAC + SHA-256 (shared key)</td></tr>
+            <tr><td>RS256</td><td data-i18n="ref.rs256">RSA + SHA-256 (public/private key)</td></tr>
+            <tr><td>ES256</td><td data-i18n="ref.es256">ECDSA + SHA-256 (elliptic curve)</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">セキュリティのベストプラクティス</div>
+          <div class="ref-group-title" data-i18n="ref.security">Security Best Practices</div>
           <table class="ref-table">
-            <tr><td>httpOnly Cookie</td><td>XSS から JWT を守る</td></tr>
-            <tr><td>短い有効期限</td><td>漏洩時のリスクを最小化</td></tr>
-            <tr><td>HTTPS 必須</td><td>通信経路での盗聴防止</td></tr>
-            <tr><td>PKCE</td><td>認可コード横取り攻撃を防ぐ</td></tr>
+            <tr><td>httpOnly Cookie</td><td data-i18n="ref.sec1">Protect JWT from XSS</td></tr>
+            <tr><td data-i18n="ref.sec2k">Short expiry</td><td data-i18n="ref.sec2">Minimize risk on token leak</td></tr>
+            <tr><td data-i18n="ref.sec3k">HTTPS required</td><td data-i18n="ref.sec3">Prevent eavesdropping on network</td></tr>
+            <tr><td>PKCE</td><td data-i18n="ref.sec4">Prevent authorization code interception</td></tr>
           </table>
         </div>
       </div>
@@ -1288,82 +1365,68 @@ res.<span class="p">cookie</span>(<span class="s">'jwt'</span>, token, {
     const stepInfoEl = document.getElementById('step-info');
     const nextBtn    = document.getElementById('jwt-next-btn');
 
-    const seqSteps = [
-      { ids: ['s1'],       msg: '① クライアントがメール・パスワードを送信してログインリクエスト' },
-      { ids: ['s2','s2b'], msg: '② 認証サーバーが JWT を生成して返却。クライアントは Cookie / localStorage に保存' },
-      { ids: ['s3'],       msg: '③ JWT を Authorization ヘッダーに付けて API リクエスト' },
-      { ids: ['s3b','s4'], msg: '④ API サーバーが JWT 署名を検証し、認可済みレスポンスを返す' },
+    const seqStepDefs = [
+      { ids: ['s1'],       enMsg: '① Client sends email & password for login request',
+                           jaMsg: '① クライアントがメール・パスワードを送信してログインリクエスト' },
+      { ids: ['s2','s2b'], enMsg: '② Auth server generates JWT and returns it. Client saves to Cookie / localStorage',
+                           jaMsg: '② 認証サーバーが JWT を生成して返却。クライアントは Cookie / localStorage に保存' },
+      { ids: ['s3'],       enMsg: '③ API request with JWT in Authorization header',
+                           jaMsg: '③ JWT を Authorization ヘッダーに付けて API リクエスト' },
+      { ids: ['s3b','s4'], enMsg: '④ API server verifies JWT signature and returns authorized response',
+                           jaMsg: '④ API サーバーが JWT 署名を検証し、認可済みレスポンスを返す' },
     ];
 
     let currentStep = -1;
 
     nextBtn.addEventListener('click', () => {
       currentStep++;
-      if (currentStep >= seqSteps.length) {
+      if (currentStep >= seqStepDefs.length) {
         currentStep = -1;
         document.querySelectorAll('.seq-group').forEach(g => g.classList.remove('visible'));
-        stepInfoEl.textContent = '▼ ボタンを押してフローを確認しよう';
+        stepInfoEl.textContent = t('step.hint');
         stepInfoEl.classList.remove('active');
-        nextBtn.textContent = '▶ 次のステップ';
+        nextBtn.textContent = t('btn.next');
         return;
       }
 
-      seqSteps[currentStep].ids.forEach(id => {
+      seqStepDefs[currentStep].ids.forEach(id => {
         document.getElementById(id).classList.add('visible');
       });
-      stepInfoEl.textContent = seqSteps[currentStep].msg;
+      stepInfoEl.textContent = lang === 'ja'
+        ? seqStepDefs[currentStep].jaMsg
+        : seqStepDefs[currentStep].enMsg;
       stepInfoEl.classList.add('active');
-      nextBtn.textContent = currentStep === seqSteps.length - 1 ? '↺ リセット' : '▶ 次のステップ';
+      nextBtn.textContent = currentStep === seqStepDefs.length - 1 ? t('btn.reset') : t('btn.next');
     });
 
     /* ===== OAuth 2.0 Flow ===== */
     const oauthPlayBtn = document.getElementById('oauth-play-btn');
     const oauthSteps   = [1, 2, 3, 4, 5, 6].map(i => document.getElementById('os-' + i));
 
-    const actorMap = {
-      1: ['oa-client', 'oa-authsrv'],
-      2: ['oa-authsrv', 'oa-user'],
-      3: ['oa-authsrv', 'oa-client'],
-      4: ['oa-client', 'oa-authsrv'],
-      5: ['oa-authsrv', 'oa-client'],
-      6: ['oa-client', 'oa-rssrv'],
-    };
-
     function resetOAuth() {
-      oauthSteps.forEach(s => {
-        s.classList.remove('active', 'done');
-      });
-      document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
+      oauthSteps.forEach(s => s.classList.remove('active', 'done'));
     }
 
     function playOAuth() {
       resetOAuth();
       oauthPlayBtn.disabled = true;
-      oauthPlayBtn.textContent = '再生中…';
+      oauthPlayBtn.textContent = t('oauth.playing');
 
       oauthSteps.forEach((step, idx) => {
-        const delay = idx * 900;
         setTimeout(() => {
-          // Mark previous as done
-          if (idx > 0) oauthSteps[idx - 1].classList.remove('active'), oauthSteps[idx - 1].classList.add('done');
+          if (idx > 0) {
+            oauthSteps[idx - 1].classList.remove('active');
+            oauthSteps[idx - 1].classList.add('done');
+          }
           step.classList.add('active');
-
-          // Highlight actors
-          document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
-          const actors = actorMap[idx + 1] || [];
-          actors.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.classList.add('highlight');
-          });
-        }, delay);
+        }, idx * 900);
       });
 
       setTimeout(() => {
         oauthSteps[oauthSteps.length - 1].classList.remove('active');
         oauthSteps[oauthSteps.length - 1].classList.add('done');
-        document.querySelectorAll('.oauth-icon').forEach(i => i.classList.remove('highlight'));
         oauthPlayBtn.disabled = false;
-        oauthPlayBtn.textContent = '↺ もう一度再生';
+        oauthPlayBtn.textContent = t('oauth.replay');
       }, oauthSteps.length * 900 + 400);
     }
 
@@ -1378,6 +1441,348 @@ res.<span class="p">cookie</span>(<span class="s">'jwt'</span>, token, {
         document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
       });
     });
+
+    /* ===== i18n ===== */
+    const i18n = {
+      en: {
+        'nav.auth': 'Auth',
+        'page.title': 'Authentication Cheat Sheet',
+        'page.desc': 'Visualize JWT and OAuth 2.0 with animations. Understand token structure and flows at a glance.',
+        's1.title': 'JWT (JSON Web Token) — Token Structure',
+        'jwt.hint': 'Click each part to expand the contents',
+        'dec.header': 'Header — Algorithm',
+        'dec.payload': 'Payload — Claims',
+        'dec.sig': 'Signature',
+        'seq.label': 'Authentication Flow — Sequence Diagram',
+        'seq.client': 'Client',
+        'seq.authsrv': 'Auth Server',
+        'seq.apisrv': 'API Server',
+        'seq.s2.note': 'Generate signed JWT and return',
+        'seq.savejwt': 'Save JWT',
+        'seq.verifyjwt': 'Verify JWT Signature',
+        'seq.authorize': 'Expand payload → Authorize',
+        'seq.authresp': 'Return authenticated response',
+        'step.hint': '▼ Press the button to explore the flow',
+        'btn.next': '▶ Next Step',
+        'btn.reset': '↺ Reset',
+        'c.jwt1': "// 1. JWT library (Node.js: jsonwebtoken)",
+        'c.jwt2': '// Generate token',
+        'c.jwt3': '// Verify token',
+        'c.jwt4': "// API request: attach to Authorization header",
+        's2.title': 'OAuth 2.0 — Authorization Code Flow',
+        'oa.user': 'User',
+        'oa.client': 'Client',
+        'oa.client.desc': 'Your App',
+        'oa.authsrv': 'Auth Server',
+        'oa.rssrv': 'Resource Server',
+        'oa.rssrv.desc': 'Protected API',
+        'os1.from': 'Client → Auth Server',
+        'os1.desc': 'Authorization request (browser redirect)',
+        'os2.from': 'Auth Server → User',
+        'os2.desc': 'Show login screen &amp; permission consent screen',
+        'os2.data': 'Allow / Deny',
+        'os3.from': 'Auth Server → Client',
+        'os3.desc': 'Return authorization code (code) appended to redirect URL',
+        'os4.from': 'Client → Auth Server',
+        'os4.desc': 'Exchange authorization code for access token (server-to-server)',
+        'os5.from': 'Auth Server → Client',
+        'os5.desc': 'Issue access token (+ refresh token)',
+        'os6.from': 'Client → Resource Server',
+        'os6.desc': 'Fetch protected resource using access token',
+        'btn.playflow': '▶ Play Flow',
+        'oauth.playing': 'Playing...',
+        'oauth.replay': '↺ Play Again',
+        'c.oauth1': "// OAuth 2.0 Authorization Code Flow example (Next.js + NextAuth.js)",
+        'c.oauth2': "// next-auth config (app/api/auth/[...nextauth]/route.ts)",
+        'c.oauth3': '// Call GitHub API with access token',
+        's3.title': 'JWT vs OAuth 2.0 — Usage Guide',
+        'cmp.purpose': 'Purpose',
+        'cmp.format': 'Format',
+        'cmp.storage': 'Storage',
+        'jwt.purpose': 'Securely transmit information &amp; authenticate',
+        'jwt.format': 'Signed JSON (Base64URL)',
+        'jwt.pro1': 'Verifiable without server (stateless)',
+        'jwt.pro2': 'Ideal for microservice authentication',
+        'jwt.pro3': 'Can embed expiry and role information',
+        'jwt.con1': 'Token revocation is difficult (must wait for expiry)',
+        'jwt.con2': 'Payload tends to grow large',
+        'oauth.purpose': 'Delegate authorization to third parties',
+        'oauth.format': 'Framework (token format depends on implementation)',
+        'oauth.storage': 'Server-side session or Cookie',
+        'oauth.pro1': 'Enables "Social Login" via Google / GitHub etc.',
+        'oauth.pro2': 'Fine-grained permission control with scopes',
+        'oauth.pro3': 'Long-term session management with refresh tokens',
+        'oauth.con1': 'Complex flow (multiple redirects)',
+        'oauth.con2': 'Creates dependency on authorization server',
+        'cmp.note': '<strong>💡 In Real Products?</strong><br>In many systems, <strong>OAuth 2.0</strong> is used to authenticate users, and <strong>JWT</strong> is used as the token format — a common combination.<br>Example: Login with GitHub (OAuth 2.0) → Server issues JWT → Subsequent API calls use JWT',
+        's4.title': 'Token/ID Storage and Transport',
+        'tab.memory': 'Memory (Variable)',
+        'tab.db': 'Server DB',
+        'actor.browser': 'Browser',
+        'actor.browserjs': 'Browser / JS',
+        'actor.server': 'Server',
+        'cookie.s1.note': 'Login success — server issues Cookie',
+        'cookie.store': 'Stored in Cookie store',
+        'cookie.httponly': 'Not readable by JS (HttpOnly)',
+        'cookie.s2.note': 'Cookie: jwt=eyJ…  ← auto-attached by browser',
+        'meta.jsaccess': 'JS Access',
+        'cookie.jsaccess': 'Not allowed (HttpOnly protects token from XSS)',
+        'meta.transport': 'Transport',
+        'cookie.transport': 'Browser auto-attaches via <code>Cookie:</code> header (no code needed)',
+        'meta.csrf': 'CSRF Protection',
+        'cookie.csrf': 'Use <code>SameSite=Strict</code> attribute or combine with CSRF token',
+        'meta.rec': 'Recommendation',
+        'cookie.rec': '✓ Most secure. Standard pattern for production web apps',
+        'ls.s1.note': 'Return token in response body',
+        'ls.s2.note': 'Authorization: Bearer eyJ…  ← manually set by JS',
+        'ls.jsaccess': 'Accessible (risk of token theft via XSS)',
+        'ls.transport': 'Manually set <code>Authorization: Bearer {token}</code> via fetch/axios',
+        'ls.csrf': 'Not a Cookie, so no CSRF risk',
+        'meta.warn': 'Warning',
+        'ls.warn': '✕ Risk of token theft via XSS attack. Avoid storing sensitive data',
+        'mem.store': 'Store in variable',
+        'mem.reload': '⚠ Lost on page reload',
+        'meta.persist': 'Persistence',
+        'mem.persist': 'None (lost on page reload or tab close)',
+        'meta.xss': 'XSS Resistance',
+        'mem.xss': 'Higher than localStorage (less directly accessible by other scripts)',
+        'mem.rec': '✓ Effective for short-term access token storage in SPAs',
+        'db.s2.note': 'Store token body in DB',
+        'db.s3.note': "Don't send token body — ID only",
+        'db.note1': 'Store session_id only',
+        'db.note2': 'Token body stays server-side',
+        'db.s5.note': 'Session lookup → fetch & verify token',
+        'meta.how': 'How it works',
+        'db.how': 'Token body stored in DB. Browser only holds session_id (key)',
+        'meta.revoke': 'Revocation',
+        'db.revoke': 'Instant logout by deleting DB record (forced revocation impossible with JWT)',
+        'meta.scale': 'Scaling',
+        'db.scale': 'Horizontal scaling requires shared cache like Redis',
+        'db.rec': '✓ For systems requiring forced logout and session management',
+        'c.st1': "// ① Cookie (auto-send — credentials: 'include' required)",
+        'c.st1b': '// ← this auto-attaches the Cookie',
+        'c.st2': '// ② Authorization header (for localStorage / memory storage)',
+        'c.st3': '// ③ Auto-attach to all requests with axios interceptor',
+        'c.st4': '// ④ Issuing Cookie server-side (Node.js / Express)',
+        'c.st4a': '// JS cannot read this',
+        'c.st4b': '// HTTPS only',
+        'c.st4c': '// CSRF protection',
+        'c.st4d': '// 1 hour (ms)',
+        's5.title': 'Quick Reference',
+        'ref.claims': 'JWT Claims',
+        'ref.iss': 'Token issuer (Issuer)',
+        'ref.sub': 'Subject — User ID etc.',
+        'ref.aud': 'Audience',
+        'ref.exp': 'Expiration — Unix timestamp',
+        'ref.iat': 'Issued At time',
+        'ref.grants': 'OAuth 2.0 Grant Types',
+        'ref.authcode': 'For web apps (most secure)',
+        'ref.pkce': 'For SPAs and mobile apps',
+        'ref.cc': 'Server-to-server M2M auth',
+        'ref.refresh': 'Refresh access token',
+        'ref.algos': 'JWT Algorithms',
+        'ref.hs256': 'HMAC + SHA-256 (shared key)',
+        'ref.rs256': 'RSA + SHA-256 (public/private key)',
+        'ref.es256': 'ECDSA + SHA-256 (elliptic curve)',
+        'ref.security': 'Security Best Practices',
+        'ref.sec1': 'Protect JWT from XSS',
+        'ref.sec2k': 'Short expiry',
+        'ref.sec2': 'Minimize risk on token leak',
+        'ref.sec3k': 'HTTPS required',
+        'ref.sec3': 'Prevent eavesdropping on network',
+        'ref.sec4': 'Prevent authorization code interception',
+      },
+      ja: {
+        'nav.auth': '認証',
+        'page.title': '認証チートシート',
+        'page.desc': 'JWT・OAuth 2.0 の仕組みをアニメーションで視覚化。トークンの構造からフローまで一目でわかる。',
+        's1.title': 'JWT (JSON Web Token) — トークンの構造',
+        'jwt.hint': '各パートをクリックすると中身が展開されます',
+        'dec.header': 'Header — アルゴリズム',
+        'dec.payload': 'Payload — クレーム',
+        'dec.sig': 'Signature — 署名',
+        'seq.label': '認証フロー — シーケンス図',
+        'seq.client': 'クライアント',
+        'seq.authsrv': '認証サーバー',
+        'seq.apisrv': 'API サーバー',
+        'seq.s2.note': '署名付き JWT を生成して返す',
+        'seq.savejwt': 'JWT を保存',
+        'seq.verifyjwt': 'JWT 署名を検証',
+        'seq.authorize': 'ペイロード展開 → 認可',
+        'seq.authresp': '認証済みレスポンスを返す',
+        'step.hint': '▼ ボタンを押してフローを確認しよう',
+        'btn.next': '▶ 次のステップ',
+        'btn.reset': '↺ リセット',
+        'c.jwt1': '// 1. JWT ライブラリ (Node.js: jsonwebtoken)',
+        'c.jwt2': '// トークン生成',
+        'c.jwt3': '// トークン検証',
+        'c.jwt4': '// API リクエスト時: Authorization ヘッダーに付与',
+        's2.title': 'OAuth 2.0 — Authorization Code フロー',
+        'oa.user': 'ユーザー',
+        'oa.client': 'クライアント',
+        'oa.client.desc': 'あなたのアプリ',
+        'oa.authsrv': '認可サーバー',
+        'oa.rssrv': 'リソースサーバー',
+        'oa.rssrv.desc': '保護された API',
+        'os1.from': 'クライアント → 認可サーバー',
+        'os1.desc': '認可リクエスト（ブラウザでリダイレクト）',
+        'os2.from': '認可サーバー → ユーザー',
+        'os2.desc': 'ログイン画面 &amp; 権限の同意画面を表示',
+        'os2.data': '同意 / 拒否',
+        'os3.from': '認可サーバー → クライアント',
+        'os3.desc': '認可コード (code) をリダイレクト URL に付与して返す',
+        'os4.from': 'クライアント → 認可サーバー',
+        'os4.desc': '認可コードをアクセストークンと交換（サーバー間通信）',
+        'os5.from': '認可サーバー → クライアント',
+        'os5.desc': 'アクセストークン（＋リフレッシュトークン）を発行',
+        'os6.from': 'クライアント → リソースサーバー',
+        'os6.desc': 'アクセストークンを使って保護されたリソースを取得',
+        'btn.playflow': '▶ フローを再生',
+        'oauth.playing': '再生中…',
+        'oauth.replay': '↺ もう一度再生',
+        'c.oauth1': '// OAuth 2.0 Authorization Code フロー例 (Next.js + NextAuth.js)',
+        'c.oauth2': '// next-auth の設定 (app/api/auth/[...nextauth]/route.ts)',
+        'c.oauth3': '// アクセストークンで GitHub API を呼び出す',
+        's3.title': 'JWT vs OAuth 2.0 — 使い分けガイド',
+        'cmp.purpose': '目的',
+        'cmp.format': '形式',
+        'cmp.storage': '保存先',
+        'jwt.purpose': '情報を安全に伝達・認証',
+        'jwt.format': '署名付き JSON (Base64URL)',
+        'jwt.pro1': 'サーバーレスで検証可能（ステートレス）',
+        'jwt.pro2': 'マイクロサービス間の認証に最適',
+        'jwt.pro3': '有効期限・ロール情報を内包できる',
+        'jwt.con1': 'トークン無効化が難しい（期限切れ待ち）',
+        'jwt.con2': 'ペイロードが大きくなりがち',
+        'oauth.purpose': 'サードパーティへの認可委譲',
+        'oauth.format': 'フレームワーク（トークン形式は実装次第）',
+        'oauth.storage': 'サーバー側セッション or Cookie',
+        'oauth.pro1': 'Google / GitHub 等の「ソーシャルログイン」に使える',
+        'oauth.pro2': 'スコープで権限を細かく制御',
+        'oauth.pro3': 'リフレッシュトークンで長期セッション管理',
+        'oauth.con1': 'フローが複雑（複数リダイレクト）',
+        'oauth.con2': '認可サーバーへの依存が発生',
+        'cmp.note': '<strong>💡 実際のプロダクトでは？</strong><br>多くのシステムでは <strong>OAuth 2.0</strong> でユーザーを認証し、発行するトークンの形式として <strong>JWT</strong> を使う、という組み合わせが一般的です。<br>例：GitHub でログイン (OAuth 2.0) → サーバーが JWT を発行 → 以降の API 呼び出しで JWT を使用',
+        's4.title': 'トークン/ID の格納場所とサーバーへの送り方',
+        'tab.memory': 'メモリ (変数)',
+        'tab.db': 'サーバー DB',
+        'actor.browser': 'ブラウザ',
+        'actor.browserjs': 'ブラウザ / JS',
+        'actor.server': 'サーバー',
+        'cookie.s1.note': 'ログイン成功 — サーバーが Cookie を発行',
+        'cookie.store': 'Cookie ストアに保存',
+        'cookie.httponly': 'JS から読めない (HttpOnly)',
+        'cookie.s2.note': 'Cookie: jwt=eyJ…  ← ブラウザが自動付与',
+        'meta.jsaccess': 'JS アクセス',
+        'cookie.jsaccess': '不可（HttpOnly により XSS からトークンを保護）',
+        'meta.transport': '送信方法',
+        'cookie.transport': 'ブラウザが自動で <code>Cookie:</code> ヘッダーに付与（コード不要）',
+        'meta.csrf': 'CSRF 対策',
+        'cookie.csrf': '<code>SameSite=Strict</code> 属性、または CSRF トークンを併用',
+        'meta.rec': '推奨度',
+        'cookie.rec': '✓ 最も安全。本番 Web アプリの標準パターン',
+        'ls.s1.note': 'レスポンスボディにトークンを含めて返す',
+        'ls.s2.note': 'Authorization: Bearer eyJ…  ← JS で手動付与',
+        'ls.jsaccess': '可能（XSS でトークン盗難リスクあり）',
+        'ls.transport': 'fetch/axios で <code>Authorization: Bearer {token}</code> を手動でセット',
+        'ls.csrf': 'Cookie でないため CSRF は発生しない',
+        'meta.warn': '注意',
+        'ls.warn': '✕ XSS 攻撃でトークン盗難のリスク。機密情報は保存しない',
+        'mem.store': '変数に保持',
+        'mem.reload': '⚠ ページリロードで消える',
+        'meta.persist': '永続性',
+        'mem.persist': 'なし（ページリロード・タブを閉じると消える）',
+        'meta.xss': 'XSS 耐性',
+        'mem.xss': 'localStorage より高い（他スクリプトから直接アクセスされにくい）',
+        'mem.rec': '✓ SPA でアクセストークンを短期保持する場合に有効',
+        'db.s2.note': 'トークン本体を DB に保存',
+        'db.s3.note': 'トークン本体は送らない — ID だけ',
+        'db.note1': 'session_id のみ保存',
+        'db.note2': 'トークン本体はサーバー側',
+        'db.s5.note': 'セッション照合 → トークン取得・検証',
+        'meta.how': '仕組み',
+        'db.how': 'トークン本体は DB に保存。ブラウザは session_id（キー）だけを持つ',
+        'meta.revoke': '無効化',
+        'db.revoke': 'DB レコードを削除するだけで即座にログアウト（JWT にはできない強制失効）',
+        'meta.scale': 'スケール',
+        'db.scale': '水平スケール時は Redis 等の共有キャッシュが必要',
+        'db.rec': '✓ 強制ログアウト・セッション管理が重要なシステム向け',
+        'c.st1': "// ① Cookie (自動送信 — credentials: 'include' が必要)",
+        'c.st1b': '// ← これで Cookie が自動付与される',
+        'c.st2': '// ② Authorization ヘッダー (localStorage / メモリ保存の場合)',
+        'c.st3': '// ③ axios インターセプターで全リクエストに自動付与',
+        'c.st4': '// ④ サーバー側での Cookie 発行 (Node.js / Express)',
+        'c.st4a': '// JS から読めない',
+        'c.st4b': '// HTTPS のみ',
+        'c.st4c': '// CSRF 対策',
+        'c.st4d': '// 1 時間 (ms)',
+        's5.title': 'クイックリファレンス',
+        'ref.claims': 'JWT クレーム',
+        'ref.iss': 'トークン発行者 (Issuer)',
+        'ref.sub': '主体 (Subject) — ユーザー ID 等',
+        'ref.aud': '対象 (Audience)',
+        'ref.exp': '有効期限 (Expiration) — Unix 時間',
+        'ref.iat': '発行時刻 (Issued At)',
+        'ref.grants': 'OAuth 2.0 グラントタイプ',
+        'ref.authcode': 'Webアプリ向け（最も安全）',
+        'ref.pkce': 'SPAモバイルアプリ向け',
+        'ref.cc': 'サーバー間 M2M 認証',
+        'ref.refresh': 'アクセストークンの更新',
+        'ref.algos': 'JWT アルゴリズム',
+        'ref.hs256': 'HMAC + SHA-256（共通鍵）',
+        'ref.rs256': 'RSA + SHA-256（公開鍵/秘密鍵）',
+        'ref.es256': 'ECDSA + SHA-256（楕円曲線）',
+        'ref.security': 'セキュリティのベストプラクティス',
+        'ref.sec1': 'XSS から JWT を守る',
+        'ref.sec2k': '短い有効期限',
+        'ref.sec2': '漏洩時のリスクを最小化',
+        'ref.sec3k': 'HTTPS 必須',
+        'ref.sec3': '通信経路での盗聴防止',
+        'ref.sec4': '認可コード横取り攻撃を防ぐ',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function t(key) {
+      return (i18n[lang] && i18n[lang][key]) || key;
+    }
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      if (l === 'ja') {
+        document.title = '認証 (JWT / OAuth 2.0) - Dev Motion Cheats';
+      } else {
+        document.title = 'Authentication (JWT / OAuth 2.0) - Dev Motion Cheats';
+      }
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) {
+          if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+            el.textContent = i18n[l][key];
+          } else {
+            el.innerHTML = i18n[l][key];
+          }
+        }
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+      // Reset step info if not mid-sequence
+      if (currentStep === -1) {
+        stepInfoEl.textContent = t('step.hint');
+        nextBtn.textContent = t('btn.next');
+      }
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    applyLang(lang);
   </script>
 
 </body>

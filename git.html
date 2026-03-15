@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +39,35 @@
     .nav a:hover { color: var(--text); }
     .nav-sep { color: var(--border); }
     .nav-current { font-weight: 600; color: var(--amber); }
+
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .lang-opt {
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-opt.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .lang-opt:hover:not(.active) {
+      background: var(--border);
+      color: var(--text);
+    }
 
     /* Page hero */
     .page-hero {
@@ -546,13 +575,17 @@
     <a href="index.html">Dev Motion Cheats</a>
     <span class="nav-sep">/</span>
     <span class="nav-current">Git</span>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
   </nav>
 
   <div class="page-hero">
     <div class="page-hero-inner">
       <span class="page-badge">Git</span>
-      <h1 class="page-title">Git チートシート</h1>
-      <p class="page-desc">add・commit・branch・merge・push/pull の流れをアニメーションで視覚化。</p>
+      <h1 class="page-title" data-i18n="page.title">Git Cheat Sheet</h1>
+      <p class="page-desc" data-i18n="page.desc">Visualize add, commit, branch, merge, and push/pull flows with animations.</p>
     </div>
   </div>
 
@@ -562,7 +595,7 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">1</div>
-        <h2 class="section-title">3 つのエリア — git add &amp; commit の流れ</h2>
+        <h2 class="section-title" data-i18n="s1.title">3 Areas — git add &amp; commit Flow</h2>
       </div>
 
       <div class="demo-area">
@@ -591,7 +624,7 @@
               <span class="area-dot dot-yellow"></span>Staging Area
             </div>
             <div class="area-body" id="sa-body">
-              <div class="area-empty" id="sa-empty">空です</div>
+              <div class="area-empty" id="sa-empty" data-i18n="empty">Empty</div>
             </div>
           </div>
 
@@ -621,20 +654,20 @@
             <button class="git-btn" id="btn-add-one">git add feature.js</button>
             <button class="git-btn" id="btn-add-all">git add .</button>
             <button class="git-btn" id="btn-commit" disabled>git commit -m "..."</button>
-            <button class="git-btn reset-btn" id="btn-reset">↺ リセット</button>
+            <button class="git-btn reset-btn" id="btn-reset" data-i18n="btn.reset">↺ Reset</button>
           </div>
         </div>
       </div>
 
-      <div class="code"><span class="c"># ファイルをステージングエリアへ追加</span>
-<span class="cmd">git add</span> <span class="arg">feature.js</span>   <span class="c"># 特定ファイル</span>
-<span class="cmd">git add</span> <span class="arg">.</span>              <span class="c"># 全変更ファイル</span>
-<span class="cmd">git add</span> <span class="arg">-p</span>             <span class="c"># 変更を chunk 単位で選択</span>
+      <div class="code"><span class="c" data-i18n="c.add">/* Add files to the staging area */</span>
+<span class="cmd">git add</span> <span class="arg">feature.js</span>   <span class="c" data-i18n="c.specific">/* specific file */</span>
+<span class="cmd">git add</span> <span class="arg">.</span>              <span class="c" data-i18n="c.all">/* all changed files */</span>
+<span class="cmd">git add</span> <span class="arg">-p</span>             <span class="c" data-i18n="c.patch">/* select changes in chunks */</span>
 
-<span class="c"># コミット</span>
+<span class="c" data-i18n="c.commit">/* Commit */</span>
 <span class="cmd">git commit</span> <span class="arg">-m</span> <span class="str">"feat: add feature"</span>
 
-<span class="c"># 状態確認</span>
+<span class="c" data-i18n="c.status">/* Check status */</span>
 <span class="cmd">git status</span>
 <span class="cmd">git log</span> <span class="arg">--oneline --graph</span></div>
     </div>
@@ -643,7 +676,7 @@
     <div class="section">
       <div class="section-header">
         <div class="section-num">2</div>
-        <h2 class="section-title">ブランチ &amp; マージ — 分岐と合流</h2>
+        <h2 class="section-title" data-i18n="s2.title">Branch &amp; Merge — Fork and Join</h2>
       </div>
 
       <div class="demo-area">
@@ -697,29 +730,29 @@
           <text id="bl-cmd2" class="branch-text" x="540" y="105"
             fill="#9b59b6" font-size="10.5" font-style="italic">git merge feature</text>
         </svg>
-        <button class="branch-play-btn" id="branch-play">▶ アニメーション再生</button>
+        <button class="branch-play-btn" id="branch-play" data-i18n="btn.play">▶ Play Animation</button>
       </div>
 
-      <div class="code"><span class="c"># ブランチ操作</span>
-<span class="cmd">git branch</span>                  <span class="c"># ブランチ一覧</span>
-<span class="cmd">git branch</span> <span class="arg">feature</span>          <span class="c"># ブランチ作成</span>
-<span class="cmd">git switch</span> <span class="arg">feature</span>          <span class="c"># ブランチ切り替え (Git 2.23+)</span>
-<span class="cmd">git checkout</span> <span class="arg">-b feature</span>    <span class="c"># 作成 + 切り替え (旧来の方法)</span>
+      <div class="code"><span class="c" data-i18n="c.branch">/* Branch operations */</span>
+<span class="cmd">git branch</span>                  <span class="c" data-i18n="c.list">/* list branches */</span>
+<span class="cmd">git branch</span> <span class="arg">feature</span>          <span class="c" data-i18n="c.create">/* create branch */</span>
+<span class="cmd">git switch</span> <span class="arg">feature</span>          <span class="c" data-i18n="c.switch">/* switch branch (Git 2.23+) */</span>
+<span class="cmd">git checkout</span> <span class="arg">-b feature</span>    <span class="c" data-i18n="c.checkout">/* create + switch (traditional method) */</span>
 
-<span class="c"># マージ</span>
+<span class="c" data-i18n="c.merge">/* Merge */</span>
 <span class="cmd">git switch</span> <span class="arg">main</span>
-<span class="cmd">git merge</span> <span class="arg">feature</span>           <span class="c"># feature を main にマージ</span>
-<span class="cmd">git merge</span> <span class="arg">--no-ff feature</span>   <span class="c"># マージコミットを必ず作成</span>
+<span class="cmd">git merge</span> <span class="arg">feature</span>           <span class="c" data-i18n="c.mergeto">/* merge feature into main */</span>
+<span class="cmd">git merge</span> <span class="arg">--no-ff feature</span>   <span class="c" data-i18n="c.noff">/* always create a merge commit */</span>
 
-<span class="c"># ブランチ削除</span>
-<span class="cmd">git branch</span> <span class="arg">-d feature</span>       <span class="c"># マージ済みのブランチを削除</span></div>
+<span class="c" data-i18n="c.del">/* Delete branch */</span>
+<span class="cmd">git branch</span> <span class="arg">-d feature</span>       <span class="c" data-i18n="c.delbranch">/* delete merged branch */</span></div>
     </div>
 
     <!-- 3. Push / Pull -->
     <div class="section">
       <div class="section-header">
         <div class="section-num">3</div>
-        <h2 class="section-title">リモートリポジトリ — push &amp; pull</h2>
+        <h2 class="section-title" data-i18n="s3.title">Remote Repository — push &amp; pull</h2>
       </div>
 
       <div class="demo-area">
@@ -771,57 +804,57 @@
         </div>
       </div>
 
-      <div class="code"><span class="c"># リモートを登録</span>
+      <div class="code"><span class="c" data-i18n="c.addremote">/* Register remote */</span>
 <span class="cmd">git remote add</span> <span class="arg">origin</span> <span class="str">https://github.com/user/repo.git</span>
 
-<span class="c"># プッシュ</span>
-<span class="cmd">git push</span> <span class="arg">origin main</span>          <span class="c"># origin の main へ送信</span>
-<span class="cmd">git push</span> <span class="arg">-u origin main</span>       <span class="c"># 追跡ブランチを設定して push</span>
+<span class="c" data-i18n="c.push">/* Push */</span>
+<span class="cmd">git push</span> <span class="arg">origin main</span>          <span class="c" data-i18n="c.pushto">/* push to origin main */</span>
+<span class="cmd">git push</span> <span class="arg">-u origin main</span>       <span class="c" data-i18n="c.pushu">/* set tracking branch and push */</span>
 
-<span class="c"># プル / フェッチ</span>
-<span class="cmd">git pull</span>                        <span class="c"># fetch + merge</span>
-<span class="cmd">git fetch</span>                       <span class="c"># リモートの変更を取得 (mergeしない)</span>
-<span class="cmd">git pull</span> <span class="arg">--rebase</span>              <span class="c"># fetch + rebase（履歴をきれいに保つ）</span></div>
+<span class="c" data-i18n="c.pullfetch">/* Pull / Fetch */</span>
+<span class="cmd">git pull</span>                        <span class="c" data-i18n="c.pullmerge">/* fetch + merge */</span>
+<span class="cmd">git fetch</span>                       <span class="c" data-i18n="c.fetchonly">/* fetch remote changes (without merge) */</span>
+<span class="cmd">git pull</span> <span class="arg">--rebase</span>              <span class="c" data-i18n="c.rebase">/* fetch + rebase (keeps history clean) */</span></div>
     </div>
 
     <!-- 4. Quick Reference -->
     <div class="section">
       <div class="section-header">
         <div class="section-num">4</div>
-        <h2 class="section-title">よく使うコマンド クイックリファレンス</h2>
+        <h2 class="section-title" data-i18n="s4.title">Frequently Used Commands Quick Reference</h2>
       </div>
 
       <div class="ref-grid">
         <div class="ref-group">
-          <div class="ref-group-title">セットアップ</div>
+          <div class="ref-group-title" data-i18n="ref.setup">Setup</div>
           <table class="ref-table">
-            <tr><td>git init</td><td>リポジトリを初期化</td></tr>
-            <tr><td>git clone &lt;url&gt;</td><td>リポジトリをコピー</td></tr>
-            <tr><td>git config --global user.name</td><td>ユーザー名を設定</td></tr>
+            <tr><td>git init</td><td data-i18n="ref.init">Initialize repository</td></tr>
+            <tr><td>git clone &lt;url&gt;</td><td data-i18n="ref.clone">Clone a repository</td></tr>
+            <tr><td>git config --global user.name</td><td data-i18n="ref.config">Set user name</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">状態確認</div>
+          <div class="ref-group-title" data-i18n="ref.status">Status</div>
           <table class="ref-table">
-            <tr><td>git status</td><td>作業ツリーの状態</td></tr>
-            <tr><td>git log --oneline</td><td>コミット履歴（簡易）</td></tr>
-            <tr><td>git diff</td><td>変更内容の差分</td></tr>
+            <tr><td>git status</td><td data-i18n="ref.wtstatus">Working tree status</td></tr>
+            <tr><td>git log --oneline</td><td data-i18n="ref.log">Commit history (compact)</td></tr>
+            <tr><td>git diff</td><td data-i18n="ref.diff">Show changes</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">取り消し</div>
+          <div class="ref-group-title" data-i18n="ref.undo">Undo</div>
           <table class="ref-table">
-            <tr><td>git restore &lt;file&gt;</td><td>作業ツリーの変更を破棄</td></tr>
-            <tr><td>git restore --staged &lt;file&gt;</td><td>ステージングを解除</td></tr>
-            <tr><td>git revert &lt;hash&gt;</td><td>コミットを打ち消す</td></tr>
+            <tr><td>git restore &lt;file&gt;</td><td data-i18n="ref.restore">Discard working tree changes</td></tr>
+            <tr><td>git restore --staged &lt;file&gt;</td><td data-i18n="ref.unstage">Unstage file</td></tr>
+            <tr><td>git revert &lt;hash&gt;</td><td data-i18n="ref.revert">Revert a commit</td></tr>
           </table>
         </div>
         <div class="ref-group">
-          <div class="ref-group-title">スタッシュ</div>
+          <div class="ref-group-title" data-i18n="ref.stash">Stash</div>
           <table class="ref-table">
-            <tr><td>git stash</td><td>変更を一時保存</td></tr>
-            <tr><td>git stash pop</td><td>最新スタッシュを復元</td></tr>
-            <tr><td>git stash list</td><td>スタッシュ一覧</td></tr>
+            <tr><td>git stash</td><td data-i18n="ref.stashsave">Save changes temporarily</td></tr>
+            <tr><td>git stash pop</td><td data-i18n="ref.stashpop">Restore latest stash</td></tr>
+            <tr><td>git stash list</td><td data-i18n="ref.stashlist">List stashes</td></tr>
           </table>
         </div>
       </div>
@@ -891,7 +924,7 @@
             if (!wdBody.querySelector('.file-card')) {
               const e = document.createElement('div');
               e.className = 'area-empty';
-              e.textContent = 'クリーン';
+              e.textContent = t('clean');
               wdBody.appendChild(e);
             }
           }
@@ -907,7 +940,7 @@
         files.forEach(f => f.remove());
         const e = document.createElement('div');
         e.className = 'area-empty';
-        e.textContent = '空です';
+        e.textContent = t('empty');
         saBody.appendChild(e);
 
         const hash = Math.random().toString(16).slice(2, 9);
@@ -1042,6 +1075,146 @@
         }, 700);
       }, 300);
     });
+
+    /* ===== i18n ===== */
+    const i18n = {
+      en: {
+        'page.title': 'Git Cheat Sheet',
+        'page.desc': 'Visualize add, commit, branch, merge, and push/pull flows with animations.',
+        's1.title': '3 Areas — git add &amp; commit Flow',
+        'empty': 'Empty',
+        'clean': 'Clean',
+        'btn.reset': '↺ Reset',
+        'btn.play': '▶ Play Animation',
+        'c.add': '# Add files to the staging area',
+        'c.specific': '# specific file',
+        'c.all': '# all changed files',
+        'c.patch': '# select changes in chunks',
+        'c.commit': '# Commit',
+        'c.status': '# Check status',
+        's2.title': 'Branch &amp; Merge — Fork and Join',
+        'c.branch': '# Branch operations',
+        'c.list': '# list branches',
+        'c.create': '# create branch',
+        'c.switch': '# switch branch (Git 2.23+)',
+        'c.checkout': '# create + switch (traditional method)',
+        'c.merge': '# Merge',
+        'c.mergeto': '# merge feature into main',
+        'c.noff': '# always create a merge commit',
+        'c.del': '# Delete branch',
+        'c.delbranch': '# delete merged branch',
+        's3.title': 'Remote Repository — push &amp; pull',
+        'c.addremote': '# Register remote',
+        'c.push': '# Push',
+        'c.pushto': '# push to origin main',
+        'c.pushu': '# set tracking branch and push',
+        'c.pullfetch': '# Pull / Fetch',
+        'c.pullmerge': '# fetch + merge',
+        'c.fetchonly': '# fetch remote changes (without merge)',
+        'c.rebase': '# fetch + rebase (keeps history clean)',
+        's4.title': 'Frequently Used Commands Quick Reference',
+        'ref.setup': 'Setup',
+        'ref.init': 'Initialize repository',
+        'ref.clone': 'Clone a repository',
+        'ref.config': 'Set user name',
+        'ref.status': 'Status',
+        'ref.wtstatus': 'Working tree status',
+        'ref.log': 'Commit history (compact)',
+        'ref.diff': 'Show changes',
+        'ref.undo': 'Undo',
+        'ref.restore': 'Discard working tree changes',
+        'ref.unstage': 'Unstage file',
+        'ref.revert': 'Revert a commit',
+        'ref.stash': 'Stash',
+        'ref.stashsave': 'Save changes temporarily',
+        'ref.stashpop': 'Restore latest stash',
+        'ref.stashlist': 'List stashes',
+      },
+      ja: {
+        'page.title': 'Git チートシート',
+        'page.desc': 'add・commit・branch・merge・push/pull の流れをアニメーションで視覚化。',
+        's1.title': '3 つのエリア — git add &amp; commit の流れ',
+        'empty': '空です',
+        'clean': 'クリーン',
+        'btn.reset': '↺ リセット',
+        'btn.play': '▶ アニメーション再生',
+        'c.add': '# ファイルをステージングエリアへ追加',
+        'c.specific': '# 特定ファイル',
+        'c.all': '# 全変更ファイル',
+        'c.patch': '# 変更を chunk 単位で選択',
+        'c.commit': '# コミット',
+        'c.status': '# 状態確認',
+        's2.title': 'ブランチ &amp; マージ — 分岐と合流',
+        'c.branch': '# ブランチ操作',
+        'c.list': '# ブランチ一覧',
+        'c.create': '# ブランチ作成',
+        'c.switch': '# ブランチ切り替え (Git 2.23+)',
+        'c.checkout': '# 作成 + 切り替え (旧来の方法)',
+        'c.merge': '# マージ',
+        'c.mergeto': '# feature を main にマージ',
+        'c.noff': '# マージコミットを必ず作成',
+        'c.del': '# ブランチ削除',
+        'c.delbranch': '# マージ済みのブランチを削除',
+        's3.title': 'リモートリポジトリ — push &amp; pull',
+        'c.addremote': '# リモートを登録',
+        'c.push': '# プッシュ',
+        'c.pushto': '# origin の main へ送信',
+        'c.pushu': '# 追跡ブランチを設定して push',
+        'c.pullfetch': '# プル / フェッチ',
+        'c.pullmerge': '# fetch + merge',
+        'c.fetchonly': '# リモートの変更を取得 (mergeしない)',
+        'c.rebase': '# fetch + rebase（履歴をきれいに保つ）',
+        's4.title': 'よく使うコマンド クイックリファレンス',
+        'ref.setup': 'セットアップ',
+        'ref.init': 'リポジトリを初期化',
+        'ref.clone': 'リポジトリをコピー',
+        'ref.config': 'ユーザー名を設定',
+        'ref.status': '状態確認',
+        'ref.wtstatus': '作業ツリーの状態',
+        'ref.log': 'コミット履歴（簡易）',
+        'ref.diff': '変更内容の差分',
+        'ref.undo': '取り消し',
+        'ref.restore': '作業ツリーの変更を破棄',
+        'ref.unstage': 'ステージングを解除',
+        'ref.revert': 'コミットを打ち消す',
+        'ref.stash': 'スタッシュ',
+        'ref.stashsave': '変更を一時保存',
+        'ref.stashpop': '最新スタッシュを復元',
+        'ref.stashlist': 'スタッシュ一覧',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function t(key) {
+      return (i18n[lang] && i18n[lang][key]) || key;
+    }
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) {
+          if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+            el.textContent = i18n[l][key];
+          } else {
+            el.innerHTML = i18n[l][key];
+          }
+        }
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    applyLang(lang);
   </script>
 
 </body>
