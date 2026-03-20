@@ -559,6 +559,18 @@
 
     .ref-table td:last-child { color: var(--muted); }
 
+    /* ── Play / Replay Button ── */
+    .play-btn {
+      margin-left: auto; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--amber); color: #fff; border: none;
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 0.76rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+    }
+    .play-btn:hover:not(:disabled) { background: #b45309; transform: scale(1.05); }
+    .play-btn:disabled { opacity: 0.55; cursor: default; }
+
     @media (max-width: 700px) {
       .nav, .page-hero { padding-left: 20px; padding-right: 20px; }
       .content { padding: 32px 20px; }
@@ -677,6 +689,7 @@
       <div class="section-header">
         <div class="section-num">2</div>
         <h2 class="section-title" data-i18n="s2.title">Branch &amp; Merge — Fork and Join</h2>
+        <button class="play-btn" onclick="playBranch()">▶ Play</button>
       </div>
 
       <div class="demo-area">
@@ -753,6 +766,7 @@
       <div class="section-header">
         <div class="section-num">3</div>
         <h2 class="section-title" data-i18n="s3.title">Remote Repository — push &amp; pull</h2>
+        <button class="play-btn" onclick="resetPushPull()">↺ Reset</button>
       </div>
 
       <div class="demo-area">
@@ -1029,6 +1043,14 @@
     const remoteCommits = document.getElementById('remote-commits');
     const ppPush = document.getElementById('pp-push');
     const ppPull = document.getElementById('pp-pull');
+
+    const initialLocal  = localCommits.innerHTML;
+    const initialRemote = remoteCommits.innerHTML;
+
+    function resetPushPull() {
+      localCommits.innerHTML  = initialLocal;
+      remoteCommits.innerHTML = initialRemote;
+    }
 
     ppPush.addEventListener('click', () => {
       const items = localCommits.querySelectorAll('.rc-item');

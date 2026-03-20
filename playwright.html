@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playwright - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f7;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --pw: #2ead33;      /* Playwright green */
+      --pw-dark: #1a7a22;
+      --blue: #4a90e2;
+      --purple: #8b5cf6;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav a { color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-current { font-weight: 700; color: var(--pw); }
+    .lang-switch { margin-left: auto; display: flex; border: 1px solid var(--border); border-radius: 100px; overflow: hidden; }
+    .lang-opt { padding: 5px 13px; border: none; background: transparent; color: var(--muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
+    .lang-opt.active { background: var(--text); color: #fff; }
+    .lang-opt:hover:not(.active) { background: var(--border); color: var(--text); }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, #0a1628 0%, #0d2137 50%, #0f2d1a 100%);
+      padding: 60px 48px 52px;
+      overflow: hidden;
+      position: relative;
+    }
+    .page-hero-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 48px; }
+    .hero-text { flex: 1; }
+    .page-badge {
+      display: inline-block;
+      background: rgba(46,173,51,0.2);
+      color: #6ee77a;
+      border: 1px solid rgba(46,173,51,0.4);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 14px;
+    }
+    .page-title { font-size: 2.4rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 12px; color: #fff; line-height: 1.2; }
+    .page-title em { font-style: normal; color: #6ee77a; }
+    .page-desc { color: #7ca0b8; font-size: .95rem; line-height: 1.8; }
+
+    /* ── Animated Browser in Hero ── */
+    .hero-browser {
+      flex-shrink: 0;
+      width: 340px;
+    }
+    .browser-frame {
+      background: #1e2a38;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #2d3f52;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      animation: browserFloat 4s ease-in-out infinite;
+    }
+    @keyframes browserFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    .browser-bar {
+      background: #141e2b;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #2d3f52;
+    }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dot:nth-child(1) { background: #ff5f57; }
+    .browser-dot:nth-child(2) { background: #febc2e; }
+    .browser-dot:nth-child(3) { background: #28c840; }
+    .browser-url {
+      flex: 1; background: #1e2a38; border-radius: 6px;
+      padding: 4px 10px; font-size: .72rem; color: #7ca0b8;
+      font-family: monospace; margin-left: 4px;
+      overflow: hidden; white-space: nowrap;
+    }
+    .browser-content { padding: 20px; min-height: 160px; position: relative; }
+
+    /* Fake page elements inside browser */
+    .fake-page { display: flex; flex-direction: column; gap: 10px; }
+    .fake-header { height: 14px; background: #2d3f52; border-radius: 4px; width: 60%; animation: fakePulse 2s ease-in-out infinite; }
+    .fake-input {
+      height: 32px; background: #1a2633; border: 1px solid #3d5268; border-radius: 6px;
+      display: flex; align-items: center; padding: 0 10px;
+      font-size: .72rem; color: #7ca0b8; font-family: monospace;
+    }
+    .fake-btn {
+      height: 32px; background: #2ead33; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; color: #fff; font-weight: 700;
+      width: 80px; cursor: pointer;
+      animation: btnPulse 2.5s ease-in-out infinite 1s;
+    }
+    @keyframes fakePulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+    @keyframes btnPulse {
+      0%,100%  { box-shadow: none; }
+      50%      { box-shadow: 0 0 0 4px rgba(46,173,51,0.3); }
+    }
+
+    /* Animated cursor */
+    .cursor {
+      position: absolute;
+      width: 18px; height: 18px;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      animation: cursorMove 4s ease-in-out infinite;
+    }
+    @keyframes cursorMove {
+      0%   { top: 40px;  left: 20px;  }
+      25%  { top: 80px;  left: 30px;  }
+      50%  { top: 120px; left: 30px;  }
+      65%  { top: 120px; left: 56px;  transform: scale(0.85); }
+      75%  { top: 120px; left: 56px;  transform: scale(1); }
+      100% { top: 40px;  left: 20px;  }
+    }
+
+    /* Test result badge */
+    .test-badge {
+      position: absolute; bottom: 12px; right: 12px;
+      background: rgba(46,173,51,0.15);
+      border: 1px solid rgba(46,173,51,0.4);
+      border-radius: 8px; padding: 6px 10px;
+      font-size: .68rem; font-family: monospace; color: #6ee77a;
+      animation: badgeAppear 4s ease-in-out infinite;
+    }
+    @keyframes badgeAppear {
+      0%,60%  { opacity: 0; transform: translateY(4px); }
+      80%,100%{ opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Content ── */
+    .content { max-width: 920px; margin: 0 auto; padding: 56px 48px; display: flex; flex-direction: column; gap: 32px; }
+
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+    }
+
+    .section-title {
+      font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title .icon { font-size: 1.5rem; }
+    .section-desc { color: var(--muted); font-size: .92rem; margin-bottom: 28px; line-height: 1.8; }
+
+    .tag {
+      display: inline-block; padding: 3px 10px; border-radius: 100px;
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+    }
+    .tag-green  { background: #dcfce7; color: #166534; }
+    .tag-blue   { background: #dbeafe; color: #1e40af; }
+    .tag-purple { background: #ede9fe; color: #5b21b6; }
+    .tag-amber  { background: #fef3c7; color: #92400e; }
+
+    /* ── Play / Replay Button ── */
+    .play-btn {
+      margin-left: auto; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--pw); color: #fff; border: none;
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 0.76rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+    }
+    .play-btn:hover:not(:disabled) { background: var(--pw-dark); transform: scale(1.05); }
+    .play-btn:disabled { opacity: 0.55; cursor: default; }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: #0d1117;
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: .82rem;
+      line-height: 1.9;
+      color: #c9d1d9;
+      margin: 16px 0;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-block .c-comment  { color: #6e7681; }
+    .code-block .c-keyword  { color: #ff7b72; }
+    .code-block .c-fn       { color: #d2a8ff; }
+    .code-block .c-string   { color: #a5d6ff; }
+    .code-block .c-number   { color: #79c0ff; }
+    .code-block .c-ok       { color: #56d364; }
+    .code-block .c-dim      { color: #484f58; }
+    .code-block .c-cmd      { color: #79c0ff; }
+    .code-block .c-arg      { color: #ffa657; }
+    .code-block .c-yaml-key { color: #7ee787; }
+    .code-block .c-yaml-val { color: #a5d6ff; }
+
+    .code-filename {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 8px 16px;
+      font-family: monospace;
+      font-size: .75rem;
+      color: #8b949e;
+      border-radius: 10px 10px 0 0;
+      margin-bottom: -10px;
+      margin-top: 16px;
+    }
+    .code-filename + .code-block { border-radius: 0 0 10px 10px; margin-top: 0; }
+
+    /* ═══════════════════════════════
+       SECTION 1: インストール — Terminal Animation
+    ═══════════════════════════════ */
+    .terminal {
+      background: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    }
+    .terminal-bar {
+      background: #161b22;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #30363d;
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #febc2e; }
+    .terminal-dot:nth-child(3) { background: #28c840; }
+    .terminal-title { margin-left: 4px; font-size: .72rem; color: #6e7681; flex: 1; text-align: center; }
+    .terminal-body { padding: 20px 24px; font-family: monospace; font-size: .82rem; line-height: 2; }
+
+    .term-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      opacity: 0;
+      transform: translateX(-8px);
+      animation: termLine .4s ease forwards;
+    }
+    .term-line:nth-child(1) { animation-delay: .2s; }
+    .term-line:nth-child(2) { animation-delay: .7s; }
+    .term-line:nth-child(3) { animation-delay: 1.4s; }
+    .term-line:nth-child(4) { animation-delay: 2.1s; }
+    .term-line:nth-child(5) { animation-delay: 2.8s; }
+    .term-line:nth-child(6) { animation-delay: 3.3s; }
+    .term-line:nth-child(7) { animation-delay: 3.8s; }
+
+    @keyframes termLine {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .term-prompt { color: #56d364; flex-shrink: 0; }
+    .term-cmd    { color: #79c0ff; }
+    .term-out    { color: #8b949e; }
+    .term-ok     { color: #56d364; }
+    .term-info   { color: #d2a8ff; }
+
+    /* ═══════════════════════════════
+       SECTION 2: テストの書き方 — Annotated code reveal
+    ═══════════════════════════════ */
+    .annotated-code {
+      background: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .anno-bar {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 10px 16px;
+      font-size: .75rem;
+      color: #8b949e;
+      font-family: monospace;
+    }
+    .anno-body { display: flex; }
+    .anno-numbers {
+      padding: 18px 0;
+      background: #0a0e13;
+      border-right: 1px solid #21262d;
+      min-width: 44px;
+      text-align: right;
+    }
+    .anno-num {
+      display: block;
+      padding: 0 12px;
+      font-family: monospace;
+      font-size: .78rem;
+      line-height: 1.9;
+      color: #484f58;
+    }
+    .anno-lines { padding: 18px 20px; flex: 1; overflow-x: auto; }
+    .anno-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      font-family: monospace;
+      font-size: .82rem;
+      line-height: 1.9;
+      color: #c9d1d9;
+      opacity: 0;
+      transform: translateX(-6px);
+      animation: annoLine .35s ease forwards;
+    }
+    .anno-line:nth-child(1)  { animation-delay: .05s; }
+    .anno-line:nth-child(2)  { animation-delay: .12s; }
+    .anno-line:nth-child(3)  { animation-delay: .19s; }
+    .anno-line:nth-child(4)  { animation-delay: .26s; }
+    .anno-line:nth-child(5)  { animation-delay: .33s; }
+    .anno-line:nth-child(6)  { animation-delay: .40s; }
+    .anno-line:nth-child(7)  { animation-delay: .47s; }
+    .anno-line:nth-child(8)  { animation-delay: .54s; }
+    .anno-line:nth-child(9)  { animation-delay: .61s; }
+    .anno-line:nth-child(10) { animation-delay: .68s; }
+    .anno-line:nth-child(11) { animation-delay: .75s; }
+    .anno-line:nth-child(12) { animation-delay: .82s; }
+    .anno-line:nth-child(13) { animation-delay: .89s; }
+    @keyframes annoLine { to { opacity: 1; transform: translateX(0); } }
+
+    .anno-code { flex: 0 0 auto; white-space: pre; }
+    .anno-tip {
+      font-size: .72rem;
+      background: rgba(87,211,100,.12);
+      border: 1px solid rgba(87,211,100,.25);
+      border-radius: 6px;
+      padding: 1px 8px;
+      color: #6ee77a;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 3: API Cards
+    ═══════════════════════════════ */
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .api-card {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      cursor: default;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: apiCardIn .5s ease forwards;
+      position: relative;
+      overflow: hidden;
+    }
+    .api-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .api-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+    .api-card:hover::before { opacity: 1; }
+
+    .api-card:nth-child(1)  { animation-delay: .05s; border-top: 3px solid #2ead33; }
+    .api-card:nth-child(2)  { animation-delay: .10s; border-top: 3px solid #4a90e2; }
+    .api-card:nth-child(3)  { animation-delay: .15s; border-top: 3px solid #8b5cf6; }
+    .api-card:nth-child(4)  { animation-delay: .20s; border-top: 3px solid #f59e0b; }
+    .api-card:nth-child(5)  { animation-delay: .25s; border-top: 3px solid #ef4444; }
+    .api-card:nth-child(6)  { animation-delay: .30s; border-top: 3px solid #0d9488; }
+    .api-card:nth-child(7)  { animation-delay: .35s; border-top: 3px solid #ec4899; }
+    .api-card:nth-child(8)  { animation-delay: .40s; border-top: 3px solid #6366f1; }
+    @keyframes apiCardIn { to { opacity: 1; transform: translateY(0); } }
+
+    .api-method {
+      font-family: monospace;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #2ead33;
+      margin-bottom: 6px;
+      background: #dcfce7;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+    .api-card:nth-child(2) .api-method { color: #1d4ed8; background: #dbeafe; }
+    .api-card:nth-child(3) .api-method { color: #6d28d9; background: #ede9fe; }
+    .api-card:nth-child(4) .api-method { color: #92400e; background: #fef3c7; }
+    .api-card:nth-child(5) .api-method { color: #991b1b; background: #fee2e2; }
+    .api-card:nth-child(6) .api-method { color: #0f766e; background: #ccfbf1; }
+    .api-card:nth-child(7) .api-method { color: #9d174d; background: #fce7f3; }
+    .api-card:nth-child(8) .api-method { color: #3730a3; background: #e0e7ff; }
+
+    .api-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; margin-top: 8px; }
+    .api-example { font-family: monospace; font-size: .72rem; color: #555; background: #f4f4f4; border-radius: 5px; padding: 4px 8px; margin-top: 8px; }
+
+    /* ═══════════════════════════════
+       SECTION 4: テスト実行アニメーション
+    ═══════════════════════════════ */
+    .test-runner {
+      background: #0d1117;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: .82rem;
+    }
+    .test-suite {
+      margin-bottom: 8px;
+      color: #8b949e;
+      font-weight: 700;
+      opacity: 0;
+      animation: termLine .4s ease forwards;
+      animation-delay: .1s;
+    }
+    .test-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 16px;
+      opacity: 0;
+      animation: termLine .4s ease forwards;
+    }
+    .test-item:nth-child(2) { animation-delay: .4s; }
+    .test-item:nth-child(3) { animation-delay: .9s; }
+    .test-item:nth-child(4) { animation-delay: 1.4s; }
+    .test-item:nth-child(5) { animation-delay: 1.9s; }
+    .test-item:nth-child(6) { animation-delay: 2.4s; }
+
+    .test-icon {
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 700; flex-shrink: 0;
+    }
+    .test-icon.pass { background: #1a4731; color: #56d364; animation: iconPop .3s ease; }
+    .test-icon.fail { background: #4d1a1a; color: #f85149; }
+    .test-icon.skip { background: #2a2a1a; color: #d29922; }
+    @keyframes iconPop {
+      0%   { transform: scale(0); }
+      70%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .test-name { color: #c9d1d9; }
+    .test-time { margin-left: auto; color: #6e7681; font-size: .72rem; }
+
+    .test-summary {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #0a1f12;
+      border: 1px solid #1a4731;
+      border-radius: 8px;
+      color: #56d364;
+      opacity: 0;
+      animation: termLine .5s ease forwards;
+      animation-delay: 2.8s;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 5: GitHub Actions Pipeline
+    ═══════════════════════════════ */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 24px 0;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateX(-10px);
+      animation: pipeStep .5s ease forwards;
+    }
+    .pipeline-step:last-child { border-bottom: none; }
+    .pipeline-step:nth-child(1) { animation-delay: .1s; }
+    .pipeline-step:nth-child(2) { animation-delay: .4s; }
+    .pipeline-step:nth-child(3) { animation-delay: .7s; }
+    .pipeline-step:nth-child(4) { animation-delay: 1.0s; }
+    .pipeline-step:nth-child(5) { animation-delay: 1.3s; }
+    .pipeline-step:nth-child(6) { animation-delay: 1.6s; }
+    @keyframes pipeStep { to { opacity: 1; transform: translateX(0); } }
+
+    .step-number {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #2ead33, #1a7a22);
+      color: #fff; font-weight: 700; font-size: .82rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(46,173,51,0.4);
+      animation: stepGlow 2s ease-in-out infinite;
+    }
+    .pipeline-step:nth-child(1) .step-number { animation-delay: .1s; }
+    .pipeline-step:nth-child(2) .step-number { animation-delay: .5s; }
+    .pipeline-step:nth-child(3) .step-number { animation-delay: .9s; }
+    .pipeline-step:nth-child(4) .step-number { animation-delay: 1.3s; }
+    .pipeline-step:nth-child(5) .step-number { animation-delay: 1.7s; }
+    .pipeline-step:nth-child(6) .step-number { animation-delay: 2.1s; }
+    @keyframes stepGlow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(46,173,51,0.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(46,173,51,0); }
+    }
+
+    .step-content { flex: 1; }
+    .step-title { font-weight: 700; font-size: .92rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .step-desc  { font-size: .82rem; color: var(--muted); }
+
+    /* YAML highlight */
+    .yaml-block {
+      background: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .yaml-header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .yaml-header .file-icon { font-size: .9rem; }
+    .yaml-header .file-name { font-size: .75rem; color: #8b949e; font-family: monospace; }
+    .yaml-header .file-badge {
+      margin-left: auto;
+      background: rgba(46,173,51,0.15);
+      color: #6ee77a;
+      border: 1px solid rgba(46,173,51,0.3);
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: .65rem;
+      font-weight: 700;
+    }
+    .yaml-body {
+      padding: 20px 24px;
+      font-family: monospace;
+      font-size: .8rem;
+      line-height: 2;
+      color: #c9d1d9;
+      overflow-x: auto;
+    }
+    .yaml-line {
+      display: block;
+      opacity: 0;
+      transform: translateX(-4px);
+      animation: annoLine .3s ease forwards;
+    }
+    .yaml-line:nth-child(1)  { animation-delay: .05s; }
+    .yaml-line:nth-child(2)  { animation-delay: .10s; }
+    .yaml-line:nth-child(3)  { animation-delay: .15s; }
+    .yaml-line:nth-child(4)  { animation-delay: .20s; }
+    .yaml-line:nth-child(5)  { animation-delay: .25s; }
+    .yaml-line:nth-child(6)  { animation-delay: .30s; }
+    .yaml-line:nth-child(7)  { animation-delay: .35s; }
+    .yaml-line:nth-child(8)  { animation-delay: .40s; }
+    .yaml-line:nth-child(9)  { animation-delay: .45s; }
+    .yaml-line:nth-child(10) { animation-delay: .50s; }
+    .yaml-line:nth-child(11) { animation-delay: .55s; }
+    .yaml-line:nth-child(12) { animation-delay: .60s; }
+    .yaml-line:nth-child(13) { animation-delay: .65s; }
+    .yaml-line:nth-child(14) { animation-delay: .70s; }
+    .yaml-line:nth-child(15) { animation-delay: .75s; }
+    .yaml-line:nth-child(16) { animation-delay: .80s; }
+    .yaml-line:nth-child(17) { animation-delay: .85s; }
+    .yaml-line:nth-child(18) { animation-delay: .90s; }
+    .yaml-line:nth-child(19) { animation-delay: .95s; }
+    .yaml-line:nth-child(20) { animation-delay:1.00s; }
+    .yaml-line:nth-child(21) { animation-delay:1.05s; }
+    .yaml-line:nth-child(22) { animation-delay:1.10s; }
+    .yaml-line:nth-child(23) { animation-delay:1.15s; }
+    .yaml-line:nth-child(24) { animation-delay:1.20s; }
+    .yaml-line:nth-child(25) { animation-delay:1.25s; }
+    .yaml-line:nth-child(26) { animation-delay:1.30s; }
+    .yaml-line:nth-child(27) { animation-delay:1.35s; }
+    .yaml-line:nth-child(28) { animation-delay:1.40s; }
+    .yaml-line:nth-child(29) { animation-delay:1.45s; }
+    .yaml-line:nth-child(30) { animation-delay:1.50s; }
+
+    /* ── Assertion animations ── */
+    .assert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .assert-card {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      opacity: 0;
+      transform: scale(.95);
+      animation: apiCardIn .4s ease forwards;
+    }
+    .assert-card:nth-child(1) { animation-delay:.05s; }
+    .assert-card:nth-child(2) { animation-delay:.12s; }
+    .assert-card:nth-child(3) { animation-delay:.19s; }
+    .assert-card:nth-child(4) { animation-delay:.26s; }
+    .assert-card:nth-child(5) { animation-delay:.33s; }
+    .assert-card:nth-child(6) { animation-delay:.40s; }
+
+    .assert-fn   { font-family: monospace; font-size: .78rem; font-weight: 700; color: #8b5cf6; margin-bottom: 6px; }
+    .assert-desc { font-size: .78rem; color: var(--muted); }
+    .assert-ok   { font-size: .72rem; color: #2ead33; margin-top: 6px; }
+
+    /* Tip box */
+    .tip-box {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+      padding: 16px; margin-top: 20px;
+      animation: apiCardIn .5s ease forwards;
+    }
+    .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .tip-text { font-size: .85rem; color: #166534; line-height: 1.7; }
+    .tip-text strong { display: block; margin-bottom: 4px; }
+
+    .warn-box {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+      padding: 16px; margin-top: 12px;
+    }
+    .warn-text { font-size: .85rem; color: #78350f; line-height: 1.7; }
+
+    /* ── Selectors visual ── */
+    .selector-demo {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;
+    }
+    .sel-card {
+      border-radius: 10px; border: 1px solid var(--border); overflow: hidden;
+      opacity: 0; animation: apiCardIn .4s ease forwards;
+    }
+    .sel-card:nth-child(1){animation-delay:.05s}
+    .sel-card:nth-child(2){animation-delay:.12s}
+    .sel-card:nth-child(3){animation-delay:.19s}
+    .sel-card:nth-child(4){animation-delay:.26s}
+
+    .sel-header { padding: 10px 14px; font-size: .75rem; font-weight: 700; color: #fff; }
+    .sel-card:nth-child(1) .sel-header { background: #1d5a9a; }
+    .sel-card:nth-child(2) .sel-header { background: #166534; }
+    .sel-card:nth-child(3) .sel-header { background: #5b21b6; }
+    .sel-card:nth-child(4) .sel-header { background: #92400e; }
+    .sel-body { padding: 12px 14px; font-size: .78rem; color: var(--muted); }
+    .sel-code { font-family: monospace; font-size: .76rem; background: #f4f4f4; border-radius: 5px; padding: 4px 8px; margin-top: 6px; color: #333; display: inline-block; }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      .nav { padding: 0 20px; }
+      .page-hero { padding: 36px 20px; }
+      .page-hero-inner { flex-direction: column; }
+      .hero-browser { width: 100%; }
+      .content { padding: 28px 16px; gap: 20px; }
+      .section { padding: 24px 18px; }
+      .page-title { font-size: 1.8rem; }
+      .api-grid { grid-template-columns: 1fr 1fr; }
+      .assert-grid { grid-template-columns: 1fr; }
+      .selector-demo { grid-template-columns: 1fr; }
+    }
+
+    footer {
+      text-align: center; padding: 32px;
+      color: var(--muted); font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="index.html">Dev Motion Cheats</a>
+  <span class="nav-sep">›</span>
+  <span class="nav-current">Playwright</span>
+  <div class="lang-switch">
+    <button class="lang-opt active" data-lang-opt="en">EN</button>
+    <button class="lang-opt" data-lang-opt="ja">日本語</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-text">
+      <div class="page-badge">E2E Testing</div>
+      <h1 class="page-title" data-i18n="hero.title">🎭 Playwright<br><em>From Zero to CI</em></h1>
+      <p class="page-desc" data-i18n="hero.desc">Learn end-to-end testing with Playwright — browser automation, writing your first test, and running it on GitHub Actions.</p>
+    </div>
+    <div class="hero-browser">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dot"></div>
+          <div class="browser-dot"></div>
+          <div class="browser-dot"></div>
+          <div class="browser-url">localhost:3000/login</div>
+        </div>
+        <div class="browser-content">
+          <!-- SVG cursor -->
+          <svg class="cursor" viewBox="0 0 18 18" fill="none">
+            <path d="M2 2L8 16L10.5 10.5L16 8L2 2Z" fill="white" stroke="#333" stroke-width="1.2"/>
+          </svg>
+          <div class="fake-page">
+            <div class="fake-header"></div>
+            <div class="fake-input">user@example.com</div>
+            <div class="fake-input">••••••••</div>
+            <div class="fake-btn">Login</div>
+          </div>
+          <div class="test-badge">✓ 3 tests passed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="content">
+
+  <!-- ──────────────────────────────────────
+       SECTION 0: Playwrightとは？
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🎭</span>
+      <span data-i18n="s0.title">What is Playwright?</span>
+      <button class="play-btn" onclick="replayZone(this,'zone-s0')">▶ Play</button>
+    </div>
+    <p class="section-desc" data-i18n="s0.desc">
+      Playwright is a tool made by Microsoft that <strong>automates real browsers</strong> (Chromium, Firefox, WebKit) to test your web app just like a real user would — clicking buttons, filling forms, checking results.
+    </p>
+
+    <div id="zone-s0" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0;">
+      <div style="text-align:center;padding:20px;background:#f8f8f6;border-radius:10px;border:1px solid var(--border);opacity:0;animation:apiCardIn .5s ease .1s forwards;">
+        <div style="font-size:2rem;margin-bottom:8px;">🖥️</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;" data-i18n="s0.f1">Multi-Browser</div>
+        <div style="font-size:.78rem;color:var(--muted);" data-i18n="s0.f1d">Chrome, Firefox, Safari</div>
+      </div>
+      <div style="text-align:center;padding:20px;background:#f8f8f6;border-radius:10px;border:1px solid var(--border);opacity:0;animation:apiCardIn .5s ease .2s forwards;">
+        <div style="font-size:2rem;margin-bottom:8px;">⚡</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;" data-i18n="s0.f2">Fast & Reliable</div>
+        <div style="font-size:.78rem;color:var(--muted);" data-i18n="s0.f2d">Auto-wait, no flakiness</div>
+      </div>
+      <div style="text-align:center;padding:20px;background:#f8f8f6;border-radius:10px;border:1px solid var(--border);opacity:0;animation:apiCardIn .5s ease .3s forwards;">
+        <div style="font-size:2rem;margin-bottom:8px;">📸</div>
+        <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;" data-i18n="s0.f3">Screenshots & Video</div>
+        <div style="font-size:.78rem;color:var(--muted);" data-i18n="s0.f3d">Record failures automatically</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-icon">💡</span>
+      <div class="tip-text">
+        <strong data-i18n="s0.tip.title">E2E Test = "End to End" test</strong>
+        <span data-i18n="s0.tip.body">It simulates a real user flow — open browser → navigate → click → type → check result. Unlike unit tests, E2E tests check the whole app from the browser's perspective.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 1: インストール
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📦</span>
+      <span data-i18n="s1.title">Installation</span>
+      <span class="tag tag-green" data-i18n="s1.tag">Step 1</span>
+      <button class="play-btn" onclick="replayZone(this,'zone-s1')">▶ Play</button>
+    </div>
+    <p class="section-desc" data-i18n="s1.desc">Run one command and Playwright sets everything up — test framework, browsers, and config file.</p>
+
+    <div id="zone-s1" class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-title">Terminal</div>
+      </div>
+      <div class="terminal-body">
+        <div class="term-line">
+          <span class="term-prompt">$</span>
+          <span class="term-cmd">npm init playwright@latest</span>
+        </div>
+        <div class="term-line">
+          <span class="term-out">✔ Do you want to use TypeScript?</span>
+          <span class="term-ok" style="margin-left:8px;">· Yes</span>
+        </div>
+        <div class="term-line">
+          <span class="term-out">✔ Where to put your tests?</span>
+          <span class="term-ok" style="margin-left:8px;">· tests</span>
+        </div>
+        <div class="term-line">
+          <span class="term-out">✔ Add GitHub Actions workflow?</span>
+          <span class="term-ok" style="margin-left:8px;">· Yes</span>
+        </div>
+        <div class="term-line">
+          <span class="term-out">✔ Install Playwright browsers?</span>
+          <span class="term-ok" style="margin-left:8px;">· Yes</span>
+        </div>
+        <div class="term-line">
+          <span class="term-info">📦 Installing @playwright/test ...</span>
+        </div>
+        <div class="term-line">
+          <span class="term-ok">✅ Playwright is ready! Run:</span>
+          <span class="term-cmd" style="margin-left:8px;">npx playwright test</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;font-size:.85rem;color:var(--muted);" data-i18n="s1.result">
+      This creates: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">playwright.config.ts</code>, <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">tests/</code>, and a GitHub Actions workflow file.
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 2: 最初のテスト
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">✍️</span>
+      <span data-i18n="s2.title">Your First Test</span>
+      <span class="tag tag-blue" data-i18n="s2.tag">Step 2</span>
+      <button class="play-btn" onclick="replayZone(this,'zone-s2')">▶ Play</button>
+    </div>
+    <p class="section-desc" data-i18n="s2.desc">A Playwright test file is simple JavaScript/TypeScript. Here's a real login test with annotations explaining each line.</p>
+
+    <div id="zone-s2" class="annotated-code">
+      <div class="anno-bar">tests/login.spec.ts</div>
+      <div class="anno-body">
+        <div class="anno-numbers">
+          <span class="anno-num">1</span><span class="anno-num">2</span><span class="anno-num">3</span>
+          <span class="anno-num">4</span><span class="anno-num">5</span><span class="anno-num">6</span>
+          <span class="anno-num">7</span><span class="anno-num">8</span><span class="anno-num">9</span>
+          <span class="anno-num">10</span><span class="anno-num">11</span><span class="anno-num">12</span>
+          <span class="anno-num">13</span>
+        </div>
+        <div class="anno-lines">
+          <div class="anno-line">
+            <span class="anno-code" style="color:#ff7b72;">import</span><span class="anno-code" style="color:#c9d1d9;"> { test, expect } </span><span class="anno-code" style="color:#ff7b72;">from</span><span class="anno-code" style="color:#a5d6ff;"> '@playwright/test'</span><span class="anno-code" style="color:#c9d1d9;">;</span>
+            <span class="anno-tip" data-i18n="anno.1">Import test runner</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#484f58;">&nbsp;</span></div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#d2a8ff;">test</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'login with valid credentials'</span><span class="anno-code" style="color:#c9d1d9;">, </span><span class="anno-code" style="color:#ff7b72;">async</span><span class="anno-code" style="color:#c9d1d9;"> ({ page }) =&gt; {</span>
+            <span class="anno-tip" data-i18n="anno.3">Test name + async function</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#484f58;">&nbsp;</span></div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#c9d1d9;">&nbsp;&nbsp;</span><span class="anno-code" style="color:#ff7b72;">await</span><span class="anno-code" style="color:#c9d1d9;"> page.</span><span class="anno-code" style="color:#d2a8ff;">goto</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'http://localhost:3000/login'</span><span class="anno-code" style="color:#c9d1d9;">);</span>
+            <span class="anno-tip" data-i18n="anno.5">Open the page</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#484f58;">&nbsp;</span></div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#c9d1d9;">&nbsp;&nbsp;</span><span class="anno-code" style="color:#ff7b72;">await</span><span class="anno-code" style="color:#c9d1d9;"> page.</span><span class="anno-code" style="color:#d2a8ff;">getByLabel</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'Email'</span><span class="anno-code" style="color:#c9d1d9;">).</span><span class="anno-code" style="color:#d2a8ff;">fill</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'user@example.com'</span><span class="anno-code" style="color:#c9d1d9;">);</span>
+            <span class="anno-tip" data-i18n="anno.7">Type in email field</span>
+          </div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#c9d1d9;">&nbsp;&nbsp;</span><span class="anno-code" style="color:#ff7b72;">await</span><span class="anno-code" style="color:#c9d1d9;"> page.</span><span class="anno-code" style="color:#d2a8ff;">getByLabel</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'Password'</span><span class="anno-code" style="color:#c9d1d9;">).</span><span class="anno-code" style="color:#d2a8ff;">fill</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'secret'</span><span class="anno-code" style="color:#c9d1d9;">);</span>
+            <span class="anno-tip" data-i18n="anno.8">Type in password field</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#484f58;">&nbsp;</span></div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#c9d1d9;">&nbsp;&nbsp;</span><span class="anno-code" style="color:#ff7b72;">await</span><span class="anno-code" style="color:#c9d1d9;"> page.</span><span class="anno-code" style="color:#d2a8ff;">getByRole</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'button'</span><span class="anno-code" style="color:#c9d1d9;">, { name: </span><span class="anno-code" style="color:#a5d6ff;">'Login'</span><span class="anno-code" style="color:#c9d1d9;"> }).</span><span class="anno-code" style="color:#d2a8ff;">click</span><span class="anno-code" style="color:#c9d1d9;">();</span>
+            <span class="anno-tip" data-i18n="anno.10">Click the Login button</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#484f58;">&nbsp;</span></div>
+          <div class="anno-line">
+            <span class="anno-code" style="color:#ff7b72;">&nbsp;&nbsp;await</span><span class="anno-code" style="color:#c9d1d9;"> </span><span class="anno-code" style="color:#d2a8ff;">expect</span><span class="anno-code" style="color:#c9d1d9;">(page).</span><span class="anno-code" style="color:#d2a8ff;">toHaveURL</span><span class="anno-code" style="color:#c9d1d9;">(</span><span class="anno-code" style="color:#a5d6ff;">'/dashboard'</span><span class="anno-code" style="color:#c9d1d9;">);</span>
+            <span class="anno-tip" data-i18n="anno.12">Check we're now on /dashboard</span>
+          </div>
+          <div class="anno-line"><span class="anno-code" style="color:#c9d1d9;">});</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-icon">⚡</span>
+      <div class="tip-text">
+        <strong data-i18n="s2.tip.title">Auto-wait is built in!</strong>
+        <span data-i18n="s2.tip.body">You don't need <code>sleep()</code> or manual waits. Playwright automatically waits for elements to appear, be visible, and be clickable before interacting.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 3: よく使うAPI
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🔧</span>
+      <span data-i18n="s3.title">Essential APIs</span>
+    </div>
+    <p class="section-desc" data-i18n="s3.desc">These are the commands you'll use in almost every test. Hover each card to see details.</p>
+
+    <div class="api-grid">
+      <div class="api-card">
+        <div class="api-method">page.goto()</div>
+        <div class="api-desc" data-i18n="api1.desc">Navigate to a URL</div>
+        <div class="api-example">await page.goto('/home')</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.click()</div>
+        <div class="api-desc" data-i18n="api2.desc">Click an element</div>
+        <div class="api-example">await page.click('button')</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.fill()</div>
+        <div class="api-desc" data-i18n="api3.desc">Type into an input field</div>
+        <div class="api-example">await page.fill('#name', 'Alice')</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.locator()</div>
+        <div class="api-desc" data-i18n="api4.desc">Find elements (recommended)</div>
+        <div class="api-example">page.locator('.submit-btn')</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.waitForURL()</div>
+        <div class="api-desc" data-i18n="api5.desc">Wait for navigation to complete</div>
+        <div class="api-example">await page.waitForURL('/done')</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.screenshot()</div>
+        <div class="api-desc" data-i18n="api6.desc">Take a screenshot of the page</div>
+        <div class="api-example">await page.screenshot({path:'s.png'})</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.getByRole()</div>
+        <div class="api-desc" data-i18n="api7.desc">Find by ARIA role (best practice)</div>
+        <div class="api-example">page.getByRole('button',{name:'OK'})</div>
+      </div>
+      <div class="api-card">
+        <div class="api-method">page.getByText()</div>
+        <div class="api-desc" data-i18n="api8.desc">Find by visible text content</div>
+        <div class="api-example">page.getByText('Welcome back!')</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 4: セレクター
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🎯</span>
+      <span data-i18n="s4.title">How to Find Elements (Selectors)</span>
+    </div>
+    <p class="section-desc" data-i18n="s4.desc">Playwright recommends finding elements the way users see them — by role, label, or text — rather than fragile CSS selectors.</p>
+
+    <div class="selector-demo">
+      <div class="sel-card">
+        <div class="sel-header">✅ <span data-i18n="sel1.title">Best: By Role</span></div>
+        <div class="sel-body">
+          <div data-i18n="sel1.desc">Find by ARIA role — most resilient to UI changes.</div>
+          <div class="sel-code">page.getByRole('button', {name: 'Submit'})</div>
+          <div class="sel-code">page.getByRole('link', {name: 'Home'})</div>
+          <div class="sel-code">page.getByRole('textbox')</div>
+        </div>
+      </div>
+      <div class="sel-card">
+        <div class="sel-header">✅ <span data-i18n="sel2.title">Best: By Label</span></div>
+        <div class="sel-body">
+          <div data-i18n="sel2.desc">Find inputs by their &lt;label&gt; text — mirrors how users see forms.</div>
+          <div class="sel-code">page.getByLabel('Email')</div>
+          <div class="sel-code">page.getByLabel('Password')</div>
+          <div class="sel-code">page.getByPlaceholder('Search...')</div>
+        </div>
+      </div>
+      <div class="sel-card">
+        <div class="sel-header">🆗 <span data-i18n="sel3.title">OK: By Test ID</span></div>
+        <div class="sel-body">
+          <div data-i18n="sel3.desc">Add <code>data-testid</code> attributes to HTML for stable selectors.</div>
+          <div class="sel-code">page.getByTestId('login-btn')</div>
+          <div class="sel-code"><span style="color:#666;">&lt;!-- HTML: --&gt;</span></div>
+          <div class="sel-code">&lt;button data-testid="login-btn"&gt;</div>
+        </div>
+      </div>
+      <div class="sel-card">
+        <div class="sel-header">⚠️ <span data-i18n="sel4.title">Avoid: CSS Selectors</span></div>
+        <div class="sel-body">
+          <div data-i18n="sel4.desc">CSS class names change often — tests break easily.</div>
+          <div class="sel-code" style="color:#ef4444;">page.locator('.btn-primary')</div>
+          <div class="sel-code" style="color:#ef4444;">page.locator('#login-form input')</div>
+          <div style="font-size:.75rem;color:#ef4444;margin-top:6px;" data-i18n="sel4.warn">⚠ CSS classes can change, breaking tests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 5: アサーション
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">✅</span>
+      <span data-i18n="s5.title">Assertions — Checking Results</span>
+    </div>
+    <p class="section-desc" data-i18n="s5.desc">Use <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">expect()</code> to verify the page looks and behaves correctly. These auto-wait for the condition to be true.</p>
+
+    <div class="assert-grid">
+      <div class="assert-card">
+        <div class="assert-fn">toHaveURL(pattern)</div>
+        <div class="assert-desc" data-i18n="a1.desc">Check the current URL</div>
+        <div class="assert-ok">await expect(page).toHaveURL('/dashboard')</div>
+      </div>
+      <div class="assert-card">
+        <div class="assert-fn">toHaveText(text)</div>
+        <div class="assert-desc" data-i18n="a2.desc">Check element text content</div>
+        <div class="assert-ok">await expect(heading).toHaveText('Welcome!')</div>
+      </div>
+      <div class="assert-card">
+        <div class="assert-fn">toBeVisible()</div>
+        <div class="assert-desc" data-i18n="a3.desc">Element is visible on screen</div>
+        <div class="assert-ok">await expect(modal).toBeVisible()</div>
+      </div>
+      <div class="assert-card">
+        <div class="assert-fn">toBeEnabled()</div>
+        <div class="assert-desc" data-i18n="a4.desc">Button/input is not disabled</div>
+        <div class="assert-ok">await expect(submitBtn).toBeEnabled()</div>
+      </div>
+      <div class="assert-card">
+        <div class="assert-fn">toHaveValue(val)</div>
+        <div class="assert-desc" data-i18n="a5.desc">Input field has a certain value</div>
+        <div class="assert-ok">await expect(input).toHaveValue('alice')</div>
+      </div>
+      <div class="assert-card">
+        <div class="assert-fn">toHaveCount(n)</div>
+        <div class="assert-desc" data-i18n="a6.desc">Number of matching elements</div>
+        <div class="assert-ok">await expect(rows).toHaveCount(5)</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-icon">🚦</span>
+      <div class="tip-text">
+        <strong data-i18n="s5.tip.title">Soft Assertions</strong>
+        <span data-i18n="s5.tip.body">Use <code>expect.soft()</code> to collect all failures and report them at once, instead of stopping at the first failure. Great for checking multiple UI elements.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 6: テスト実行
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">▶️</span>
+      <span data-i18n="s6.title">Running Tests</span>
+      <button class="play-btn" onclick="replayZone(this,'zone-s6')">▶ Play</button>
+    </div>
+    <p class="section-desc" data-i18n="s6.desc">Run tests from the terminal. Playwright shows a beautiful result summary.</p>
+
+    <div id="zone-s6" class="test-runner">
+      <div class="test-suite">tests/login.spec.ts</div>
+      <div class="test-item">
+        <div class="test-icon pass">✓</div>
+        <div class="test-name" style="color:#c9d1d9;" data-i18n="t1">login with valid credentials</div>
+        <div class="test-time">248ms</div>
+      </div>
+      <div class="test-item">
+        <div class="test-icon pass">✓</div>
+        <div class="test-name" style="color:#c9d1d9;" data-i18n="t2">shows error for wrong password</div>
+        <div class="test-time">193ms</div>
+      </div>
+      <div class="test-item">
+        <div class="test-icon pass">✓</div>
+        <div class="test-name" style="color:#c9d1d9;" data-i18n="t3">redirects to dashboard after login</div>
+        <div class="test-time">310ms</div>
+      </div>
+      <div class="test-item">
+        <div class="test-icon skip">○</div>
+        <div class="test-name" style="color:#6e7681;" data-i18n="t4">social login (skipped)</div>
+        <div class="test-time">-</div>
+      </div>
+      <div class="test-summary">
+        ✅ 3 passed · ○ 1 skipped · 0 failed  (751ms)
+      </div>
+    </div>
+
+    <div class="code-block">
+<span class="c-comment"># Run all tests</span>
+<span class="c-cmd">npx playwright test</span>
+
+<span class="c-comment"># Run a specific file</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">tests/login.spec.ts</span>
+
+<span class="c-comment"># Run with browser visible (headed mode — great for debugging!)</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--headed</span>
+
+<span class="c-comment"># Open interactive UI mode</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--ui</span>
+
+<span class="c-comment"># Open HTML report after tests</span>
+<span class="c-cmd">npx playwright show-report</span>
+
+<span class="c-comment"># Debug a test step-by-step</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--debug</span>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 7: GitHub Actions
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🚀</span>
+      <span data-i18n="s7.title">GitHub Actions — Run Tests on Every Push</span>
+      <span class="tag tag-purple" data-i18n="s7.tag">CI/CD</span>
+      <button class="play-btn" onclick="replayZone(this,'zone-s7')">▶ Play</button>
+    </div>
+    <p class="section-desc" data-i18n="s7.desc">Set up automated E2E tests that run on every Pull Request — catching bugs before they reach production.</p>
+
+    <!-- Pipeline steps -->
+    <div id="zone-s7" class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <div class="step-title">📤 <span data-i18n="pipe1.title">Push code / open PR</span></div>
+          <div class="step-desc" data-i18n="pipe1.desc">Developer pushes code or opens a Pull Request — this triggers the workflow automatically.</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <div class="step-title">🖥️ <span data-i18n="pipe2.title">GitHub spins up a virtual machine</span></div>
+          <div class="step-desc" data-i18n="pipe2.desc">A fresh Ubuntu runner is created in the cloud — clean, isolated environment every time.</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <div class="step-title">📦 <span data-i18n="pipe3.title">Install dependencies + browsers</span></div>
+          <div class="step-desc" data-i18n="pipe3.desc"><code>npm ci</code> installs your packages, then Playwright installs Chromium, Firefox, WebKit.</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <div class="step-title">🎭 <span data-i18n="pipe4.title">Run Playwright tests</span></div>
+          <div class="step-desc" data-i18n="pipe4.desc">All tests run headlessly (no display needed). Playwright records screenshots & videos on failure.</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <div class="step-title">📊 <span data-i18n="pipe5.title">Upload HTML report as artifact</span></div>
+          <div class="step-desc" data-i18n="pipe5.desc">The full test report (with screenshots) is saved and downloadable from the GitHub Actions UI.</div>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">6</div>
+        <div class="step-content">
+          <div class="step-title">✅ <span data-i18n="pipe6.title">PR gets green ✓ or red ✗</span></div>
+          <div class="step-desc" data-i18n="pipe6.desc">GitHub marks the PR as passing or failing. You can block merging until all tests pass.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YAML file -->
+    <div class="yaml-block">
+      <div class="yaml-header">
+        <span class="file-icon">📄</span>
+        <span class="file-name">.github/workflows/playwright.yml</span>
+        <span class="file-badge">Auto-generated ✓</span>
+      </div>
+      <div class="yaml-body">
+<span class="yaml-line"><span class="c-yaml-key">name:</span> <span class="c-yaml-val">Playwright E2E Tests</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line"><span class="c-yaml-key">on:</span></span>
+<span class="yaml-line">  <span class="c-yaml-key">push:</span></span>
+<span class="yaml-line">    <span class="c-yaml-key">branches:</span> <span class="c-yaml-val">[ main ]</span>     <span class="c-comment"># mainへのpushで実行</span></span>
+<span class="yaml-line">  <span class="c-yaml-key">pull_request:</span></span>
+<span class="yaml-line">    <span class="c-yaml-key">branches:</span> <span class="c-yaml-val">[ main ]</span>     <span class="c-comment"># PRを開いたときも実行</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line"><span class="c-yaml-key">jobs:</span></span>
+<span class="yaml-line">  <span class="c-yaml-key">test:</span></span>
+<span class="yaml-line">    <span class="c-yaml-key">runs-on:</span> <span class="c-yaml-val">ubuntu-latest</span>  <span class="c-comment"># 仮想マシンのOS</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">    <span class="c-yaml-key">steps:</span></span>
+<span class="yaml-line">      - <span class="c-yaml-key">uses:</span> <span class="c-yaml-val">actions/checkout@v4</span>      <span class="c-comment"># コードを取得</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">      - <span class="c-yaml-key">uses:</span> <span class="c-yaml-val">actions/setup-node@v4</span>    <span class="c-comment"># Node.jsをセットアップ</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">with:</span></span>
+<span class="yaml-line">          <span class="c-yaml-key">node-version:</span> <span class="c-yaml-val">20</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">      - <span class="c-yaml-key">name:</span> <span class="c-yaml-val">Install dependencies</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">run:</span> <span class="c-yaml-val">npm ci</span>                   <span class="c-comment"># package-lock.jsonから正確にインストール</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">      - <span class="c-yaml-key">name:</span> <span class="c-yaml-val">Install Playwright Browsers</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">run:</span> <span class="c-yaml-val">npx playwright install --with-deps</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">      - <span class="c-yaml-key">name:</span> <span class="c-yaml-val">Run Playwright tests</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">run:</span> <span class="c-yaml-val">npx playwright test</span></span>
+<span class="yaml-line">&nbsp;</span>
+<span class="yaml-line">      - <span class="c-yaml-key">uses:</span> <span class="c-yaml-val">actions/upload-artifact@v4</span>  <span class="c-comment"># テスト結果を保存</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">if:</span> <span class="c-yaml-val">always()</span>                    <span class="c-comment"># 失敗しても必ずアップロード</span></span>
+<span class="yaml-line">        <span class="c-yaml-key">with:</span></span>
+<span class="yaml-line">          <span class="c-yaml-key">name:</span> <span class="c-yaml-val">playwright-report</span></span>
+<span class="yaml-line">          <span class="c-yaml-key">path:</span> <span class="c-yaml-val">playwright-report/</span></span>
+<span class="yaml-line">          <span class="c-yaml-key">retention-days:</span> <span class="c-yaml-val">30</span></span>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <span style="font-size:1.1rem;flex-shrink:0;">💡</span>
+      <div class="warn-text" data-i18n="s7.warn">
+        <strong>Tip:</strong> If your app needs to run during tests, add a <code>webServer</code> option to <code>playwright.config.ts</code> — Playwright will start your dev server automatically before running tests.
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       SECTION 8: 便利なコマンド集
+  ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">⚡</span>
+      <span data-i18n="s8.title">Pro Tips & Useful Commands</span>
+    </div>
+
+    <div class="code-block">
+<span class="c-comment"># Generate test code by clicking in the browser (Codegen!)</span>
+<span class="c-cmd">npx playwright codegen</span> <span class="c-arg">https://example.com</span>
+
+<span class="c-comment"># Run only tests with a specific tag</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--grep "@smoke"</span>
+
+<span class="c-comment"># Run tests in parallel across N workers</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--workers=4</span>
+
+<span class="c-comment"># Run against a specific browser only</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--project=firefox</span>
+
+<span class="c-comment"># Retry failed tests (great for flaky CI)</span>
+<span class="c-cmd">npx playwright test</span> <span class="c-arg">--retries=2</span>
+
+<span class="c-comment"># Take a screenshot at a specific moment in your test</span>
+<span class="c-keyword">await</span> page.<span class="c-fn">screenshot</span>({ path: <span class="c-string">'debug.png'</span>, fullPage: <span class="c-number">true</span> });
+
+<span class="c-comment"># Pause test execution and open DevTools (only in --debug mode)</span>
+<span class="c-keyword">await</span> page.<span class="c-fn">pause</span>();
+    </div>
+
+    <div class="tip-box" style="margin-top:0;">
+      <span class="tip-icon">🎬</span>
+      <div class="tip-text">
+        <strong data-i18n="s8.tip.title">Use Codegen to write tests faster!</strong>
+        <span data-i18n="s8.tip.body"><code>npx playwright codegen</code> opens a browser where you interact with your site — and Playwright writes the test code for you automatically. Perfect for beginners!</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>&copy; 2024 Dev Motion Cheats</footer>
+
+<script>
+  function replayZone(btn, zoneId) {
+    const zone = document.getElementById(zoneId);
+    if (!zone) return;
+    btn.disabled = true;
+    btn.innerHTML = '⟳ Playing…';
+    const els = [zone, ...zone.querySelectorAll('*')];
+    els.forEach(el => { el.style.animation = 'none'; });
+    void zone.offsetWidth;
+    requestAnimationFrame(() => {
+      els.forEach(el => { el.style.animation = ''; });
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '↺ Replay';
+      }, 600);
+    });
+  }
+
+  const i18n = {
+    en: {
+      'hero.title': '🎭 Playwright<br><em>From Zero to CI</em>',
+      'hero.desc': 'Learn end-to-end testing with Playwright — browser automation, writing your first test, and running it on GitHub Actions.',
+      's0.title': 'What is Playwright?',
+      's0.desc': 'Playwright is a tool made by Microsoft that <strong>automates real browsers</strong> (Chromium, Firefox, WebKit) to test your web app just like a real user would — clicking buttons, filling forms, checking results.',
+      's0.f1': 'Multi-Browser', 's0.f1d': 'Chrome, Firefox, Safari',
+      's0.f2': 'Fast & Reliable', 's0.f2d': 'Auto-wait, no flakiness',
+      's0.f3': 'Screenshots & Video', 's0.f3d': 'Record failures automatically',
+      's0.tip.title': 'E2E Test = "End to End" test',
+      's0.tip.body': 'It simulates a real user flow — open browser → navigate → click → type → check result. Unlike unit tests, E2E tests check the whole app from the browser\'s perspective.',
+      's1.title': 'Installation', 's1.tag': 'Step 1',
+      's1.desc': 'Run one command and Playwright sets everything up — test framework, browsers, and config file.',
+      's1.result': 'This creates: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">playwright.config.ts</code>, <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">tests/</code>, and a GitHub Actions workflow file.',
+      's2.title': 'Your First Test', 's2.tag': 'Step 2',
+      's2.desc': 'A Playwright test file is simple JavaScript/TypeScript. Here\'s a real login test with annotations explaining each line.',
+      'anno.1': 'Import test runner', 'anno.3': 'Test name + async function',
+      'anno.5': 'Open the page', 'anno.7': 'Type in email field',
+      'anno.8': 'Type in password field', 'anno.10': 'Click the Login button',
+      'anno.12': 'Check we\'re now on /dashboard',
+      's2.tip.title': 'Auto-wait is built in!',
+      's2.tip.body': 'You don\'t need <code>sleep()</code> or manual waits. Playwright automatically waits for elements to appear, be visible, and be clickable before interacting.',
+      's3.title': 'Essential APIs',
+      's3.desc': 'These are the commands you\'ll use in almost every test. Hover each card to see details.',
+      'api1.desc': 'Navigate to a URL', 'api2.desc': 'Click an element',
+      'api3.desc': 'Type into an input field', 'api4.desc': 'Find elements (recommended)',
+      'api5.desc': 'Wait for navigation to complete', 'api6.desc': 'Take a screenshot of the page',
+      'api7.desc': 'Find by ARIA role (best practice)', 'api8.desc': 'Find by visible text content',
+      's4.title': 'How to Find Elements (Selectors)',
+      's4.desc': 'Playwright recommends finding elements the way users see them — by role, label, or text — rather than fragile CSS selectors.',
+      'sel1.title': 'Best: By Role', 'sel1.desc': 'Find by ARIA role — most resilient to UI changes.',
+      'sel2.title': 'Best: By Label', 'sel2.desc': 'Find inputs by their &lt;label&gt; text — mirrors how users see forms.',
+      'sel3.title': 'OK: By Test ID', 'sel3.desc': 'Add <code>data-testid</code> attributes to HTML for stable selectors.',
+      'sel4.title': 'Avoid: CSS Selectors', 'sel4.desc': 'CSS class names change often — tests break easily.',
+      'sel4.warn': '⚠ CSS classes can change, breaking tests',
+      's5.title': 'Assertions — Checking Results',
+      's5.desc': 'Use <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">expect()</code> to verify the page looks and behaves correctly. These auto-wait for the condition to be true.',
+      'a1.desc': 'Check the current URL', 'a2.desc': 'Check element text content',
+      'a3.desc': 'Element is visible on screen', 'a4.desc': 'Button/input is not disabled',
+      'a5.desc': 'Input field has a certain value', 'a6.desc': 'Number of matching elements',
+      's5.tip.title': 'Soft Assertions',
+      's5.tip.body': 'Use <code>expect.soft()</code> to collect all failures and report them at once, instead of stopping at the first failure. Great for checking multiple UI elements.',
+      's6.title': 'Running Tests',
+      's6.desc': 'Run tests from the terminal. Playwright shows a beautiful result summary.',
+      't1': 'login with valid credentials', 't2': 'shows error for wrong password',
+      't3': 'redirects to dashboard after login', 't4': 'social login (skipped)',
+      's7.title': 'GitHub Actions — Run Tests on Every Push', 's7.tag': 'CI/CD',
+      's7.desc': 'Set up automated E2E tests that run on every Pull Request — catching bugs before they reach production.',
+      'pipe1.title': 'Push code / open PR',
+      'pipe1.desc': 'Developer pushes code or opens a Pull Request — this triggers the workflow automatically.',
+      'pipe2.title': 'GitHub spins up a virtual machine',
+      'pipe2.desc': 'A fresh Ubuntu runner is created in the cloud — clean, isolated environment every time.',
+      'pipe3.title': 'Install dependencies + browsers',
+      'pipe3.desc': '<code>npm ci</code> installs your packages, then Playwright installs Chromium, Firefox, WebKit.',
+      'pipe4.title': 'Run Playwright tests',
+      'pipe4.desc': 'All tests run headlessly (no display needed). Playwright records screenshots & videos on failure.',
+      'pipe5.title': 'Upload HTML report as artifact',
+      'pipe5.desc': 'The full test report (with screenshots) is saved and downloadable from the GitHub Actions UI.',
+      'pipe6.title': 'PR gets green ✓ or red ✗',
+      'pipe6.desc': 'GitHub marks the PR as passing or failing. You can block merging until all tests pass.',
+      's7.warn': '<strong>Tip:</strong> If your app needs to run during tests, add a <code>webServer</code> option to <code>playwright.config.ts</code> — Playwright will start your dev server automatically before running tests.',
+      's8.title': 'Pro Tips & Useful Commands',
+      's8.tip.title': 'Use Codegen to write tests faster!',
+      's8.tip.body': '<code>npx playwright codegen</code> opens a browser where you interact with your site — and Playwright writes the test code for you automatically. Perfect for beginners!',
+    },
+    ja: {
+      'hero.title': '🎭 Playwright<br><em>ゼロからCI/CDまで</em>',
+      'hero.desc': 'Playwrightによるブラウザ自動テストを基礎から学ぼう — 最初のテストの書き方からGitHub Actionsでの自動化まで。',
+      's0.title': 'Playwrightとは？',
+      's0.desc': 'PlaywrightはMicrosoftが作ったツールで、<strong>実際のブラウザ</strong>（Chromium・Firefox・WebKit）を自動操作してWebアプリをテストします。まるで本物のユーザーがボタンを押したり、フォームを入力したりするように。',
+      's0.f1': 'マルチブラウザ対応', 's0.f1d': 'Chrome・Firefox・Safari',
+      's0.f2': '高速で安定', 's0.f2d': '自動待機、テスト揺れなし',
+      's0.f3': 'スクリーンショット・動画', 's0.f3d': 'テスト失敗時に自動記録',
+      's0.tip.title': 'E2Eテストとは？（End to End）',
+      's0.tip.body': '実際のユーザー操作を再現するテストです。ブラウザを開く → ページ遷移 → クリック → 入力 → 結果を確認。単体テストと違い、アプリ全体をブラウザ視点で確認できます。',
+      's1.title': 'インストール', 's1.tag': 'ステップ 1',
+      's1.desc': 'コマンド1つでPlaywrightが全部セットアップしてくれます — テストフレームワーク・ブラウザ・設定ファイルまで。',
+      's1.result': '作成されるファイル: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">playwright.config.ts</code>、<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;">tests/</code>フォルダ、GitHub Actionsのワークフローファイル。',
+      's2.title': '最初のテストを書く', 's2.tag': 'ステップ 2',
+      's2.desc': 'PlaywrightのテストはシンプルなJavaScript/TypeScriptです。ログインテストを例に、各行を解説します。',
+      'anno.1': 'テストランナーをimport', 'anno.3': 'テスト名 + 非同期関数',
+      'anno.5': 'ページを開く', 'anno.7': 'メールを入力',
+      'anno.8': 'パスワードを入力', 'anno.10': 'Loginボタンをクリック',
+      'anno.12': '/dashboardに遷移したか確認',
+      's2.tip.title': '自動waitが標準搭載！',
+      's2.tip.body': '<code>sleep()</code>や手動waitは不要。Playwrightは要素が表示・クリック可能になるまで自動で待機してからアクションを実行します。',
+      's3.title': 'よく使うAPI一覧',
+      's3.desc': 'ほぼ毎回使うコマンドです。ホバーすると詳細を確認できます。',
+      'api1.desc': 'URLに移動する', 'api2.desc': '要素をクリックする',
+      'api3.desc': '入力フィールドに文字を入力する', 'api4.desc': '要素を取得する（推奨）',
+      'api5.desc': 'URLの遷移を待つ', 'api6.desc': 'スクリーンショットを撮る',
+      'api7.desc': 'ARIAロールで要素を取得（ベストプラクティス）', 'api8.desc': '表示テキストで要素を取得',
+      's4.title': '要素の見つけ方（セレクター）',
+      's4.desc': 'Playwrightではユーザーが見ている通りに要素を探すことを推奨。ロール・ラベル・テキストで探し、壊れやすいCSSセレクターは避けましょう。',
+      'sel1.title': '推奨: ロールで探す', 'sel1.desc': 'ARIAロールで検索 — UI変更に最も強い。',
+      'sel2.title': '推奨: ラベルで探す', 'sel2.desc': '<label>テキストで入力欄を検索 — ユーザー視点と同じ。',
+      'sel3.title': '許容: data-testid', 'sel3.desc': 'HTMLに<code>data-testid</code>属性を追加して安定したセレクターを作る。',
+      'sel4.title': '非推奨: CSSセレクター', 'sel4.desc': 'CSSクラス名は頻繁に変わるため、テストが壊れやすい。',
+      'sel4.warn': '⚠ クラス名が変わるとテストが壊れます',
+      's5.title': 'アサーション — 結果を確認する',
+      's5.desc': '<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">expect()</code>を使ってページが正しく動作しているか確認します。条件が満たされるまで自動で待機します。',
+      'a1.desc': '現在のURLを確認', 'a2.desc': '要素のテキストを確認',
+      'a3.desc': '要素が画面に表示されているか', 'a4.desc': 'ボタン/入力が無効化されていないか',
+      'a5.desc': '入力フィールドの値を確認', 'a6.desc': 'マッチした要素の数を確認',
+      's5.tip.title': 'ソフトアサーション',
+      's5.tip.body': '<code>expect.soft()</code>を使うと、最初の失敗で止まらずにすべての検証を実行してまとめて報告してくれます。複数のUI要素を確認するときに便利。',
+      's6.title': 'テストを実行する',
+      's6.desc': 'ターミナルからテストを実行します。Playwrightが見やすい結果を表示してくれます。',
+      't1': 'ログイン成功（正しい認証情報）', 't2': 'パスワードが違う場合にエラー表示',
+      't3': 'ログイン後にダッシュボードへリダイレクト', 't4': 'ソーシャルログイン（スキップ）',
+      's7.title': 'GitHub Actions — pushするたびにテストを自動実行', 's7.tag': 'CI/CD',
+      's7.desc': 'Pull Requestのたびに自動でE2Eテストを実行し、本番に入る前にバグを検出する仕組みを作りましょう。',
+      'pipe1.title': 'コードをpush / PRを開く',
+      'pipe1.desc': '開発者がコードをpushするかPull Requestを開くと、ワークフローが自動でトリガーされます。',
+      'pipe2.title': 'GitHubが仮想マシンを起動',
+      'pipe2.desc': 'クリーンなUbuntu環境がクラウド上に毎回新たに作成されます。',
+      'pipe3.title': '依存パッケージ + ブラウザをインストール',
+      'pipe3.desc': '<code>npm ci</code>でパッケージをインストールし、PlaywrightがChromium・Firefox・WebKitをセットアップ。',
+      'pipe4.title': 'Playwrightテストを実行',
+      'pipe4.desc': 'ヘッドレスモード（画面なし）で全テストを実行。失敗時はスクリーンショット・動画を自動記録。',
+      'pipe5.title': 'HTMLレポートをアーティファクトとして保存',
+      'pipe5.desc': '完全なテストレポート（スクリーンショット付き）がGitHub ActionsのUIからダウンロードできます。',
+      'pipe6.title': 'PRに ✓ または ✗ が表示される',
+      'pipe6.desc': 'GitHubがPRをパス・失敗としてマーク。全テストが通るまでマージをブロックする設定も可能。',
+      's7.warn': '<strong>ヒント:</strong> テスト中にアプリを起動したい場合は、<code>playwright.config.ts</code>に<code>webServer</code>オプションを追加すると、テスト前に開発サーバーを自動起動してくれます。',
+      's8.title': 'プロのコツ & 便利コマンド集',
+      's8.tip.title': 'Codegenでテストコードを自動生成！',
+      's8.tip.body': '<code>npx playwright codegen</code>を実行するとブラウザが開き、操作するだけでPlaywrightがテストコードを自動で書いてくれます。初心者に最適！',
+    }
+  };
+
+  let lang = localStorage.getItem('lang') || 'en';
+
+  function applyLang(l) {
+    lang = l;
+    localStorage.setItem('lang', l);
+    document.documentElement.setAttribute('lang', l);
+    document.documentElement.setAttribute('data-lang', l);
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (i18n[l] && i18n[l][key] !== undefined) {
+        if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+          el.textContent = i18n[l][key];
+        } else {
+          el.innerHTML = i18n[l][key];
+        }
+      }
+    });
+    document.querySelectorAll('.lang-opt').forEach(b => {
+      b.classList.toggle('active', b.dataset.langOpt === l);
+    });
+  }
+
+  document.querySelectorAll('.lang-opt').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+  });
+
+  applyLang(lang);
+</script>
+
+</body>
+</html>

@@ -404,6 +404,18 @@
     .tr-rotate .tr-box { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s; }
     .tr-rotate:hover .tr-box { transform: rotate(90deg); background: #27ae60; }
 
+    /* ── Play / Replay Button ── */
+    .play-btn {
+      margin-left: auto; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--blue); color: #fff; border: none;
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 0.76rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+    }
+    .play-btn:hover:not(:disabled) { background: #2563eb; transform: scale(1.05); }
+    .play-btn:disabled { opacity: 0.55; cursor: default; }
+
     @media (max-width: 600px) {
       .nav, .page-hero { padding-left: 20px; padding-right: 20px; }
       .content { padding: 32px 20px; }
@@ -439,9 +451,10 @@
       <div class="section-header">
         <div class="section-num">1</div>
         <h2 class="section-title" data-i18n="s1.title">@keyframes — Defining Animations</h2>
+        <button class="play-btn" onclick="replayBounce(this)">▶ Play</button>
       </div>
 
-      <div class="demo-area">
+      <div class="demo-area" id="zone-bounce">
         <div class="bounce-stage">
           <div class="bounce-ball"></div>
           <div class="bounce-shadow"></div>
@@ -509,6 +522,7 @@
       <div class="section-header">
         <div class="section-num">3</div>
         <h2 class="section-title" data-i18n="s3.title">timing-function — Speed Curve Comparison</h2>
+        <button class="play-btn" onclick="startRace()">▶ Play</button>
       </div>
 
       <div class="demo-area">
@@ -676,13 +690,28 @@
     const btn = document.getElementById('race-btn');
     const balls = document.querySelectorAll('.race-ball');
 
-    btn.addEventListener('click', () => {
+    function replayBounce(btn) {
+      const zone = document.getElementById('zone-bounce');
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+      const els = [zone, ...zone.querySelectorAll('*')];
+      els.forEach(el => { el.style.animation = 'none'; });
+      void zone.offsetWidth;
+      requestAnimationFrame(() => {
+        els.forEach(el => { el.style.animation = ''; });
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 600);
+      });
+    }
+
+    function startRace() {
       balls.forEach(b => {
         b.classList.remove('go');
         void b.offsetWidth;
         b.classList.add('go');
       });
-    });
+    }
+
+    btn.addEventListener('click', startRace);
 
     /* ===== i18n ===== */
     const i18n = {

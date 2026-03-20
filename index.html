@@ -166,6 +166,8 @@
     }
 
     .card:nth-child(3) .card-icon { animation-delay: 3s; }
+    .card:nth-child(4) .card-icon { animation-delay: 4.5s; }
+    .card:nth-child(5) .card-icon { animation-delay: 6.0s; }
 
     .card {
       background: var(--white);
@@ -192,9 +194,11 @@
       transition: transform 0.3s ease;
     }
 
-    .card-css::after  { background: linear-gradient(90deg, #4a90e2, #9b59b6); }
-    .card-git::after  { background: linear-gradient(90deg, #e67e22, #e91e63); }
-    .card-auth::after { background: linear-gradient(90deg, #7c3aed, #0d9488); }
+    .card-css::after    { background: linear-gradient(90deg, #4a90e2, #9b59b6); }
+    .card-git::after    { background: linear-gradient(90deg, #e67e22, #e91e63); }
+    .card-auth::after   { background: linear-gradient(90deg, #7c3aed, #0d9488); }
+    .card-docker::after     { background: linear-gradient(90deg, #2496ed, #27ae60); }
+    .card-playwright::after { background: linear-gradient(90deg, #2ead33, #4a90e2); }
 
     .card:hover {
       transform: translateY(-6px);
@@ -240,9 +244,11 @@
       margin-top: 18px;
     }
 
-    .card-css  .card-badge { background: #e8f1fb; color: #2563eb; }
-    .card-git  .card-badge { background: #fef3e2; color: #b45309; }
-    .card-auth .card-badge { background: #f3e8ff; color: #6d28d9; }
+    .card-css    .card-badge { background: #e8f1fb; color: #2563eb; }
+    .card-git    .card-badge { background: #fef3e2; color: #b45309; }
+    .card-auth   .card-badge { background: #f3e8ff; color: #6d28d9; }
+    .card-docker     .card-badge { background: #e0f0ff; color: #0369a1; }
+    .card-playwright .card-badge { background: #dcfce7; color: #166534; }
 
     footer {
       text-align: center;
@@ -309,6 +315,18 @@
         <p data-i18n="card.auth.desc">Understand JWT token structure &amp; auth flow, and OAuth 2.0 Authorization Code flow through animations.</p>
         <span class="card-badge">Auth</span>
       </a>
+      <a href="docker.html" class="card card-docker">
+        <span class="card-icon">🐳</span>
+        <h2 data-i18n="card.docker.title">Docker &amp; AWS</h2>
+        <p data-i18n="card.docker.desc">Visualize Docker images, containers, and AWS services (ECR / ECS / Fargate) with layered animations.</p>
+        <span class="card-badge">Docker &amp; AWS</span>
+      </a>
+      <a href="playwright.html" class="card card-playwright">
+        <span class="card-icon">🎭</span>
+        <h2 data-i18n="card.playwright.title">Playwright E2E</h2>
+        <p data-i18n="card.playwright.desc">Learn browser automation from scratch — write your first test, master selectors, and run E2E tests on GitHub Actions.</p>
+        <span class="card-badge">Testing</span>
+      </a>
     </div>
   </section>
 
@@ -324,6 +342,10 @@
         'card.git.desc': 'Visualize add, commit, branch, merge, and push/pull flows with CSS animations.',
         'card.auth.title': 'Authentication (JWT / OAuth 2.0)',
         'card.auth.desc': 'Understand JWT token structure &amp; auth flow, and OAuth 2.0 Authorization Code flow through animations.',
+        'card.docker.title': 'Docker &amp; AWS',
+        'card.docker.desc': 'Visualize Docker images, containers, and AWS services (ECR / ECS / Fargate) with layered animations.',
+        'card.playwright.title': 'Playwright E2E',
+        'card.playwright.desc': 'Learn browser automation from scratch — write your first test, master selectors, and run E2E tests on GitHub Actions.',
       },
       ja: {
         'hero.title': '動いて<em>理解する</em><br>開発チートシート',
@@ -333,6 +355,10 @@
         'card.git.desc': 'add・commit・branch・merge・push/pull の動作を CSS アニメーションで視覚化。',
         'card.auth.title': '認証 (JWT / OAuth 2.0)',
         'card.auth.desc': 'JWT のトークン構造・認証フロー、OAuth 2.0 の認可コードフローをアニメーションで理解しよう。',
+        'card.docker.title': 'Docker &amp; AWS',
+        'card.docker.desc': 'Dockerイメージ・コンテナの仕組みと、ECR / ECS / Fargate をレイヤーアニメーションで視覚化。',
+        'card.playwright.title': 'Playwright E2E',
+        'card.playwright.desc': 'ブラウザ自動テストをゼロから学ぶ — 最初のテスト、セレクター、GitHub ActionsでのCI/CD自動化まで。',
       }
     };
 

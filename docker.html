@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker & AWS - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4f8;
+      --white: #fff;
+      --border: #e5e5e0;
+      --text: #1c1c1c;
+      --muted: #888;
+      --docker: #2496ed;
+      --aws: #ff9900;
+      --green: #27ae60;
+      --red: #e74c3c;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+    }
+    .nav a { color: var(--muted); text-decoration: none; }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-current { font-weight: 600; color: var(--docker); }
+
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .lang-opt {
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-opt.active { background: var(--text); color: #fff; }
+    .lang-opt:hover:not(.active) { background: var(--border); color: var(--text); }
+
+    /* ── Page Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      padding: 56px 48px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+    .page-badge {
+      display: inline-block;
+      background: rgba(36,150,237,0.2);
+      color: #60c1ff;
+      border: 1px solid rgba(36,150,237,0.4);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .page-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .page-desc { color: #a0b8cc; font-size: 1rem; }
+
+    /* Floating bubbles in hero bg */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(36,150,237,0.08);
+      animation: floatBubble linear infinite;
+    }
+    .bubble:nth-child(1) { width:120px; height:120px; top:10%; left:70%; animation-duration:8s; }
+    .bubble:nth-child(2) { width:60px;  height:60px;  top:60%; left:80%; animation-duration:5s; animation-delay:1s; }
+    .bubble:nth-child(3) { width:80px;  height:80px;  top:30%; left:90%; animation-duration:7s; animation-delay:3s; }
+    @keyframes floatBubble {
+      0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+      50%  { transform: translateY(-30px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    }
+
+    /* ── Content ── */
+    .content { max-width: 900px; margin: 0 auto; padding: 56px 48px; }
+
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title .icon { font-size: 1.6rem; }
+    .section-desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 32px; }
+
+    /* ── Docker Concept Tags ── */
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .tag-image { background: #e0f0ff; color: #1565c0; }
+    .tag-container { background: #e8f5e9; color: #2e7d32; }
+    .tag-aws { background: #fff3e0; color: #e65100; }
+
+    /* ═══════════════════════════════════════
+       ANIMATION 1: Image Layers
+    ═══════════════════════════════════════ */
+    .layers-demo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0;
+      position: relative;
+    }
+
+    .layer {
+      width: 340px;
+      height: 46px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #fff;
+      position: relative;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: layerSlide 0.5s ease forwards;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .layer + .layer { margin-top: 3px; }
+    .layer:nth-child(1) { background: #1a3a5c; animation-delay: 0.1s; }
+    .layer:nth-child(2) { background: #1d5a9a; animation-delay: 0.35s; }
+    .layer:nth-child(3) { background: #1d7ad4; animation-delay: 0.6s; }
+    .layer:nth-child(4) { background: #2496ed; animation-delay: 0.85s; }
+    .layer:nth-child(5) { background: #52b0f5; animation-delay: 1.1s; }
+
+    .layer .layer-label { flex: 1; }
+    .layer .layer-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 0.68rem;
+    }
+    .layer-arrow {
+      color: #4a90e2;
+      font-size: 1.2rem;
+      margin: 2px 0;
+      opacity: 0;
+      animation: layerSlide 0.5s ease forwards;
+    }
+    .layer-arrow:nth-of-type(2) { animation-delay: 0.22s; }
+    .layer-arrow:nth-of-type(3) { animation-delay: 0.47s; }
+    .layer-arrow:nth-of-type(4) { animation-delay: 0.72s; }
+    .layer-arrow:nth-of-type(5) { animation-delay: 0.97s; }
+
+    @keyframes layerSlide {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .readonly-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    /* ═══════════════════════════════════════
+       ANIMATION 2: Container lifecycle
+    ═══════════════════════════════════════ */
+    .container-demo {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 24px 0;
+    }
+
+    .cbox {
+      width: 150px;
+      border-radius: 12px;
+      border: 2px solid;
+      overflow: hidden;
+      animation: cboxAppear 0.6s ease forwards;
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    .cbox:nth-child(1) { animation-delay: 0.2s; border-color: #2496ed; }
+    .cbox:nth-child(2) { animation-delay: 0.5s; border-color: #27ae60; }
+    .cbox:nth-child(3) { animation-delay: 0.8s; border-color: #e67e22; }
+
+    @keyframes cboxAppear {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .cbox-header {
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cbox:nth-child(1) .cbox-header { background: #2496ed; }
+    .cbox:nth-child(2) .cbox-header { background: #27ae60; }
+    .cbox:nth-child(3) .cbox-header { background: #e67e22; }
+
+    .cbox-body {
+      padding: 10px 12px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--white);
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .cbox:nth-child(1) .status-dot { background: #7dd3fc; animation: pulse 1.5s ease-in-out infinite; }
+    .cbox:nth-child(2) .status-dot { background: #86efac; animation: pulse 1.5s ease-in-out infinite 0.3s; }
+    .cbox:nth-child(3) .status-dot { background: #fcd34d; animation: pulse 1.5s ease-in-out infinite 0.6s; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .image-source {
+      text-align: center;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #1d5a9a, #2496ed);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .spawn-arrows {
+      display: flex;
+      justify-content: center;
+      gap: 52px;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      color: #2496ed;
+    }
+    .spawn-arrow { animation: arrowBounce 1s ease-in-out infinite; }
+    .spawn-arrow:nth-child(2) { animation-delay: 0.15s; }
+    .spawn-arrow:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    .spawn-center { text-align: center; margin-bottom: 4px; }
+
+    /* ═══════════════════════════════════════
+       ANIMATION 3: Build Flow
+    ═══════════════════════════════════════ */
+    .flow-demo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 28px 0;
+    }
+
+    .flow-node {
+      border-radius: 12px;
+      padding: 16px 22px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      position: relative;
+      animation: nodeAppear 0.5s ease forwards;
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    .flow-node:nth-child(1) { background: #f8f0ff; border: 2px solid #9b59b6; color: #6d28d9; animation-delay: 0.1s; }
+    .flow-node:nth-child(3) { background: #e0f0ff; border: 2px solid #2496ed; color: #1565c0; animation-delay: 0.5s; }
+    .flow-node:nth-child(5) { background: #e8f5e9; border: 2px solid #27ae60; color: #2e7d32; animation-delay: 0.9s; }
+    .flow-node:nth-child(7) { background: #fff3e0; border: 2px solid #ff9900; color: #e65100; animation-delay: 1.3s; }
+
+    @keyframes nodeAppear {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .flow-node .node-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .flow-node .node-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; margin-top: 4px; }
+
+    .flow-arrow {
+      font-size: 1.4rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: arrowFade 0.4s ease forwards;
+    }
+    .flow-arrow:nth-child(2) { animation-delay: 0.3s; }
+    .flow-arrow:nth-child(4) { animation-delay: 0.7s; }
+    .flow-arrow:nth-child(6) { animation-delay: 1.1s; }
+
+    @keyframes arrowFade {
+      to { opacity: 1; }
+    }
+
+    .flow-cmd {
+      font-size: 0.68rem;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-family: monospace;
+      color: #555;
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════
+       ANIMATION 4: AWS Architecture
+    ═══════════════════════════════════════ */
+    .aws-diagram {
+      position: relative;
+      margin: 28px 0;
+    }
+
+    .aws-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .aws-box {
+      flex: 1;
+      max-width: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid;
+      animation: awsBoxIn 0.6s ease forwards;
+      transform: translateY(16px);
+      opacity: 0;
+    }
+    .aws-box:nth-child(1) { animation-delay: 0.1s; }
+    .aws-box:nth-child(2) { animation-delay: 0.3s; }
+    .aws-box:nth-child(3) { animation-delay: 0.5s; }
+    @keyframes awsBoxIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .aws-box.ecr { border-color: #ff9900; }
+    .aws-box.ecs { border-color: #e87722; }
+    .aws-box.fargate { border-color: #6d28d9; }
+
+    .aws-box-header {
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .aws-box.ecr .aws-box-header    { background: linear-gradient(135deg, #e65100, #ff9900); }
+    .aws-box.ecs .aws-box-header    { background: linear-gradient(135deg, #c05000, #e87722); }
+    .aws-box.fargate .aws-box-header { background: linear-gradient(135deg, #4a1d96, #6d28d9); }
+
+    .aws-box-body {
+      padding: 12px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      background: #fafafa;
+    }
+
+    .aws-flow-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+    .aws-flow-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      animation: awsBoxIn 0.5s ease forwards;
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    .aws-flow-item:nth-child(1) { animation-delay: 0.8s; }
+    .aws-flow-item:nth-child(2) { animation-delay: 0.9s; }
+    .aws-flow-item:nth-child(3) { animation-delay: 1.0s; }
+    .aws-flow-arr {
+      color: var(--muted);
+      font-size: 1.1rem;
+      animation: awsBoxIn 0.4s ease forwards;
+      transform: translateY(0);
+      opacity: 0;
+    }
+    .aws-flow-arr:nth-child(2) { animation-delay: 0.85s; }
+    .aws-flow-arr:nth-child(4) { animation-delay: 0.95s; }
+
+    /* ═══════════════════════════════════════
+       Comparison Table
+    ═══════════════════════════════════════ */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin: 20px 0;
+    }
+    .compare-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+    }
+    .compare-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: #f8fafc; }
+
+    .compare-table .th-image { color: #1565c0; }
+    .compare-table .th-container { color: #2e7d32; }
+
+    /* ═══════════════════════════════════════
+       Code block
+    ═══════════════════════════════════════ */
+    .code-block {
+      background: #1e2836;
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: #cdd9e5;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .code-block .c-comment { color: #6e8098; }
+    .code-block .c-keyword { color: #f97583; }
+    .code-block .c-string  { color: #9ecbff; }
+    .code-block .c-cmd     { color: #79d2f5; }
+    .code-block .c-arg     { color: #b392f0; }
+    .code-block .c-ok      { color: #85e89d; }
+
+    /* ═══════════════════════════════════════
+       Responsive
+    ═══════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .nav { padding: 0 20px; }
+      .page-hero { padding: 40px 20px; }
+      .content { padding: 32px 20px; }
+      .section { padding: 24px 20px; }
+      .page-title { font-size: 1.8rem; }
+      .flow-demo { gap: 8px; }
+      .aws-row { flex-direction: column; align-items: center; }
+      .aws-box { max-width: 100%; }
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Play Button ── */
+    .play-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--docker);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      flex-shrink: 0;
+    }
+    .play-btn:hover:not(:disabled) { background: #1a7ac4; transform: scale(1.05); }
+    .play-btn:active:not(:disabled) { transform: scale(0.96); }
+    .play-btn:disabled { opacity: 0.55; cursor: default; }
+    .play-btn .btn-icon { font-style: normal; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="index.html">Dev Motion Cheats</a>
+    <span class="nav-sep">›</span>
+    <span class="nav-current">Docker &amp; AWS</span>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="page-hero-inner">
+      <div class="page-badge" data-i18n="badge">Docker &amp; AWS</div>
+      <h1 class="page-title" data-i18n="hero.title">🐳 Docker &amp; AWS<br>Images &amp; Containers</h1>
+      <p class="page-desc" data-i18n="hero.desc">Understand Docker images, containers, and how AWS runs them — with live animations.</p>
+    </div>
+  </div>
+
+  <main class="content">
+
+    <!-- ─────────────────────────────────────
+         SECTION 1: What is Docker?
+    ───────────────────────────────────── -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">🐳</span>
+        <span data-i18n="s1.title">What is Docker?</span>
+        <button class="play-btn" onclick="replayZone(this,'zone-flow')"><em class="btn-icon">▶</em> Play</button>
+      </div>
+      <p class="section-desc" data-i18n="s1.desc">
+        Docker is a platform that packages your application and all its dependencies into a portable, isolated unit called a <strong>container</strong>.
+      </p>
+
+      <!-- Build Flow Animation -->
+      <div class="flow-demo" id="zone-flow">
+        <div class="flow-node">
+          <span class="node-icon">📄</span>
+          <strong>Dockerfile</strong>
+          <div class="node-label" data-i18n="s1.node1">Recipe</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" style="position:relative;">
+          <div class="flow-cmd">docker build</div>
+          <span class="node-icon">📦</span>
+          <strong data-i18n="s1.image">Image</strong>
+          <div class="node-label" data-i18n="s1.node2">Snapshot</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" style="position:relative;">
+          <div class="flow-cmd">docker run</div>
+          <span class="node-icon">🟢</span>
+          <strong data-i18n="s1.container">Container</strong>
+          <div class="node-label" data-i18n="s1.node3">Running Process</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <span class="node-icon">☁️</span>
+          <strong>AWS</strong>
+          <div class="node-label" data-i18n="s1.node4">Cloud Deploy</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+<span class="c-comment"># 1. Write a Dockerfile</span>
+<span class="c-keyword">FROM</span> <span class="c-string">node:20-alpine</span>
+<span class="c-keyword">WORKDIR</span> <span class="c-string">/app</span>
+<span class="c-keyword">COPY</span> <span class="c-arg">. .</span>
+<span class="c-keyword">RUN</span> <span class="c-cmd">npm install</span>
+<span class="c-keyword">CMD</span> <span class="c-arg">["node", "server.js"]</span>
+
+<span class="c-comment"># 2. Build an image</span>
+<span class="c-cmd">docker build</span> <span class="c-arg">-t myapp:1.0 .</span>
+
+<span class="c-comment"># 3. Run a container</span>
+<span class="c-cmd">docker run</span> <span class="c-arg">-p 3000:3000 myapp:1.0</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────
+         SECTION 2: Docker Image
+    ───────────────────────────────────── -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">📦</span>
+        <span data-i18n="s2.title">Docker Image — The Blueprint</span>
+        <span class="tag tag-image" data-i18n="s2.tag">Read-only</span>
+        <button class="play-btn" onclick="replayZone(this,'zone-layers')"><em class="btn-icon">▶</em> Play</button>
+      </div>
+      <p class="section-desc" data-i18n="s2.desc">
+        An image is an <strong>immutable, read-only template</strong> built from layered file system snapshots. Think of it as a class definition — you don't run it directly, you instantiate containers from it.
+      </p>
+
+      <!-- Layer Animation -->
+      <div class="layers-demo" id="zone-layers">
+        <div class="layer">
+          <span class="layer-label">🐧 Base OS (Alpine Linux 3.19)</span>
+          <span class="layer-badge" data-i18n="s2.layer.base">Base Layer</span>
+        </div>
+        <div class="layer">
+          <span class="layer-label">⚙️ Runtime (Node.js 20)</span>
+          <span class="layer-badge" data-i18n="s2.layer.runtime">Runtime Layer</span>
+        </div>
+        <div class="layer">
+          <span class="layer-label">📂 Dependencies (node_modules)</span>
+          <span class="layer-badge" data-i18n="s2.layer.deps">Deps Layer</span>
+        </div>
+        <div class="layer">
+          <span class="layer-label">🔧 App Config (.env, nginx.conf)</span>
+          <span class="layer-badge" data-i18n="s2.layer.config">Config Layer</span>
+        </div>
+        <div class="layer">
+          <span class="layer-label">🚀 App Code (server.js, …)</span>
+          <span class="layer-badge" data-i18n="s2.layer.app">App Layer</span>
+        </div>
+      </div>
+
+      <div class="readonly-badge">
+        🔒 <span data-i18n="s2.readonly">Each layer is cached. Re-builds only update changed layers — making builds fast!</span>
+      </div>
+
+      <div class="code-block" style="margin-top:20px;">
+<span class="c-comment"># List images on your machine</span>
+<span class="c-cmd">docker images</span>
+<span class="c-ok">REPOSITORY   TAG       IMAGE ID       SIZE</span>
+<span class="c-ok">myapp        1.0       a3f9c12d8e01   142MB</span>
+<span class="c-ok">node         20-alpine b7d3e88f1c00   58.4MB</span>
+
+<span class="c-comment"># Inspect layers</span>
+<span class="c-cmd">docker history</span> <span class="c-arg">myapp:1.0</span>
+
+<span class="c-comment"># Push to registry (Docker Hub or ECR)</span>
+<span class="c-cmd">docker push</span> <span class="c-arg">123456789.dkr.ecr.ap-northeast-1.amazonaws.com/myapp:1.0</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────
+         SECTION 3: Docker Container
+    ───────────────────────────────────── -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">🟢</span>
+        <span data-i18n="s3.title">Docker Container — The Instance</span>
+        <span class="tag tag-container" data-i18n="s3.tag">Running</span>
+        <button class="play-btn" onclick="replayZone(this,'zone-container')"><em class="btn-icon">▶</em> Play</button>
+      </div>
+      <p class="section-desc" data-i18n="s3.desc">
+        A container is a <strong>live, isolated process</strong> spawned from an image. Multiple containers can run from the same image — each completely isolated from the others.
+      </p>
+
+      <!-- Spawn Animation -->
+      <div id="zone-container">
+      <div class="spawn-center">
+        <div class="image-source">📦 myapp:1.0 (Image)</div>
+      </div>
+      <div class="spawn-arrows">
+        <span class="spawn-arrow">↓</span>
+        <span class="spawn-arrow">↓</span>
+        <span class="spawn-arrow">↓</span>
+      </div>
+      <div class="container-demo">
+        <div class="cbox">
+          <div class="cbox-header">
+            <span class="status-dot"></span>
+            container-1
+          </div>
+          <div class="cbox-body">Port 3001<br>PID 1024</div>
+        </div>
+        <div class="cbox">
+          <div class="cbox-header">
+            <span class="status-dot"></span>
+            container-2
+          </div>
+          <div class="cbox-body">Port 3002<br>PID 2048</div>
+        </div>
+        <div class="cbox">
+          <div class="cbox-header">
+            <span class="status-dot"></span>
+            container-3
+          </div>
+          <div class="cbox-body">Port 3003<br>PID 3072</div>
+        </div>
+      </div>
+      </div><!-- /zone-container -->
+
+      <div class="code-block">
+<span class="c-comment"># Run a container (detached, with port mapping)</span>
+<span class="c-cmd">docker run</span> <span class="c-arg">-d -p 3001:3000 --name container-1 myapp:1.0</span>
+
+<span class="c-comment"># List running containers</span>
+<span class="c-cmd">docker ps</span>
+<span class="c-ok">CONTAINER ID  IMAGE      STATUS       PORTS</span>
+<span class="c-ok">a1b2c3d4e5f6  myapp:1.0  Up 2 hours   0.0.0.0:3001->3000/tcp</span>
+
+<span class="c-comment"># View logs / enter shell</span>
+<span class="c-cmd">docker logs</span> <span class="c-arg">container-1</span>
+<span class="c-cmd">docker exec</span> <span class="c-arg">-it container-1 sh</span>
+
+<span class="c-comment"># Stop & remove</span>
+<span class="c-cmd">docker stop</span> <span class="c-arg">container-1</span> <span class="c-ok">&amp;&amp;</span> <span class="c-cmd">docker rm</span> <span class="c-arg">container-1</span>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────
+         SECTION 4: Image vs Container
+    ───────────────────────────────────── -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">⚖️</span>
+        <span data-i18n="s4.title">Image vs Container</span>
+      </div>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th data-i18n="s4.th.prop">Property</th>
+            <th class="th-image" data-i18n="s4.th.image">📦 Image</th>
+            <th class="th-container" data-i18n="s4.th.container">🟢 Container</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="s4.row1.prop">Analogy</td>
+            <td data-i18n="s4.row1.image">Class / Blueprint</td>
+            <td data-i18n="s4.row1.container">Object / Instance</td>
+          </tr>
+          <tr>
+            <td data-i18n="s4.row2.prop">State</td>
+            <td data-i18n="s4.row2.image">Read-only, static</td>
+            <td data-i18n="s4.row2.container">Read-write, running</td>
+          </tr>
+          <tr>
+            <td data-i18n="s4.row3.prop">Persistence</td>
+            <td data-i18n="s4.row3.image">Stored on disk, sharable</td>
+            <td data-i18n="s4.row3.container">Ephemeral (lost on stop)</td>
+          </tr>
+          <tr>
+            <td data-i18n="s4.row4.prop">Created by</td>
+            <td data-i18n="s4.row4.image"><code>docker build</code></td>
+            <td data-i18n="s4.row4.container"><code>docker run</code></td>
+          </tr>
+          <tr>
+            <td data-i18n="s4.row5.prop">Multiples</td>
+            <td data-i18n="s4.row5.image">One image = many containers</td>
+            <td data-i18n="s4.row5.container">Each container is isolated</td>
+          </tr>
+          <tr>
+            <td data-i18n="s4.row6.prop">Storage</td>
+            <td data-i18n="s4.row6.image">Registry (ECR, Docker Hub)</td>
+            <td data-i18n="s4.row6.container">Host machine (or ECS task)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ─────────────────────────────────────
+         SECTION 5: AWS Container Services
+    ───────────────────────────────────── -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">☁️</span>
+        <span data-i18n="s5.title">AWS Container Services</span>
+        <span class="tag tag-aws">AWS</span>
+        <button class="play-btn" style="background:#ff9900;" onclick="replayZone(this,'zone-aws')"><em class="btn-icon">▶</em> Play</button>
+      </div>
+      <p class="section-desc" data-i18n="s5.desc">
+        AWS provides managed services to store, orchestrate, and run your Docker containers at scale — without managing servers.
+      </p>
+
+      <!-- AWS Services Cards -->
+      <div id="zone-aws">
+      <div class="aws-row">
+        <div class="aws-box ecr">
+          <div class="aws-box-header">🗄️ Amazon ECR</div>
+          <div class="aws-box-body">
+            <strong data-i18n="s5.ecr.full">Elastic Container Registry</strong><br>
+            <span data-i18n="s5.ecr.desc">Private Docker image registry. Store, version, and scan your images. Like Docker Hub, but inside AWS.</span>
+          </div>
+        </div>
+        <div class="aws-box ecs">
+          <div class="aws-box-header">🎛️ Amazon ECS</div>
+          <div class="aws-box-body">
+            <strong data-i18n="s5.ecs.full">Elastic Container Service</strong><br>
+            <span data-i18n="s5.ecs.desc">Orchestrates containers using Tasks and Services. Defines where &amp; how containers run on EC2 or Fargate.</span>
+          </div>
+        </div>
+        <div class="aws-box fargate">
+          <div class="aws-box-header">⚡ AWS Fargate</div>
+          <div class="aws-box-body">
+            <strong data-i18n="s5.fargate.full">Serverless Compute for Containers</strong><br>
+            <span data-i18n="s5.fargate.desc">Run containers without managing EC2 instances. Pay per vCPU &amp; memory used. Zero server management.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deploy Flow -->
+      <div class="aws-flow-line">
+        <div class="aws-flow-item">📄 <span data-i18n="s5.flow1">Dockerfile</span></div>
+        <span class="aws-flow-arr">→</span>
+        <div class="aws-flow-item">🗄️ <span data-i18n="s5.flow2">Push to ECR</span></div>
+        <span class="aws-flow-arr">→</span>
+        <div class="aws-flow-item">🎛️ <span data-i18n="s5.flow3">ECS Task Definition</span></div>
+        <span class="aws-flow-arr">→</span>
+        <div class="aws-flow-item">⚡ <span data-i18n="s5.flow4">Fargate runs it</span></div>
+      </div>
+      </div><!-- /zone-aws -->
+
+      <div class="code-block" style="margin-top:20px;">
+<span class="c-comment"># 1. Authenticate to ECR</span>
+<span class="c-cmd">aws ecr get-login-password</span> <span class="c-arg">--region ap-northeast-1</span> <span class="c-ok">|</span> \
+  <span class="c-cmd">docker login</span> <span class="c-arg">--username AWS --password-stdin</span> \
+  <span class="c-string">123456789.dkr.ecr.ap-northeast-1.amazonaws.com</span>
+
+<span class="c-comment"># 2. Tag & push image to ECR</span>
+<span class="c-cmd">docker tag</span>  <span class="c-arg">myapp:1.0  123456789.dkr.ecr.ap-northeast-1.amazonaws.com/myapp:1.0</span>
+<span class="c-cmd">docker push</span> <span class="c-arg">123456789.dkr.ecr.ap-northeast-1.amazonaws.com/myapp:1.0</span>
+
+<span class="c-comment"># 3. Deploy via ECS (Fargate)</span>
+<span class="c-cmd">aws ecs update-service</span> <span class="c-arg">--cluster my-cluster \
+  --service my-service --force-new-deployment</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>&copy; 2024 Dev Motion Cheats</footer>
+
+  <script>
+    /* ── Animation Replay ── */
+    function replayZone(btn, zoneId) {
+      const zone = document.getElementById(zoneId);
+      if (!zone) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<em class="btn-icon">⟳</em> Playing…';
+
+      // 1. Freeze all animations by overriding with inline style
+      const els = [zone, ...zone.querySelectorAll('*')];
+      els.forEach(el => { el.style.animation = 'none'; });
+
+      // 2. Force reflow so the browser registers the change
+      void zone.offsetWidth;
+
+      // 3. Clear inline override → CSS animations restart from delay 0
+      requestAnimationFrame(() => {
+        els.forEach(el => { el.style.animation = ''; });
+
+        // Re-enable button after a moment
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = '<em class="btn-icon">↺</em> Replay';
+        }, 600);
+      });
+    }
+
+    const i18n = {
+      en: {
+        'badge': 'Docker &amp; AWS',
+        'hero.title': '🐳 Docker &amp; AWS<br>Images &amp; Containers',
+        'hero.desc': 'Understand Docker images, containers, and how AWS runs them — with live animations.',
+        's1.title': 'What is Docker?',
+        's1.desc': 'Docker is a platform that packages your application and all its dependencies into a portable, isolated unit called a <strong>container</strong>.',
+        's1.node1': 'Recipe', 's1.image': 'Image', 's1.container': 'Container',
+        's1.node2': 'Snapshot', 's1.node3': 'Running Process', 's1.node4': 'Cloud Deploy',
+        's2.title': 'Docker Image — The Blueprint',
+        's2.tag': 'Read-only',
+        's2.desc': 'An image is an <strong>immutable, read-only template</strong> built from layered file system snapshots. Think of it as a class definition — you don\'t run it directly, you instantiate containers from it.',
+        's2.layer.base': 'Base Layer', 's2.layer.runtime': 'Runtime Layer',
+        's2.layer.deps': 'Deps Layer', 's2.layer.config': 'Config Layer', 's2.layer.app': 'App Layer',
+        's2.readonly': 'Each layer is cached. Re-builds only update changed layers — making builds fast!',
+        's3.title': 'Docker Container — The Instance',
+        's3.tag': 'Running',
+        's3.desc': 'A container is a <strong>live, isolated process</strong> spawned from an image. Multiple containers can run from the same image — each completely isolated from the others.',
+        's4.title': 'Image vs Container',
+        's4.th.prop': 'Property', 's4.th.image': '📦 Image', 's4.th.container': '🟢 Container',
+        's4.row1.prop': 'Analogy', 's4.row1.image': 'Class / Blueprint', 's4.row1.container': 'Object / Instance',
+        's4.row2.prop': 'State', 's4.row2.image': 'Read-only, static', 's4.row2.container': 'Read-write, running',
+        's4.row3.prop': 'Persistence', 's4.row3.image': 'Stored on disk, sharable', 's4.row3.container': 'Ephemeral (lost on stop)',
+        's4.row4.prop': 'Created by', 's4.row4.image': '<code>docker build</code>', 's4.row4.container': '<code>docker run</code>',
+        's4.row5.prop': 'Multiples', 's4.row5.image': 'One image = many containers', 's4.row5.container': 'Each container is isolated',
+        's4.row6.prop': 'Storage', 's4.row6.image': 'Registry (ECR, Docker Hub)', 's4.row6.container': 'Host machine (or ECS task)',
+        's5.title': 'AWS Container Services',
+        's5.desc': 'AWS provides managed services to store, orchestrate, and run your Docker containers at scale — without managing servers.',
+        's5.ecr.full': 'Elastic Container Registry',
+        's5.ecr.desc': 'Private Docker image registry. Store, version, and scan your images. Like Docker Hub, but inside AWS.',
+        's5.ecs.full': 'Elastic Container Service',
+        's5.ecs.desc': 'Orchestrates containers using Tasks and Services. Defines where &amp; how containers run on EC2 or Fargate.',
+        's5.fargate.full': 'Serverless Compute for Containers',
+        's5.fargate.desc': 'Run containers without managing EC2 instances. Pay per vCPU &amp; memory used. Zero server management.',
+        's5.flow1': 'Dockerfile', 's5.flow2': 'Push to ECR', 's5.flow3': 'ECS Task Definition', 's5.flow4': 'Fargate runs it',
+      },
+      ja: {
+        'badge': 'Docker &amp; AWS',
+        'hero.title': '🐳 Docker &amp; AWS<br>イメージとコンテナ',
+        'hero.desc': 'Dockerイメージ・コンテナの仕組みと、AWSでの動かし方をアニメーションで理解しよう。',
+        's1.title': 'Dockerとは？',
+        's1.desc': 'Dockerはアプリとその依存関係を<strong>コンテナ</strong>という独立した単位にまとめて持ち運べるプラットフォームです。',
+        's1.node1': 'レシピ', 's1.image': 'イメージ', 's1.container': 'コンテナ',
+        's1.node2': 'スナップショット', 's1.node3': '実行中プロセス', 's1.node4': 'クラウド展開',
+        's2.title': 'Dockerイメージ — 設計図',
+        's2.tag': '読み取り専用',
+        's2.desc': 'イメージは<strong>不変・読み取り専用のテンプレート</strong>で、レイヤー化されたファイルシステムのスナップショットです。クラス定義のようなもの — 直接実行せず、そこからコンテナ（インスタンス）を作ります。',
+        's2.layer.base': 'ベースレイヤー', 's2.layer.runtime': 'ランタイムレイヤー',
+        's2.layer.deps': '依存レイヤー', 's2.layer.config': '設定レイヤー', 's2.layer.app': 'アプリレイヤー',
+        's2.readonly': '各レイヤーはキャッシュされます。再ビルド時は変更されたレイヤーのみ更新 — 高速！',
+        's3.title': 'Dockerコンテナ — 実行中インスタンス',
+        's3.tag': '実行中',
+        's3.desc': 'コンテナはイメージから生成される<strong>隔離された実行プロセス</strong>です。同じイメージから複数のコンテナを独立して動かせます。',
+        's4.title': 'イメージ vs コンテナ',
+        's4.th.prop': '項目', 's4.th.image': '📦 イメージ', 's4.th.container': '🟢 コンテナ',
+        's4.row1.prop': '例え', 's4.row1.image': 'クラス / 設計図', 's4.row1.container': 'オブジェクト / インスタンス',
+        's4.row2.prop': '状態', 's4.row2.image': '読み取り専用・静的', 's4.row2.container': '読み書き可・実行中',
+        's4.row3.prop': '永続性', 's4.row3.image': 'ディスク保存・共有可能', 's4.row3.container': '一時的（停止すると消える）',
+        's4.row4.prop': '作成コマンド', 's4.row4.image': '<code>docker build</code>', 's4.row4.container': '<code>docker run</code>',
+        's4.row5.prop': '複数起動', 's4.row5.image': '1イメージ → 複数コンテナ', 's4.row5.container': '各コンテナは独立',
+        's4.row6.prop': '保存先', 's4.row6.image': 'レジストリ (ECR, Docker Hub)', 's4.row6.container': 'ホストマシン (またはECSタスク)',
+        's5.title': 'AWS コンテナサービス',
+        's5.desc': 'AWSはDockerコンテナをサーバー管理不要でスケールさせるマネージドサービスを提供しています。',
+        's5.ecr.full': 'Elastic Container Registry（ECR）',
+        's5.ecr.desc': 'プライベートDockerイメージレジストリ。イメージの保存・バージョン管理・脆弱性スキャンが可能。Docker HubのAWS版。',
+        's5.ecs.full': 'Elastic Container Service（ECS）',
+        's5.ecs.desc': 'タスク・サービスを使ってコンテナをオーケストレート。EC2またはFargateでどこでどう動かすかを定義します。',
+        's5.fargate.full': 'サーバーレスコンテナ実行基盤',
+        's5.fargate.desc': 'EC2インスタンス管理不要でコンテナを実行。使用したvCPU・メモリ分だけ課金。サーバー管理ゼロ。',
+        's5.flow1': 'Dockerfile', 's5.flow2': 'ECRにプッシュ', 's5.flow3': 'ECSタスク定義', 's5.flow4': 'Fargateが実行',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) {
+          if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+            el.textContent = i18n[l][key];
+          } else {
+            el.innerHTML = i18n[l][key];
+          }
+        }
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    applyLang(lang);
+  </script>
+
+</body>
+</html>
