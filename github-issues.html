@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Issues - Dev Motion Cheats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f8fa;
+      --white: #fff;
+      --border: #d0d7de;
+      --text: #1c2128;
+      --muted: #656d76;
+      --gh: #1f883d;
+      --gh-dark: #116329;
+      --jira: #0052cc;
+      --claude: #d97706;
+      --red: #cf222e;
+      --blue: #0969da;
+      --purple: #8250df;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: #0d1117;
+      border-bottom: 1px solid #30363d;
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav a { color: #8b949e; text-decoration: none; transition: color .2s; }
+    .nav a:hover { color: #e6edf3; }
+    .nav-sep { color: #30363d; }
+    .nav-current { font-weight: 700; color: #3fb950; }
+    .lang-switch { margin-left: auto; display: flex; border: 1px solid #30363d; border-radius: 100px; overflow: hidden; }
+    .lang-opt { padding: 5px 13px; border: none; background: transparent; color: #8b949e; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
+    .lang-opt.active { background: #e6edf3; color: #0d1117; }
+    .lang-opt:hover:not(.active) { background: #161b22; color: #e6edf3; }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0a1f0e 100%);
+      padding: 60px 48px 52px;
+      overflow: hidden;
+      position: relative;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(63,185,80,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-hero-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 48px; }
+    .hero-text { flex: 1; }
+    .page-badge {
+      display: inline-block;
+      background: rgba(63,185,80,0.15);
+      color: #3fb950;
+      border: 1px solid rgba(63,185,80,0.4);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 14px;
+    }
+    .page-title { font-size: 2.4rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 12px; color: #e6edf3; line-height: 1.2; }
+    .page-title em { font-style: normal; color: #3fb950; }
+    .page-desc { color: #8b949e; font-size: .95rem; line-height: 1.8; }
+
+    /* ── Animated Issue Card in Hero ── */
+    .hero-issue {
+      flex-shrink: 0;
+      width: 320px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      overflow: hidden;
+      animation: heroFloat 4s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%,100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    .hi-bar { background: #0d1117; padding: 10px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #30363d; }
+    .hi-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .hi-dot:nth-child(1) { background: #ff5f56; }
+    .hi-dot:nth-child(2) { background: #ffbd2e; }
+    .hi-dot:nth-child(3) { background: #27c93f; }
+    .hi-url { color: #484f58; font-size: 0.65rem; margin-left: 6px; }
+    .hi-body { padding: 14px; }
+    .hi-open { display: inline-flex; align-items: center; gap: 5px; background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-bottom: 10px; }
+    .hi-pulse { width: 6px; height: 6px; border-radius: 50%; background: #3fb950; animation: blink 1.5s ease infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .hi-title { color: #e6edf3; font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; line-height: 1.4; }
+    .hi-desc { color: #8b949e; font-size: 0.75rem; line-height: 1.6; margin-bottom: 12px; }
+    .hi-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .hi-tag { font-size: 0.65rem; padding: 2px 8px; border-radius: 100px; font-weight: 600; }
+    .hi-tag.t-bug { background: #3d0a0a; color: #ff7b7b; border: 1px solid #6e1919; }
+    .hi-tag.t-pri { background: #1a0a3d; color: #c792ea; border: 1px solid #3d1a7a; }
+    .hi-tag.t-tri { background: #0a1a3d; color: #79c0ff; border: 1px solid #1a3a7a; }
+
+    /* ── Main ── */
+    .main { max-width: 960px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* ── Section block ── */
+    .section-block {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      background: #fafbfc;
+    }
+    .section-num {
+      width: 30px; height: 30px;
+      background: var(--gh);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-num.jira { background: var(--jira); }
+    .section-num.claude { background: var(--claude); }
+    .section-title { font-size: 1.05rem; font-weight: 700; }
+    .section-body { padding: 28px; }
+
+    /* ── Play button ── */
+    .play-btn {
+      margin-left: auto; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--gh); color: #fff; border: none;
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 0.76rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+    }
+    .play-btn:hover:not(:disabled) { background: var(--gh-dark); transform: scale(1.05); }
+    .play-btn:disabled { opacity: 0.55; cursor: default; }
+    .play-btn.jira { background: var(--jira); }
+    .play-btn.jira:hover:not(:disabled) { background: #0043a8; }
+    .play-btn.claude-btn { background: var(--claude); }
+    .play-btn.claude-btn:hover:not(:disabled) { background: #b45309; }
+
+    /* ─── S1: Feature Cards ─── */
+    .feature-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .feat-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: cardIn 0.5s ease forwards;
+    }
+    @keyframes cardIn { to { opacity:1; transform:translateY(0); } }
+    .feat-card:nth-child(1) { animation-delay: 0.1s; }
+    .feat-card:nth-child(2) { animation-delay: 0.25s; }
+    .feat-card:nth-child(3) { animation-delay: 0.4s; }
+    .feat-icon { font-size: 2rem; margin-bottom: 10px; display: block; animation: iconFloat 3s ease-in-out infinite; }
+    .feat-card:nth-child(2) .feat-icon { animation-delay: 1s; }
+    .feat-card:nth-child(3) .feat-icon { animation-delay: 2s; }
+    @keyframes iconFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+    .feat-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+    .feat-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+    .feat-card.c-green { border-color: #d0f0d8; background: #f6fff8; }
+    .feat-card.c-blue  { border-color: #cde8ff; background: #f6faff; }
+    .feat-card.c-purple{ border-color: #e2d4f5; background: #faf6ff; }
+
+    /* ─── S2: Lifecycle ─── */
+    .lifecycle-flow { display: flex; align-items: center; overflow-x: auto; padding: 20px 0; }
+    .lc-node {
+      flex-shrink: 0;
+      text-align: center;
+      width: 130px;
+      opacity: 0;
+      transform: scale(0.75);
+    }
+    .lc-node.active { animation: nodeIn 0.4s cubic-bezier(.175,.885,.32,1.275) forwards; }
+    @keyframes nodeIn { to { opacity:1; transform:scale(1); } }
+    .lc-icon {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 1.4rem;
+      border: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    .lc-node.st-open       .lc-icon { background: #dcffe4; border-color: #238636; }
+    .lc-node.st-inprogress .lc-icon { background: #ddf4ff; border-color: #0969da; }
+    .lc-node.st-review     .lc-icon { background: #fff3cd; border-color: #d29922; }
+    .lc-node.st-closed     .lc-icon { background: #f0e7ff; border-color: #8250df; }
+    .lc-label { font-size: 0.8rem; font-weight: 700; margin-bottom: 3px; }
+    .lc-node.st-open       .lc-label { color: #238636; }
+    .lc-node.st-inprogress .lc-label { color: #0969da; }
+    .lc-node.st-review     .lc-label { color: #d29922; }
+    .lc-node.st-closed     .lc-label { color: #8250df; }
+    .lc-sub { font-size: 0.72rem; color: var(--muted); }
+    .lc-arrow { flex: 1; height: 2px; background: var(--border); position: relative; min-width: 24px; }
+    .lc-arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left-color: var(--border); }
+    .lc-dot { position: absolute; top: -5px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--gh); opacity: 0; }
+    .lc-dot.run { animation: dotMove 0.9s ease forwards; }
+    @keyframes dotMove { 0% { left:0; opacity:1; } 100% { left:calc(100% - 12px); opacity:1; } }
+    .lc-status-row { margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .lc-status-head { padding: 12px 16px; background: #fafbfc; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .lc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
+    .lc-badge.b-open       { background: #dcffe4; color: #238636; }
+    .lc-badge.b-inprogress { background: #ddf4ff; color: #0969da; }
+    .lc-badge.b-review     { background: #fff3cd; color: #d29922; }
+    .lc-badge.b-closed     { background: #f0e7ff; color: #8250df; }
+    .lc-bdot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .lc-hint { font-size: 0.8rem; color: var(--muted); }
+
+    /* ─── S3: Labels ─── */
+    .labels-section { display: flex; flex-direction: column; gap: 20px; }
+    .labels-grid { display: flex; flex-wrap: wrap; gap: 10px; min-height: 40px; }
+    .gh-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700;
+      opacity: 0; transform: scale(0.5);
+    }
+    .gh-label.popped { animation: labelPop 0.35s cubic-bezier(.175,.885,.32,1.275) forwards; }
+    @keyframes labelPop { to { opacity:1; transform:scale(1); } }
+    .label-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .milestone-card { border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; opacity: 0; }
+    .milestone-card.show { animation: fadeUp 0.4s ease 0.9s forwards; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .ms-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .ms-name { font-weight: 700; font-size: 0.9rem; }
+    .ms-pct-text { font-size: 0.82rem; color: var(--muted); }
+    .ms-bar-bg { background: #eaeef2; border-radius: 100px; height: 8px; overflow: hidden; }
+    .ms-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #1f883d, #52d68a); width: 0; }
+    .ms-bar-fill.fill { animation: fillBar 1.2s ease 1.1s forwards; }
+    @keyframes fillBar { to { width: 72%; } }
+    .ms-meta { margin-top: 8px; font-size: 0.75rem; color: var(--muted); }
+
+    /* ─── S4: JIRA ─── */
+    .jira-systems { display: flex; align-items: stretch; gap: 0; min-height: 200px; }
+    .jira-box {
+      flex: 1;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .jira-box.gh-box  { border-color: #30363d; background: #0d1117; }
+    .jira-box.j-box   { border-color: #0052cc; background: #f0f4ff; }
+    .jira-logo { font-size: 2.2rem; }
+    .jira-box-name { font-weight: 800; font-size: 0.9rem; }
+    .gh-box .jira-box-name { color: #e6edf3; }
+    .j-box  .jira-box-name { color: #0052cc; }
+    .jira-list { width: 100%; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .jira-item { padding: 6px 10px; border-radius: 6px; font-size: 0.72rem; opacity: 0; }
+    .jira-item.gh-item { background: #161b22; color: #8b949e; border: 1px solid #30363d; }
+    .jira-item.j-item  { background: #deebff; color: #0052cc; border: 1px solid #b3d4ff; }
+    .jira-item.show { animation: fadeUp 0.4s ease forwards; }
+    .jira-mid {
+      width: 110px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+    }
+    .sync-row { display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.4s; }
+    .sync-row.visible { opacity: 1; }
+    .sync-label-text { font-size: 0.68rem; font-weight: 700; color: var(--muted); }
+    .arrow-track { width: 44px; height: 2px; background: var(--border); position: relative; }
+    .arrow-track.r::after { content:'▶'; position:absolute; right:-10px; top:-7px; font-size:0.6rem; color:var(--gh); }
+    .arrow-track.l::after { content:'◀'; position:absolute; left:-10px; top:-7px; font-size:0.6rem; color:var(--jira); }
+    .pkt { position:absolute; top:-5px; left:0; width:10px; height:10px; border-radius:50%; opacity:0; }
+    .pkt.gh-pkt  { background:var(--gh); }
+    .pkt.j-pkt   { background:var(--jira); }
+    .pkt.go-r { animation: pktR 0.8s ease forwards; }
+    .pkt.go-l { animation: pktL 0.8s ease forwards; }
+    @keyframes pktR { 0%{left:0;opacity:1;} 100%{left:30px;opacity:1;} }
+    @keyframes pktL { 0%{left:30px;opacity:1;} 100%{left:0;opacity:1;} }
+    .sync-app-label { font-size: 0.68rem; color: var(--muted); text-align: center; line-height: 1.5; }
+    .jira-steps { margin-top: 24px; display: flex; flex-direction: column; gap: 0; }
+    .jira-step { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); opacity: 0; transform: translateX(-10px); }
+    .jira-step:last-child { border-bottom: none; }
+    .jira-step.show { animation: slideIn 0.4s ease forwards; }
+    @keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
+    .step-num.sgh { background: #dcffe4; color: var(--gh); }
+    .step-num.sj  { background: #deebff; color: var(--jira); }
+    .step-body { flex: 1; }
+    .step-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 3px; }
+    .step-desc { font-size: 0.8rem; color: var(--muted); }
+    .step-tag { display: inline-block; background: #eaeef2; color: var(--muted); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace; white-space: nowrap; }
+
+    /* ─── S5: Claude ─── */
+    .claude-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .ci-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; opacity: 0; }
+    .ci-card.show { animation: fadeUp 0.4s ease forwards; }
+    .ci-head { background: #fafbfc; border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 700; }
+    .ci-open-dot { width: 8px; height: 8px; border-radius: 50%; background: #3fb950; animation: blink 1.5s ease infinite; }
+    .ci-body { padding: 14px; }
+    .ci-issue-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; }
+    .ci-issue-body { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+    .ci-code { margin-top: 10px; background: #f6f8fa; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-family: 'SF Mono','Fira Code',monospace; font-size: 0.72rem; color: #d73a49; line-height: 1.6; }
+    .claude-out { display: flex; flex-direction: column; gap: 12px; }
+    .thinking-card { border: 1px solid #fde68a; background: #fffbeb; border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: #92400e; opacity: 0; }
+    .thinking-card.show { animation: fadeUp 0.4s ease forwards; }
+    .think-dots span { display:inline-block; width:6px; height:6px; border-radius:50%; background:#d97706; animation: thinkBounce 1.2s ease infinite; margin: 0 1px; }
+    .think-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .think-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinkBounce { 0%,100%{transform:translateY(0);opacity:.4;} 50%{transform:translateY(-5px);opacity:1;} }
+    .result-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; opacity: 0; }
+    .result-card.show { animation: fadeUp 0.4s ease forwards; }
+    .result-head { padding: 8px 14px; font-size: 0.75rem; font-weight: 700; border-bottom: 1px solid var(--border); background: #fafbfc; }
+    .result-body { padding: 12px 14px; }
+    .result-labels { display: flex; flex-wrap: wrap; gap: 6px; }
+    .result-text { font-size: 0.8rem; line-height: 1.7; }
+    .result-code { background: #f6f8fa; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: 'SF Mono','Fira Code',monospace; font-size: 0.72rem; line-height: 1.8; }
+    .kw { color: #d73a49; } .fn { color: #6f42c1; } .str { color: #032f62; } .cm { color: #6a737d; }
+
+    /* ─── GHA visual ─── */
+    .gha-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 24px; }
+    .gha-head { background: #0d1117; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+    .gha-head-title { color: #e6edf3; font-size: 0.8rem; font-weight: 700; font-family: monospace; }
+    .gha-badge { background: #238636; color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; animation: successPulse 2s ease infinite; }
+    @keyframes successPulse { 0%,100%{box-shadow:0 0 0 0 rgba(35,134,54,.4);} 50%{box-shadow:0 0 0 6px rgba(35,134,54,0);} }
+    .gha-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; background: #161b22; }
+    .gha-step { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; opacity: 0; }
+    .gha-step.show { animation: fadeUp 0.3s ease forwards; }
+    .gha-check { width: 18px; height: 18px; border-radius: 50%; background: #238636; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #fff; flex-shrink: 0; }
+    .gha-text { color: #c9d1d9; }
+    .gha-time { color: #484f58; margin-left: auto; font-family: monospace; font-size: 0.7rem; }
+
+    footer { text-align: center; padding: 32px; color: var(--muted); font-size: 0.82rem; border-top: 1px solid var(--border); }
+
+    @media (max-width: 700px) {
+      .nav { padding: 0 20px; }
+      .page-hero { padding: 40px 20px; }
+      .page-hero-inner { flex-direction: column; }
+      .hero-issue { width: 100%; }
+      .main { padding: 24px 20px 60px; }
+      .feature-cards { grid-template-columns: 1fr; }
+      .claude-grid { grid-template-columns: 1fr; }
+      .jira-systems { flex-direction: column; }
+      .jira-mid { width: 100%; flex-direction: row; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Dev Motion Cheats</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-current">GitHub Issues</span>
+    <div class="lang-switch">
+      <button class="lang-opt active" data-lang-opt="en">EN</button>
+      <button class="lang-opt" data-lang-opt="ja">日本語</button>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-text">
+        <div class="page-badge">GitHub Issues</div>
+        <h1 class="page-title" data-i18n="hero.title">Track Work,<br><em>Ship Faster</em></h1>
+        <p class="page-desc" data-i18n="hero.desc">Master GitHub Issues — from basics to JIRA sync<br>and Claude AI integration — all with live animations.</p>
+      </div>
+      <div class="hero-issue">
+        <div class="hi-bar">
+          <div class="hi-dot"></div><div class="hi-dot"></div><div class="hi-dot"></div>
+          <span class="hi-url">github.com / issues / 247</span>
+        </div>
+        <div class="hi-body">
+          <div class="hi-open"><div class="hi-pulse"></div> Open</div>
+          <div class="hi-title">Login form crashes on mobile Safari #247</div>
+          <div class="hi-desc">TypeError when submit is pressed on iOS 17+. Cannot reproduce on Chrome mobile.</div>
+          <div class="hi-tags">
+            <span class="hi-tag t-bug">🐛 bug</span>
+            <span class="hi-tag t-pri">🔴 priority:high</span>
+            <span class="hi-tag t-tri">safari-compat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+
+    <!-- S1: What is GitHub Issues -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title" data-i18n="s1.title">What is GitHub Issues?</h2>
+        <button class="play-btn" onclick="replayCards(this)">▶ Play</button>
+      </div>
+      <div class="section-body">
+        <div id="zone-s1" class="feature-cards">
+          <div class="feat-card c-green">
+            <span class="feat-icon">🐛</span>
+            <div class="feat-title" data-i18n="f1.title">Bug Tracking</div>
+            <div class="feat-desc" data-i18n="f1.desc">Report, discuss, and resolve bugs with rich markdown, screenshots, and code snippets.</div>
+          </div>
+          <div class="feat-card c-blue">
+            <span class="feat-icon">✨</span>
+            <div class="feat-title" data-i18n="f2.title">Feature Requests</div>
+            <div class="feat-desc" data-i18n="f2.desc">Collect ideas from users and teammates. Use labels and milestones to prioritize roadmap items.</div>
+          </div>
+          <div class="feat-card c-purple">
+            <span class="feat-icon">📋</span>
+            <div class="feat-title" data-i18n="f3.title">Project Tracking</div>
+            <div class="feat-desc" data-i18n="f3.desc">Link issues to PRs, projects, and milestones. Close issues automatically when PRs are merged.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2: Issue Lifecycle -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title" data-i18n="s2.title">Issue Lifecycle</h2>
+        <button class="play-btn" id="lc-btn" onclick="playLifecycle(this)">▶ Play</button>
+      </div>
+      <div class="section-body">
+        <div class="lifecycle-flow">
+          <div class="lc-node st-open" id="lc-n0">
+            <div class="lc-icon">🟢</div>
+            <div class="lc-label" data-i18n="lc0.label">Open</div>
+            <div class="lc-sub" data-i18n="lc0.sub">Reported</div>
+          </div>
+          <div class="lc-arrow"><div class="lc-dot" id="lc-d0"></div></div>
+          <div class="lc-node st-inprogress" id="lc-n1">
+            <div class="lc-icon">🔵</div>
+            <div class="lc-label" data-i18n="lc1.label">In Progress</div>
+            <div class="lc-sub" data-i18n="lc1.sub">Assigned</div>
+          </div>
+          <div class="lc-arrow"><div class="lc-dot" id="lc-d1"></div></div>
+          <div class="lc-node st-review" id="lc-n2">
+            <div class="lc-icon">🟡</div>
+            <div class="lc-label" data-i18n="lc2.label">In Review</div>
+            <div class="lc-sub" data-i18n="lc2.sub">PR Open</div>
+          </div>
+          <div class="lc-arrow"><div class="lc-dot" id="lc-d2"></div></div>
+          <div class="lc-node st-closed" id="lc-n3">
+            <div class="lc-icon">✅</div>
+            <div class="lc-label" data-i18n="lc3.label">Closed</div>
+            <div class="lc-sub" data-i18n="lc3.sub">Merged</div>
+          </div>
+        </div>
+        <div class="lc-status-row">
+          <div class="lc-status-head">
+            <div class="lc-badge b-open" id="lc-badge">
+              <div class="lc-bdot"></div>
+              <span id="lc-status-text">Open</span>
+            </div>
+            <span class="lc-hint" data-i18n="lc.hint">Press ▶ Play to animate the lifecycle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3: Labels & Milestones -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title" data-i18n="s3.title">Labels &amp; Milestones</h2>
+        <button class="play-btn" onclick="replayLabels(this)">▶ Play</button>
+      </div>
+      <div class="section-body">
+        <div class="labels-section">
+          <div class="labels-grid" id="labels-grid"></div>
+          <div class="milestone-card show" id="ms-card">
+            <div class="ms-head">
+              <div class="ms-name">🏁 <span data-i18n="ms.name">v2.0 — Authentication Refactor</span></div>
+              <div class="ms-pct-text" data-i18n="ms.pct">72% complete</div>
+            </div>
+            <div class="ms-bar-bg"><div class="ms-bar-fill fill" id="ms-fill"></div></div>
+            <div class="ms-meta" data-i18n="ms.meta">18 open · 46 closed · Due Apr 30, 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: JIRA Integration -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num jira">4</div>
+        <h2 class="section-title" data-i18n="s4.title">JIRA Integration</h2>
+        <button class="play-btn jira" onclick="playJira(this)">▶ Play</button>
+      </div>
+      <div class="section-body">
+        <div class="jira-systems">
+          <div class="jira-box gh-box">
+            <div class="jira-logo">🐙</div>
+            <div class="jira-box-name">GitHub Issues</div>
+            <div class="jira-list">
+              <div class="jira-item gh-item" id="ji-gh1">#247 Login crash on Safari</div>
+              <div class="jira-item gh-item" id="ji-gh2">#248 Dark mode flicker</div>
+            </div>
+          </div>
+          <div class="jira-mid">
+            <div class="sync-row" id="syn-r">
+              <div class="sync-label-text" data-i18n="syn.create">Create</div>
+              <div class="arrow-track r"><div class="pkt gh-pkt" id="pkt-r"></div></div>
+            </div>
+            <div class="sync-app-label" data-i18n="syn.app">GitHub for<br>Jira App</div>
+            <div class="sync-row" id="syn-l">
+              <div class="arrow-track l"><div class="pkt j-pkt" id="pkt-l"></div></div>
+              <div class="sync-label-text" data-i18n="syn.update">Update</div>
+            </div>
+          </div>
+          <div class="jira-box j-box">
+            <div class="jira-logo">🔵</div>
+            <div class="jira-box-name">JIRA</div>
+            <div class="jira-list">
+              <div class="jira-item j-item" id="ji-j1">APP-247 Login crash on Safari</div>
+              <div class="jira-item j-item" id="ji-j2">APP-248 Dark mode flicker</div>
+            </div>
+          </div>
+        </div>
+        <div class="jira-steps">
+          <div class="jira-step" id="jst1">
+            <div class="step-num sgh">1</div>
+            <div class="step-body">
+              <div class="step-title" data-i18n="jst1.title">Create GitHub Issue</div>
+              <div class="step-desc" data-i18n="jst1.desc">Open an issue with title, description, and labels. Assign to a team member.</div>
+            </div>
+            <span class="step-tag">gh issue create</span>
+          </div>
+          <div class="jira-step" id="jst2">
+            <div class="step-num sj">2</div>
+            <div class="step-body">
+              <div class="step-title" data-i18n="jst2.title">Auto-sync to JIRA</div>
+              <div class="step-desc" data-i18n="jst2.desc">GitHub for Jira app receives the webhook and creates a linked JIRA ticket automatically.</div>
+            </div>
+            <span class="step-tag">Webhook → JIRA API</span>
+          </div>
+          <div class="jira-step" id="jst3">
+            <div class="step-num sj">3</div>
+            <div class="step-body">
+              <div class="step-title" data-i18n="jst3.title">Transition JIRA status</div>
+              <div class="step-desc" data-i18n="jst3.desc">Move ticket to "In Progress" in JIRA. Status syncs back to GitHub as a label or comment.</div>
+            </div>
+            <span class="step-tag">Status sync</span>
+          </div>
+          <div class="jira-step" id="jst4">
+            <div class="step-num sgh">4</div>
+            <div class="step-body">
+              <div class="step-title" data-i18n="jst4.title">PR merge → Auto-close</div>
+              <div class="step-desc" data-i18n="jst4.desc">Merge a PR with <code>Closes #247</code> — GitHub closes the issue, JIRA ticket moves to Done.</div>
+            </div>
+            <span class="step-tag">Closes #247</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5: Claude AI Integration -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num claude">5</div>
+        <h2 class="section-title" data-i18n="s5.title">Claude AI Integration</h2>
+        <button class="play-btn claude-btn" onclick="playClaude(this)">▶ Play</button>
+      </div>
+      <div class="section-body">
+        <div class="claude-grid">
+          <div class="ci-card" id="ci-issue">
+            <div class="ci-head">
+              <div class="ci-open-dot"></div>
+              Open Issue #247
+            </div>
+            <div class="ci-body">
+              <div class="ci-issue-title">Login form crashes on mobile Safari</div>
+              <div class="ci-issue-body">The login form throws a TypeError when the submit button is pressed on iOS 17+ with Safari. Cannot reproduce on Chrome.</div>
+              <div class="ci-code">TypeError: Cannot read properties of null<br>&nbsp;&nbsp;at handleSubmit (login.js:42)<br>&nbsp;&nbsp;at HTMLFormElement.&lt;anonymous&gt;</div>
+            </div>
+          </div>
+          <div class="claude-out">
+            <div class="thinking-card" id="ci-thinking">
+              <span>🤖 Claude <span data-i18n="ci.analyzing">analyzing…</span></span>
+              <div class="think-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="result-card" id="ci-labels">
+              <div class="result-head">🏷️ <span data-i18n="ci.labels">Auto Labels</span></div>
+              <div class="result-body">
+                <div class="result-labels">
+                  <span class="hi-tag t-bug">🐛 bug</span>
+                  <span class="hi-tag t-pri">🔴 priority:high</span>
+                  <span class="hi-tag t-tri">safari-compat</span>
+                  <span class="hi-tag" style="background:#fff3cd;color:#856404;border:1px solid #fde68a;">ios</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-card" id="ci-summary">
+              <div class="result-head">📝 <span data-i18n="ci.summary">Summary</span></div>
+              <div class="result-body">
+                <div class="result-text" data-i18n="ci.summary.text">Null reference in <code>handleSubmit()</code> at login.js:42. Safari's stricter form event timing causes <code>querySelector</code> to return null before DOM is fully ready.</div>
+              </div>
+            </div>
+            <div class="result-card" id="ci-fix">
+              <div class="result-head">💡 <span data-i18n="ci.fix">Suggested Fix</span></div>
+              <div class="result-body">
+                <div class="result-code"><span class="cm">// login.js:42 — add null guard</span><br><span class="kw">const</span> form = document.<span class="fn">querySelector</span>(<span class="str">'#login-form'</span>);<br><span class="kw">if</span> (!form) <span class="kw">return</span>;<br>form.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, handleSubmit);</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="gha-card">
+          <div class="gha-head">
+            <span>⚙️</span>
+            <span class="gha-head-title">.github/workflows/claude-triage.yml</span>
+            <span class="gha-badge" data-i18n="gha.status">✓ passing</span>
+          </div>
+          <div class="gha-body">
+            <div class="gha-step show" id="gha1" style="animation-delay:.1s"><div class="gha-check">✓</div><span class="gha-text" data-i18n="gha1">on: issues.opened → trigger workflow</span><span class="gha-time">0.3s</span></div>
+            <div class="gha-step show" id="gha2" style="animation-delay:.3s"><div class="gha-check">✓</div><span class="gha-text" data-i18n="gha2">Call Claude API with issue title + body</span><span class="gha-time">1.2s</span></div>
+            <div class="gha-step show" id="gha3" style="animation-delay:.5s"><div class="gha-check">✓</div><span class="gha-text" data-i18n="gha3">Parse response → apply labels via GitHub API</span><span class="gha-time">0.4s</span></div>
+            <div class="gha-step show" id="gha4" style="animation-delay:.7s"><div class="gha-check">✓</div><span class="gha-text" data-i18n="gha4">Post summary + fix suggestion as comment</span><span class="gha-time">0.5s</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>&copy; 2024 Dev Motion Cheats</footer>
+
+  <script>
+    /* ── i18n ── */
+    const i18n = {
+      en: {
+        'hero.title': 'Track Work,<br><em>Ship Faster</em>',
+        'hero.desc': 'Master GitHub Issues — from basics to JIRA sync<br>and Claude AI integration — all with live animations.',
+        's1.title': 'What is GitHub Issues?',
+        'f1.title': 'Bug Tracking', 'f1.desc': 'Report, discuss, and resolve bugs with rich markdown, screenshots, and code snippets.',
+        'f2.title': 'Feature Requests', 'f2.desc': 'Collect ideas from users and teammates. Use labels and milestones to prioritize roadmap items.',
+        'f3.title': 'Project Tracking', 'f3.desc': 'Link issues to PRs, projects, and milestones. Close issues automatically when PRs are merged.',
+        's2.title': 'Issue Lifecycle',
+        'lc0.label': 'Open', 'lc0.sub': 'Reported',
+        'lc1.label': 'In Progress', 'lc1.sub': 'Assigned',
+        'lc2.label': 'In Review', 'lc2.sub': 'PR Open',
+        'lc3.label': 'Closed', 'lc3.sub': 'Merged',
+        'lc.hint': 'Press ▶ Play to animate the lifecycle',
+        's3.title': 'Labels & Milestones',
+        'ms.name': 'v2.0 — Authentication Refactor', 'ms.pct': '72% complete', 'ms.meta': '18 open · 46 closed · Due Apr 30, 2025',
+        's4.title': 'JIRA Integration',
+        'syn.create': 'Create', 'syn.app': 'GitHub for\nJira App', 'syn.update': 'Update',
+        'jst1.title': 'Create GitHub Issue', 'jst1.desc': 'Open an issue with title, description, and labels. Assign to a team member.',
+        'jst2.title': 'Auto-sync to JIRA', 'jst2.desc': 'GitHub for Jira app receives the webhook and creates a linked JIRA ticket automatically.',
+        'jst3.title': 'Transition JIRA status', 'jst3.desc': 'Move ticket to "In Progress" in JIRA. Status syncs back to GitHub as a label or comment.',
+        'jst4.title': 'PR merge → Auto-close', 'jst4.desc': 'Merge a PR with Closes #247 — GitHub closes the issue, JIRA ticket moves to Done.',
+        's5.title': 'Claude AI Integration',
+        'ci.analyzing': 'analyzing…', 'ci.labels': 'Auto Labels', 'ci.summary': 'Summary',
+        'ci.summary.text': 'Null reference in <code>handleSubmit()</code> at login.js:42. Safari\'s stricter form event timing causes <code>querySelector</code> to return null before DOM is ready.',
+        'ci.fix': 'Suggested Fix',
+        'gha.status': '✓ passing',
+        'gha1': 'on: issues.opened → trigger workflow',
+        'gha2': 'Call Claude API with issue title + body',
+        'gha3': 'Parse response → apply labels via GitHub API',
+        'gha4': 'Post summary + fix suggestion as comment',
+      },
+      ja: {
+        'hero.title': 'Issue を制して、<br><em>速く届ける</em>',
+        'hero.desc': 'GitHub Issues の基本から JIRA 連携・Claude AI 連携まで<br>アニメーションで一気に学ぼう。',
+        's1.title': 'GitHub Issues とは？',
+        'f1.title': 'バグ追跡', 'f1.desc': 'マークダウン・スクリーンショット・コードスニペットを使ってバグを報告・議論・解決。',
+        'f2.title': '機能リクエスト', 'f2.desc': 'ユーザーやチームメンバーのアイデアを収集。ラベルとマイルストーンでロードマップを優先順位付け。',
+        'f3.title': 'プロジェクト管理', 'f3.desc': 'Issue を PR・プロジェクト・マイルストーンにリンク。PR マージ時に Issue を自動クローズ。',
+        's2.title': 'Issue のライフサイクル',
+        'lc0.label': 'Open', 'lc0.sub': '起票',
+        'lc1.label': '作業中', 'lc1.sub': 'アサイン済み',
+        'lc2.label': 'レビュー中', 'lc2.sub': 'PR オープン',
+        'lc3.label': 'Closed', 'lc3.sub': 'マージ完了',
+        'lc.hint': '▶ Play でライフサイクルをアニメーション',
+        's3.title': 'ラベル &amp; マイルストーン',
+        'ms.name': 'v2.0 — 認証リファクタリング', 'ms.pct': '72% 完了', 'ms.meta': 'オープン 18件 · クローズ 46件 · 期限 2025年4月30日',
+        's4.title': 'JIRA 連携',
+        'syn.create': '作成', 'syn.app': 'GitHub for\nJira App', 'syn.update': '更新',
+        'jst1.title': 'GitHub Issue を作成', 'jst1.desc': 'タイトル・説明・ラベルを付けて Issue を起票し、担当者をアサインする。',
+        'jst2.title': 'JIRA へ自動同期', 'jst2.desc': 'GitHub for Jira App が Webhook を受け取り、紐付き JIRA チケットを自動生成。',
+        'jst3.title': 'JIRA のステータスを変更', 'jst3.desc': 'JIRA で「進行中」に移行すると、ラベルやコメントとして GitHub に同期される。',
+        'jst4.title': 'PR マージ → 自動クローズ', 'jst4.desc': 'Closes #247 を含む PR をマージすると Issue が閉じられ、JIRA チケットも完了へ。',
+        's5.title': 'Claude AI 連携',
+        'ci.analyzing': '解析中…', 'ci.labels': '自動ラベル付与', 'ci.summary': 'サマリー',
+        'ci.summary.text': '<code>login.js:42</code> の <code>handleSubmit()</code> でヌル参照エラー。Safari の厳格なフォームイベントのタイミングにより、DOM 準備完了前に <code>querySelector</code> が null を返している。',
+        'ci.fix': '修正案',
+        'gha.status': '✓ 成功',
+        'gha1': 'on: issues.opened → ワークフロー起動',
+        'gha2': 'Issue のタイトル・本文を Claude API に送信',
+        'gha3': 'レスポンスを解析 → GitHub API でラベルを適用',
+        'gha4': 'サマリーと修正案を Issue コメントに投稿',
+      }
+    };
+
+    let lang = localStorage.getItem('lang') || 'en';
+
+    function applyLang(l) {
+      lang = l;
+      localStorage.setItem('lang', l);
+      document.documentElement.setAttribute('lang', l);
+      document.documentElement.setAttribute('data-lang', l);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (i18n[l] && i18n[l][key] !== undefined) el.innerHTML = i18n[l][key];
+      });
+      document.querySelectorAll('.lang-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.langOpt === l);
+      });
+    }
+
+    document.querySelectorAll('.lang-opt').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.langOpt));
+    });
+
+    /* ── Labels data ── */
+    const LABELS = [
+      { text: 'bug',            color: '#d73a4a', bg: '#ffdce0', border: '#ffb8be' },
+      { text: 'enhancement',   color: '#0969da', bg: '#dbeafe', border: '#93c5fd' },
+      { text: 'documentation', color: '#0075ca', bg: '#ddf4ff', border: '#b3d4ff' },
+      { text: 'good first issue', color: '#008672', bg: '#d4edda', border: '#9fcfa6' },
+      { text: 'help wanted',   color: '#e4e669', bg: '#fcfcba', border: '#e0e000' },
+      { text: 'priority:high', color: '#e11d48', bg: '#ffe4e6', border: '#fca5a5' },
+      { text: "won't fix",     color: '#6e7781', bg: '#eff1f3', border: '#d1d5da' },
+      { text: 'question',      color: '#8250df', bg: '#ede9fe', border: '#c4b5fd' },
+      { text: 'duplicate',     color: '#cfd3d7', bg: '#f1f3f5', border: '#cfd3d7' },
+    ];
+
+    function initLabels() {
+      const grid = document.getElementById('labels-grid');
+      grid.innerHTML = '';
+      LABELS.forEach((lbl, i) => {
+        const el = document.createElement('span');
+        el.className = 'gh-label';
+        el.style.cssText = `color:${lbl.color};background:${lbl.bg};border:1px solid ${lbl.border};animation-delay:${i * 0.08}s`;
+        el.innerHTML = `<span class="label-dot" style="background:${lbl.color}"></span>${lbl.text}`;
+        grid.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('popped'));
+      });
+    }
+
+    /* ── S1: Replay cards ── */
+    function replayCards(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+      const zone = document.getElementById('zone-s1');
+      const cards = zone.querySelectorAll('.feat-card');
+      cards.forEach(c => { c.style.animation = 'none'; c.style.opacity = '0'; });
+      void zone.offsetWidth;
+      requestAnimationFrame(() => {
+        cards.forEach(c => { c.style.animation = ''; c.style.opacity = ''; });
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 1000);
+      });
+    }
+
+    /* ── S2: Lifecycle ── */
+    const lcNodes = ['lc-n0','lc-n1','lc-n2','lc-n3'];
+    const lcDots  = ['lc-d0','lc-d1','lc-d2'];
+    const lcBadgeClasses = ['b-open','b-inprogress','b-review','b-closed'];
+    const lcStatusKeys = ['lc0.label','lc1.label','lc2.label','lc3.label'];
+
+    function playLifecycle(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+
+      lcNodes.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('active');
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.75)';
+      });
+      lcDots.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('run');
+        void el.offsetWidth;
+      });
+
+      const badge = document.getElementById('lc-badge');
+      const statusText = document.getElementById('lc-status-text');
+
+      function activate(i) {
+        const node = document.getElementById(lcNodes[i]);
+        node.style.opacity = '';
+        node.style.transform = '';
+        node.classList.add('active');
+
+        badge.className = `lc-badge ${lcBadgeClasses[i]}`;
+        statusText.textContent = i18n[lang][lcStatusKeys[i]] || lcStatusKeys[i];
+
+        if (i < lcDots.length) {
+          setTimeout(() => {
+            const dot = document.getElementById(lcDots[i]);
+            dot.classList.add('run');
+            setTimeout(() => activate(i + 1), 1000);
+          }, 500);
+        } else {
+          setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 600);
+        }
+      }
+      activate(0);
+    }
+
+    /* ── S3: Labels replay ── */
+    function replayLabels(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+      initLabels();
+      const fill = document.getElementById('ms-fill');
+      fill.style.animation = 'none';
+      fill.style.width = '0';
+      void fill.offsetWidth;
+      fill.style.animation = '';
+      fill.classList.add('fill');
+      const ms = document.getElementById('ms-card');
+      ms.style.animation = 'none';
+      ms.style.opacity = '0';
+      void ms.offsetWidth;
+      ms.style.animation = '';
+      ms.classList.add('show');
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 1800);
+    }
+
+    /* ── S4: JIRA ── */
+    function playJira(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+
+      const items = ['ji-gh1','ji-gh2','ji-j1','ji-j2'];
+      items.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('show');
+        el.style.opacity = '0';
+      });
+      ['syn-r','syn-l'].forEach(id => document.getElementById(id).classList.remove('visible'));
+      ['pkt-r','pkt-l'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('go-r','go-l');
+        void el.offsetWidth;
+      });
+      ['jst1','jst2','jst3','jst4'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('show');
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(-10px)';
+      });
+
+      function showItem(id, delay) {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          el.classList.add('show');
+          el.style.opacity = '';
+          el.style.transform = '';
+        }, delay);
+      }
+
+      // Step 1: GH issues + step1
+      showItem('ji-gh1', 100);
+      showItem('ji-gh2', 300);
+      showItem('jst1', 200);
+
+      // Step 2: arrow right + JIRA items
+      setTimeout(() => {
+        document.getElementById('syn-r').classList.add('visible');
+        const pkt = document.getElementById('pkt-r');
+        void pkt.offsetWidth;
+        pkt.classList.add('go-r');
+        setTimeout(() => {
+          showItem('ji-j1', 0);
+          showItem('ji-j2', 200);
+          showItem('jst2', 0);
+        }, 850);
+      }, 900);
+
+      // Step 3: back arrow
+      setTimeout(() => {
+        document.getElementById('syn-l').classList.add('visible');
+        const pkt = document.getElementById('pkt-l');
+        void pkt.offsetWidth;
+        pkt.classList.add('go-l');
+        showItem('jst3', 0);
+      }, 2200);
+
+      // Step 4 + done
+      setTimeout(() => {
+        showItem('jst4', 0);
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 500);
+      }, 3200);
+    }
+
+    /* ── S5: Claude ── */
+    function playClaude(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '⟳ Playing…';
+
+      const ids = ['ci-issue','ci-thinking','ci-labels','ci-summary','ci-fix'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('show');
+        el.style.opacity = '0';
+        el.style.animation = 'none';
+      });
+      const ghaSteps = ['gha1','gha2','gha3','gha4'];
+      ghaSteps.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('show');
+        el.style.opacity = '0';
+        el.style.animation = 'none';
+      });
+      void document.getElementById('ci-issue').offsetWidth;
+
+      function showEl(id, delay) {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          el.style.animation = '';
+          el.classList.add('show');
+          el.style.opacity = '';
+        }, delay);
+      }
+
+      showEl('ci-issue',   100);
+      showEl('ci-thinking', 600);
+      showEl('ci-labels',  1800);
+      showEl('ci-summary', 2500);
+      showEl('ci-fix',     3200);
+      ghaSteps.forEach((id, i) => showEl(id, 3900 + i * 350));
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = '↺ Replay'; }, 5500);
+    }
+
+    /* ── Init ── */
+    applyLang(lang);
+    initLabels();
+    playLifecycle(document.getElementById('lc-btn'));
+  </script>
+
+</body>
+</html>

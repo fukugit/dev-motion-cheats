@@ -199,6 +199,7 @@
     .card-auth::after   { background: linear-gradient(90deg, #7c3aed, #0d9488); }
     .card-docker::after     { background: linear-gradient(90deg, #2496ed, #27ae60); }
     .card-playwright::after { background: linear-gradient(90deg, #2ead33, #4a90e2); }
+    .card-github::after     { background: linear-gradient(90deg, #1f883d, #0969da); }
 
     .card:hover {
       transform: translateY(-6px);
@@ -249,6 +250,7 @@
     .card-auth   .card-badge { background: #f3e8ff; color: #6d28d9; }
     .card-docker     .card-badge { background: #e0f0ff; color: #0369a1; }
     .card-playwright .card-badge { background: #dcfce7; color: #166534; }
+    .card-github     .card-badge { background: #dcffe4; color: #1f883d; }
 
     footer {
       text-align: center;
@@ -327,6 +329,12 @@
         <p data-i18n="card.playwright.desc">Learn browser automation from scratch — write your first test, master selectors, and run E2E tests on GitHub Actions.</p>
         <span class="card-badge">Testing</span>
       </a>
+      <a href="github-issues.html" class="card card-github">
+        <span class="card-icon">🐙</span>
+        <h2 data-i18n="card.github.title">GitHub Issues</h2>
+        <p data-i18n="card.github.desc">Master GitHub Issues — lifecycle, labels, JIRA integration, and Claude AI triage — all with live animations.</p>
+        <span class="card-badge">Issues</span>
+      </a>
     </div>
   </section>
 
@@ -346,6 +354,8 @@
         'card.docker.desc': 'Visualize Docker images, containers, and AWS services (ECR / ECS / Fargate) with layered animations.',
         'card.playwright.title': 'Playwright E2E',
         'card.playwright.desc': 'Learn browser automation from scratch — write your first test, master selectors, and run E2E tests on GitHub Actions.',
+        'card.github.title': 'GitHub Issues',
+        'card.github.desc': 'Master GitHub Issues — lifecycle, labels, JIRA integration, and Claude AI triage — all with live animations.',
       },
       ja: {
         'hero.title': '動いて<em>理解する</em><br>開発チートシート',
@@ -359,6 +369,8 @@
         'card.docker.desc': 'Dockerイメージ・コンテナの仕組みと、ECR / ECS / Fargate をレイヤーアニメーションで視覚化。',
         'card.playwright.title': 'Playwright E2E',
         'card.playwright.desc': 'ブラウザ自動テストをゼロから学ぶ — 最初のテスト、セレクター、GitHub ActionsでのCI/CD自動化まで。',
+        'card.github.title': 'GitHub Issues',
+        'card.github.desc': 'GitHub Issues の基本から JIRA 連携・Claude AI トリアージまでアニメーションで一気に学ぼう。',
       }
     };
 
