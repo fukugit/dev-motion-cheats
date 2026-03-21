@@ -370,7 +370,7 @@
 
     .reset-btn:hover { background: var(--bg); }
 
-    /* ===== SECTION 2: Branch & Merge SVG ===== */
+    /* ===== SECTION 2: Cherry-pick / Revert / Reset ===== */
     .branch-svg {
       width: 100%;
       max-width: 680px;
@@ -421,7 +421,131 @@
 
     .branch-play-btn:hover { background: #d4691a; transform: translateY(-1px); }
 
-    /* ===== SECTION 3: Push / Pull ===== */
+    .danger-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .danger-card { border-radius: var(--radius); overflow: hidden; border: 1.5px solid; }
+    .danger-card.safe    { border-color: #86efac; }
+    .danger-card.danger  { border-color: #fca5a5; }
+    .danger-card.info    { border-color: #93c5fd; }
+
+    .danger-card-header {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .safe   .danger-card-header { background: #f0fdf4; color: #166534; }
+    .danger .danger-card-header { background: #fff5f5; color: #991b1b; }
+    .info   .danger-card-header { background: #eff6ff; color: #1e40af; }
+
+    .danger-card-body { padding: 16px; background: var(--white); }
+
+    .commit-chain {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cc-item {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+
+    .cc-normal  { background: #4a90e2; }
+    .cc-bad     { background: #e74c3c; }
+    .cc-revert  { background: #27ae60; }
+    .cc-revrev  { background: #9b59b6; }
+    .cc-lost    { background: #9ca3af; opacity: 0.45; }
+    .cc-arrow   { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+    .cc-arrow.cut { color: #ef4444; }
+
+    .danger-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    .reset-mode-row {
+      display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+    }
+
+    .reset-mode {
+      border-radius: 8px; padding: 6px 12px;
+      font-size: 0.75rem; font-family: monospace; font-weight: 700;
+    }
+
+    .rm-soft  { background: #fef9c3; color: #92400e; border: 1px solid #fde047; }
+    .rm-mixed { background: #fed7aa; color: #9a3412; border: 1px solid #fb923c; }
+    .rm-hard  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ===== SECTION 3: Pull vs Fetch ===== */
+    .pf-diagram {
+      display: grid;
+      grid-template-columns: 1fr 90px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    .pf-local-box {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .pf-local-header {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      background: #f0f4ff;
+    }
+
+    .pf-branch-section {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pf-branch-section:last-child { border-bottom: none; }
+
+    .pf-branch-label {
+      padding: 5px 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pf-main-label    { background: #eff6ff; color: #1e40af; }
+    .pf-tracking-label { background: #fffbeb; color: #92400e; }
+
+    .pf-status-msg {
+      font-size: 0.78rem;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 14px;
+      min-height: 34px;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .pf-status-msg.fetch { background: #fffbeb; color: #92400e; }
+    .pf-status-msg.pull  { background: #f0fdf4; color: #166534; }
+    .pf-status-msg.push  { background: #eff6ff; color: #1e40af; }
+
+    /* ===== SECTION 3 (old): Push / Pull ===== */
     .remote-diagram {
       display: grid;
       grid-template-columns: 1fr 80px 1fr;
@@ -513,52 +637,6 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== SECTION 4: Quick Ref ===== */
-    .ref-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .ref-group {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .ref-group-title {
-      padding: 12px 18px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .ref-table { width: 100%; border-collapse: collapse; }
-
-    .ref-table td {
-      padding: 10px 18px;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.825rem;
-      vertical-align: middle;
-    }
-
-    .ref-table tr:last-child td { border-bottom: none; }
-
-    .ref-table td:first-child {
-      font-family: monospace;
-      font-size: 0.78rem;
-      color: #2563eb;
-      white-space: nowrap;
-      width: 55%;
-    }
-
-    .ref-table td:last-child { color: var(--muted); }
-
     /* ── Play / Replay Button ── */
     .play-btn {
       margin-left: auto; flex-shrink: 0;
@@ -576,8 +654,9 @@
       .content { padding: 32px 20px; }
       .workflow-areas { grid-template-columns: 1fr; }
       .remote-diagram { grid-template-columns: 1fr; gap: 12px; }
+      .pf-diagram { grid-template-columns: 1fr; gap: 12px; }
       .push-pull-col { flex-direction: row; justify-content: center; }
-      .ref-grid { grid-template-columns: 1fr; }
+      .danger-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -684,128 +763,203 @@
 <span class="cmd">git log</span> <span class="arg">--oneline --graph</span></div>
     </div>
 
-    <!-- 2. Branch & Merge -->
+    <!-- 2. Cherry-pick -->
     <div class="section">
       <div class="section-header">
         <div class="section-num">2</div>
-        <h2 class="section-title" data-i18n="s2.title">Branch &amp; Merge — Fork and Join</h2>
-        <button class="play-btn" onclick="playBranch()">▶ Play</button>
+        <h2 class="section-title" data-i18n="s2.title">Cherry-pick</h2>
+        <button class="play-btn" id="cp-play-btn">▶ Play</button>
       </div>
 
       <div class="demo-area">
-        <svg class="branch-svg" viewBox="0 0 680 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- main branch line -->
-          <line id="bl-main" class="branch-line" x1="40" y1="75" x2="640" y2="75"
+        <svg class="branch-svg" id="cp-svg" viewBox="0 0 680 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line id="cp-main" class="branch-line" x1="40" y1="65" x2="640" y2="65"
             stroke="#4a90e2" stroke-width="3" />
-
-          <!-- feature branch curve -->
-          <path id="bl-fork" class="branch-line" d="M 220 75 C 250 75 250 155 280 155 L 480 155"
+          <line id="cp-feat" class="branch-line" x1="180" y1="148" x2="540" y2="148"
             stroke="#27ae60" stroke-width="3" />
-
-          <!-- merge curve back -->
-          <path id="bl-merge-back" class="branch-line" d="M 480 155 C 510 155 510 75 540 75"
-            stroke="#27ae60" stroke-width="3" />
-
-          <!-- main commits -->
-          <circle id="bc-c1" class="branch-circle" cx="100" cy="75" r="16" fill="#4a90e2" />
-          <circle id="bc-c2" class="branch-circle" cx="220" cy="75" r="16" fill="#4a90e2" />
-
-          <!-- feature commits -->
-          <circle id="bc-f1" class="branch-circle" cx="330" cy="155" r="16" fill="#27ae60" />
-          <circle id="bc-f2" class="branch-circle" cx="430" cy="155" r="16" fill="#27ae60" />
-
-          <!-- merge commit -->
-          <circle id="bc-mc" class="branch-circle" cx="540" cy="75" r="16" fill="#9b59b6" />
-
-          <!-- Labels inside circles -->
-          <text id="bt-c1" class="branch-text" x="100" y="75" text-anchor="middle" dominant-baseline="central"
-            fill="white" font-size="11" font-weight="700">C1</text>
-          <text id="bt-c2" class="branch-text" x="220" y="75" text-anchor="middle" dominant-baseline="central"
-            fill="white" font-size="11" font-weight="700">C2</text>
-          <text id="bt-f1" class="branch-text" x="330" y="155" text-anchor="middle" dominant-baseline="central"
-            fill="white" font-size="11" font-weight="700">F1</text>
-          <text id="bt-f2" class="branch-text" x="430" y="155" text-anchor="middle" dominant-baseline="central"
-            fill="white" font-size="11" font-weight="700">F2</text>
-          <text id="bt-mc" class="branch-text" x="540" y="75" text-anchor="middle" dominant-baseline="central"
-            fill="white" font-size="11" font-weight="700">M</text>
-
-          <!-- Branch name labels -->
-          <text id="bl-main-label" class="branch-text" x="48" y="56"
-            fill="#4a90e2" font-size="13" font-weight="700">main</text>
-          <text id="bl-feat-label" class="branch-text" x="280" y="188"
-            fill="#27ae60" font-size="13" font-weight="700">feature</text>
-          <text id="bl-merge-label" class="branch-text" x="540" y="56"
-            fill="#9b59b6" font-size="13" font-weight="700">merge</text>
-
-          <!-- git branch label -->
-          <text id="bl-cmd1" class="branch-text" x="330" y="133"
-            fill="#27ae60" font-size="10.5" font-style="italic">git checkout -b feature</text>
-          <text id="bl-cmd2" class="branch-text" x="540" y="105"
-            fill="#9b59b6" font-size="10.5" font-style="italic">git merge feature</text>
+          <path id="cp-arc" class="branch-line" d="M 400 148 C 400 95 530 95 530 65"
+            stroke="#e74c3c" stroke-width="2.5" stroke-dasharray="6 3" />
+          <polygon id="cp-arrowhead" class="branch-circle"
+            points="522,57 538,57 530,72" fill="#e74c3c" />
+          <circle id="cp-c1" class="branch-circle" cx="100"  cy="65"  r="16" fill="#4a90e2" />
+          <circle id="cp-c2" class="branch-circle" cx="240"  cy="65"  r="16" fill="#4a90e2" />
+          <circle id="cp-c3" class="branch-circle" cx="530"  cy="65"  r="16" fill="#e74c3c" />
+          <circle id="cp-f1" class="branch-circle" cx="290"  cy="148" r="16" fill="#27ae60" />
+          <circle id="cp-f2" class="branch-circle" cx="400"  cy="148" r="16" fill="#e74c3c" />
+          <circle id="cp-f3" class="branch-circle" cx="490"  cy="148" r="16" fill="#27ae60" />
+          <text id="cp-tc1" class="branch-text" x="100"  y="65"  text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">C1</text>
+          <text id="cp-tc2" class="branch-text" x="240"  y="65"  text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">C2</text>
+          <text id="cp-tc3" class="branch-text" x="530"  y="65"  text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">C3</text>
+          <text id="cp-tf1" class="branch-text" x="290"  y="148" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">F1</text>
+          <text id="cp-tf2" class="branch-text" x="400"  y="148" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">F2</text>
+          <text id="cp-tf3" class="branch-text" x="490"  y="148" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700">F3</text>
+          <text id="cp-lmain" class="branch-text" x="46"  y="46"  fill="#4a90e2" font-size="13" font-weight="700">main</text>
+          <text id="cp-lfeat" class="branch-text" x="180" y="174" fill="#27ae60" font-size="13" font-weight="700">feature</text>
+          <text id="cp-label" class="branch-text" x="448" y="106" fill="#e74c3c" font-size="10.5" font-style="italic" data-i18n="cp.label">git cherry-pick F2</text>
         </svg>
-        <button class="branch-play-btn" id="branch-play" data-i18n="btn.play">▶ Play Animation</button>
+        <button class="branch-play-btn" id="cp-play" data-i18n="btn.play">▶ Play Animation</button>
       </div>
 
-      <div class="code"><span class="c" data-i18n="c.branch">/* Branch operations */</span>
-<span class="cmd">git branch</span>                  <span class="c" data-i18n="c.list">/* list branches */</span>
-<span class="cmd">git branch</span> <span class="arg">feature</span>          <span class="c" data-i18n="c.create">/* create branch */</span>
-<span class="cmd">git switch</span> <span class="arg">feature</span>          <span class="c" data-i18n="c.switch">/* switch branch (Git 2.23+) */</span>
-<span class="cmd">git checkout</span> <span class="arg">-b feature</span>    <span class="c" data-i18n="c.checkout">/* create + switch (traditional method) */</span>
-
-<span class="c" data-i18n="c.merge">/* Merge */</span>
-<span class="cmd">git switch</span> <span class="arg">main</span>
-<span class="cmd">git merge</span> <span class="arg">feature</span>           <span class="c" data-i18n="c.mergeto">/* merge feature into main */</span>
-<span class="cmd">git merge</span> <span class="arg">--no-ff feature</span>   <span class="c" data-i18n="c.noff">/* always create a merge commit */</span>
-
-<span class="c" data-i18n="c.del">/* Delete branch */</span>
-<span class="cmd">git branch</span> <span class="arg">-d feature</span>       <span class="c" data-i18n="c.delbranch">/* delete merged branch */</span></div>
+      <div class="code"><span class="c" data-i18n="c.cp">/* Cherry-pick: copy a specific commit to current branch */</span>
+<span class="cmd">git cherry-pick</span> <span class="arg">&lt;hash&gt;</span>          <span class="c" data-i18n="c.cp1">/* apply one commit */</span>
+<span class="cmd">git cherry-pick</span> <span class="arg">&lt;hash1&gt;..&lt;hash2&gt;</span>  <span class="c" data-i18n="c.cp2">/* apply a range */</span>
+<span class="cmd">git cherry-pick</span> <span class="arg">-n &lt;hash&gt;</span>        <span class="c" data-i18n="c.cp3">/* apply without committing */</span></div>
     </div>
 
-    <!-- 3. Push / Pull -->
+    <!-- 3. Revert -->
     <div class="section">
       <div class="section-header">
         <div class="section-num">3</div>
-        <h2 class="section-title" data-i18n="s3.title">Remote Repository — push &amp; pull</h2>
-        <button class="play-btn" onclick="resetPushPull()">↺ Reset</button>
+        <h2 class="section-title" data-i18n="s3.title">Revert</h2>
+      </div>
+
+      <div class="danger-grid">
+
+        <div class="danger-card safe">
+          <div class="danger-card-header">
+            <span>✅</span>
+            <span data-i18n="s3.revert.title">git revert — Safe Undo</span>
+          </div>
+          <div class="danger-card-body">
+            <div class="commit-chain">
+              <div class="cc-item cc-normal">A</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-normal">B</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-bad">C</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-revert">C'</div>
+            </div>
+            <p class="danger-desc" data-i18n="s3.revert.desc">Adds a new commit C' that undoes C's changes. History is preserved — safe for team repos.</p>
+          </div>
+        </div>
+
+        <div class="danger-card info">
+          <div class="danger-card-header">
+            <span>🔄</span>
+            <span data-i18n="s3.revert2.title">Revert of a Revert</span>
+          </div>
+          <div class="danger-card-body">
+            <div class="commit-chain">
+              <div class="cc-item cc-normal">A</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-bad">C</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-revert">C'</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-revrev">C''</div>
+            </div>
+            <p class="danger-desc" data-i18n="s3.revert2.desc">Reverting C' creates C'' which re-applies C's changes. Critical: if you revert a feature branch merge and later re-merge the same branch, Git skips those commits — you must revert the revert first.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="code"><span class="c" data-i18n="c.rv">/* Revert: safe undo — adds a new "undo" commit */</span>
+<span class="cmd">git revert</span> <span class="arg">&lt;hash&gt;</span>              <span class="c" data-i18n="c.rv1">/* revert one commit */</span>
+<span class="cmd">git revert</span> <span class="arg">HEAD</span>               <span class="c" data-i18n="c.rv2">/* revert last commit */</span>
+<span class="cmd">git revert</span> <span class="arg">HEAD~3..HEAD</span>       <span class="c" data-i18n="c.rv4">/* revert a range of commits */</span>
+<span class="cmd">git revert</span> <span class="arg">&lt;revert-hash&gt;</span>      <span class="c" data-i18n="c.rv3">/* revert of revert → re-applies original */</span></div>
+    </div>
+
+    <!-- 4. Reset -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title" data-i18n="s4.title">Reset</h2>
+      </div>
+
+      <div class="danger-grid" style="grid-template-columns: 1fr;">
+
+        <div class="danger-card danger">
+          <div class="danger-card-header">
+            <span>⚠️</span>
+            <span data-i18n="s4.reset.title">git reset — Rewrites History</span>
+          </div>
+          <div class="danger-card-body">
+            <div class="commit-chain">
+              <div class="cc-item cc-normal">A</div>
+              <div class="cc-arrow">→</div>
+              <div class="cc-item cc-normal">B</div>
+              <div class="cc-arrow cut">→</div>
+              <div class="cc-item cc-lost">C</div>
+            </div>
+            <p class="danger-desc" data-i18n="s4.reset.desc">--hard erases C from history. Using it on pushed commits forces divergence with remote — requires force push.</p>
+            <div class="reset-mode-row">
+              <span class="reset-mode rm-soft"  data-i18n="rm.soft">--soft: keep staged</span>
+              <span class="reset-mode rm-mixed" data-i18n="rm.mixed">--mixed: keep unstaged</span>
+              <span class="reset-mode rm-hard"  data-i18n="rm.hard">--hard: discard all ⚠️</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="code"><span class="c" data-i18n="c.rs">/* Reset: move HEAD (and branch pointer) — rewrites history */</span>
+<span class="cmd">git reset</span> <span class="arg">--soft  HEAD~1</span>      <span class="c" data-i18n="c.rs1">/* undo commit, keep staged */</span>
+<span class="cmd">git reset</span> <span class="arg">--mixed HEAD~1</span>      <span class="c" data-i18n="c.rs2">/* undo commit + unstage (default) */</span>
+<span class="cmd">git reset</span> <span class="arg">--hard  HEAD~1</span>      <span class="c" data-i18n="c.rs3">/* undo commit + discard changes ⚠️ */</span>
+
+<span class="c" data-i18n="c.rs4">/* Recover a commit lost by reset (within ~30 days) */</span>
+<span class="cmd">git reflog</span>                   <span class="c" data-i18n="c.rs5">/* find the lost commit hash */</span>
+<span class="cmd">git reset</span> <span class="arg">--hard &lt;hash&gt;</span>     <span class="c" data-i18n="c.rs6">/* restore to that commit */</span></div>
+    </div>
+
+    <!-- 5. Pull vs Fetch -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2 class="section-title" data-i18n="s5.title">pull と fetch の違い</h2>
+        <button class="play-btn" onclick="resetPullFetch()">↺ Reset</button>
       </div>
 
       <div class="demo-area">
-        <div class="remote-diagram">
-          <!-- Local -->
-          <div class="repo-box repo-local">
-            <div class="repo-box-header">
-              <span style="font-size:1rem">💻</span> Local
+        <div class="pf-diagram">
+
+          <!-- Local box: main + origin/main tracking -->
+          <div class="pf-local-box">
+            <div class="pf-local-header">
+              <span style="font-size:1rem">💻</span> <span data-i18n="pf.local">Local</span>
             </div>
-            <div class="repo-commits" id="local-commits">
-              <div class="rc-item rc-local">
-                <div class="rc-dot"></div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--muted)">a1b2c3d</div>
-                  <div style="font-size:0.75rem">Initial commit</div>
+            <div class="pf-branch-section">
+              <div class="pf-branch-label pf-main-label" data-i18n="pf.mainbranch">main (local)</div>
+              <div class="repo-commits" id="pf-main">
+                <div class="rc-item rc-local">
+                  <div class="rc-dot"></div>
+                  <div>
+                    <div style="font-size:0.72rem;color:var(--muted)">a1b2c3d</div>
+                    <div style="font-size:0.75rem">Initial commit</div>
+                  </div>
                 </div>
               </div>
-              <div class="rc-item rc-local">
-                <div class="rc-dot"></div>
-                <div>
-                  <div style="font-size:0.72rem;color:var(--muted)">e4f5a6b</div>
-                  <div style="font-size:0.75rem">feat: add feature</div>
+            </div>
+            <div class="pf-branch-section">
+              <div class="pf-branch-label pf-tracking-label" data-i18n="pf.tracking">origin/main (tracking)</div>
+              <div class="repo-commits" id="pf-tracking">
+                <div class="rc-item rc-local">
+                  <div class="rc-dot"></div>
+                  <div>
+                    <div style="font-size:0.72rem;color:var(--muted)">a1b2c3d</div>
+                    <div style="font-size:0.75rem">Initial commit</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Push / Pull buttons -->
+          <!-- Buttons -->
           <div class="push-pull-col">
-            <button class="pp-btn" id="pp-push">push →</button>
-            <button class="pp-btn" id="pp-pull">← pull</button>
+            <button class="pp-btn" id="pf-push-btn" data-i18n="pf.push">push →</button>
+            <button class="pp-btn" id="pf-fetch-btn" data-i18n="pf.fetch">← fetch</button>
+            <button class="pp-btn" id="pf-pull-btn" data-i18n="pf.pull">⇐ pull</button>
           </div>
 
           <!-- Remote -->
           <div class="repo-box repo-remote">
             <div class="repo-box-header">
-              <span style="font-size:1rem">☁️</span> Remote (origin)
+              <span style="font-size:1rem">☁️</span> Remote (origin/main)
             </div>
-            <div class="repo-commits" id="remote-commits">
+            <div class="repo-commits" id="pf-remote">
               <div class="rc-item rc-remote">
                 <div class="rc-dot"></div>
                 <div>
@@ -813,65 +967,33 @@
                   <div style="font-size:0.75rem">Initial commit</div>
                 </div>
               </div>
+              <div class="rc-item rc-remote">
+                <div class="rc-dot"></div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted)">b2c3d4e</div>
+                  <div style="font-size:0.75rem">remote: hotfix</div>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
+        <div id="pf-status" class="pf-status-msg"></div>
       </div>
 
-      <div class="code"><span class="c" data-i18n="c.addremote">/* Register remote */</span>
-<span class="cmd">git remote add</span> <span class="arg">origin</span> <span class="str">https://github.com/user/repo.git</span>
+      <div class="code"><span class="c" data-i18n="c.fetch">/* fetch: download commits → origin/main only. Does NOT touch local main */</span>
+<span class="cmd">git fetch</span>                       <span class="c" data-i18n="c.fetchonly">/* safe — no auto-merge */</span>
+<span class="cmd">git fetch</span> <span class="arg">origin</span>              <span class="c" data-i18n="c.fetchorigin">/* fetch from origin explicitly */</span>
+<span class="cmd">git log</span> <span class="arg">origin/main ^main</span>    <span class="c" data-i18n="c.fetchlog">/* see what was fetched */</span>
+<span class="cmd">git merge</span> <span class="arg">origin/main</span>         <span class="c" data-i18n="c.fetchmerge">/* merge manually after reviewing */</span>
 
-<span class="c" data-i18n="c.push">/* Push */</span>
-<span class="cmd">git push</span> <span class="arg">origin main</span>          <span class="c" data-i18n="c.pushto">/* push to origin main */</span>
-<span class="cmd">git push</span> <span class="arg">-u origin main</span>       <span class="c" data-i18n="c.pushu">/* set tracking branch and push */</span>
-
-<span class="c" data-i18n="c.pullfetch">/* Pull / Fetch */</span>
+<span class="c" data-i18n="c.pull">/* pull = fetch + merge (or rebase) in one step */</span>
 <span class="cmd">git pull</span>                        <span class="c" data-i18n="c.pullmerge">/* fetch + merge */</span>
-<span class="cmd">git fetch</span>                       <span class="c" data-i18n="c.fetchonly">/* fetch remote changes (without merge) */</span>
-<span class="cmd">git pull</span> <span class="arg">--rebase</span>              <span class="c" data-i18n="c.rebase">/* fetch + rebase (keeps history clean) */</span></div>
-    </div>
+<span class="cmd">git pull</span> <span class="arg">--rebase</span>              <span class="c" data-i18n="c.rebase">/* fetch + rebase (keeps history linear) */</span>
 
-    <!-- 4. Quick Reference -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-num">4</div>
-        <h2 class="section-title" data-i18n="s4.title">Frequently Used Commands Quick Reference</h2>
-      </div>
-
-      <div class="ref-grid">
-        <div class="ref-group">
-          <div class="ref-group-title" data-i18n="ref.setup">Setup</div>
-          <table class="ref-table">
-            <tr><td>git init</td><td data-i18n="ref.init">Initialize repository</td></tr>
-            <tr><td>git clone &lt;url&gt;</td><td data-i18n="ref.clone">Clone a repository</td></tr>
-            <tr><td>git config --global user.name</td><td data-i18n="ref.config">Set user name</td></tr>
-          </table>
-        </div>
-        <div class="ref-group">
-          <div class="ref-group-title" data-i18n="ref.status">Status</div>
-          <table class="ref-table">
-            <tr><td>git status</td><td data-i18n="ref.wtstatus">Working tree status</td></tr>
-            <tr><td>git log --oneline</td><td data-i18n="ref.log">Commit history (compact)</td></tr>
-            <tr><td>git diff</td><td data-i18n="ref.diff">Show changes</td></tr>
-          </table>
-        </div>
-        <div class="ref-group">
-          <div class="ref-group-title" data-i18n="ref.undo">Undo</div>
-          <table class="ref-table">
-            <tr><td>git restore &lt;file&gt;</td><td data-i18n="ref.restore">Discard working tree changes</td></tr>
-            <tr><td>git restore --staged &lt;file&gt;</td><td data-i18n="ref.unstage">Unstage file</td></tr>
-            <tr><td>git revert &lt;hash&gt;</td><td data-i18n="ref.revert">Revert a commit</td></tr>
-          </table>
-        </div>
-        <div class="ref-group">
-          <div class="ref-group-title" data-i18n="ref.stash">Stash</div>
-          <table class="ref-table">
-            <tr><td>git stash</td><td data-i18n="ref.stashsave">Save changes temporarily</td></tr>
-            <tr><td>git stash pop</td><td data-i18n="ref.stashpop">Restore latest stash</td></tr>
-            <tr><td>git stash list</td><td data-i18n="ref.stashlist">List stashes</td></tr>
-          </table>
-        </div>
-      </div>
+<span class="c" data-i18n="c.push">/* push: send local commits to remote */</span>
+<span class="cmd">git push</span> <span class="arg">origin main</span>          <span class="c" data-i18n="c.pushto">/* push to origin main */</span>
+<span class="cmd">git push</span> <span class="arg">-u origin main</span>       <span class="c" data-i18n="c.pushu">/* set tracking branch and push */</span></div>
     </div>
 
   </div>
@@ -974,13 +1096,13 @@
     btnReset.addEventListener('click', () => location.reload());
 
 
-    /* ===== Branch SVG Animation ===== */
-    const branchPlayBtn = document.getElementById('branch-play');
-    const svg = document.querySelector('.branch-svg');
+    /* ===== Cherry-pick SVG Animation ===== */
+    const cpSvg     = document.getElementById('cp-svg');
+    const cpPlayBtn = document.getElementById('cp-play');
+    const cpTopBtn  = document.getElementById('cp-play-btn');
 
-    // Set stroke-dasharray based on element lengths
-    function setupBranchLines() {
-      ['bl-main', 'bl-fork', 'bl-merge-back'].forEach(id => {
+    function setupCpLines() {
+      ['cp-main', 'cp-feat', 'cp-arc'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         const len = el.getTotalLength ? el.getTotalLength() : 400;
@@ -990,35 +1112,37 @@
       });
     }
 
-    function resetBranch() {
-      setupBranchLines();
-      svg.querySelectorAll('.branch-line').forEach(el => el.classList.remove('draw'));
-      svg.querySelectorAll('.branch-circle').forEach(el => el.classList.remove('pop'));
-      svg.querySelectorAll('.branch-text').forEach(el => el.classList.remove('show'));
+    function resetCp() {
+      setupCpLines();
+      cpSvg.querySelectorAll('.branch-line').forEach(el => el.classList.remove('draw'));
+      cpSvg.querySelectorAll('.branch-circle').forEach(el => el.classList.remove('pop'));
+      cpSvg.querySelectorAll('.branch-text').forEach(el => el.classList.remove('show'));
     }
 
-    function playBranch() {
-      resetBranch();
-      branchPlayBtn.disabled = true;
+    function playCherryPick() {
+      resetCp();
+      cpPlayBtn.disabled = true;
+      if (cpTopBtn) cpTopBtn.disabled = true;
       const seq = [
-        { delay: 50,   ids: ['bl-main'],        type: 'line' },
-        { delay: 700,  ids: ['bl-main-label'],  type: 'text' },
-        { delay: 800,  ids: ['bc-c1'],           type: 'circle' },
-        { delay: 900,  ids: ['bt-c1'],           type: 'text' },
-        { delay: 1200, ids: ['bc-c2'],           type: 'circle' },
-        { delay: 1300, ids: ['bt-c2'],           type: 'text' },
-        { delay: 1500, ids: ['bl-fork'],         type: 'line' },
-        { delay: 1600, ids: ['bl-cmd1'],         type: 'text' },
-        { delay: 1650, ids: ['bl-feat-label'],   type: 'text' },
-        { delay: 2000, ids: ['bc-f1'],           type: 'circle' },
-        { delay: 2100, ids: ['bt-f1'],           type: 'text' },
-        { delay: 2400, ids: ['bc-f2'],           type: 'circle' },
-        { delay: 2500, ids: ['bt-f2'],           type: 'text' },
-        { delay: 2700, ids: ['bl-merge-back'],   type: 'line' },
-        { delay: 3200, ids: ['bc-mc'],           type: 'circle' },
-        { delay: 3300, ids: ['bt-mc', 'bl-merge-label', 'bl-cmd2'], type: 'text' },
+        { delay: 50,   ids: ['cp-main'],           type: 'line' },
+        { delay: 600,  ids: ['cp-lmain'],           type: 'text' },
+        { delay: 700,  ids: ['cp-c1'],              type: 'circle' },
+        { delay: 800,  ids: ['cp-tc1'],             type: 'text' },
+        { delay: 1000, ids: ['cp-c2'],              type: 'circle' },
+        { delay: 1100, ids: ['cp-tc2'],             type: 'text' },
+        { delay: 1300, ids: ['cp-feat'],            type: 'line' },
+        { delay: 1400, ids: ['cp-lfeat'],           type: 'text' },
+        { delay: 1700, ids: ['cp-f1'],              type: 'circle' },
+        { delay: 1800, ids: ['cp-tf1'],             type: 'text' },
+        { delay: 2000, ids: ['cp-f2'],              type: 'circle' },
+        { delay: 2100, ids: ['cp-tf2'],             type: 'text' },
+        { delay: 2300, ids: ['cp-f3'],              type: 'circle' },
+        { delay: 2400, ids: ['cp-tf3'],             type: 'text' },
+        { delay: 2700, ids: ['cp-arc'],             type: 'line' },
+        { delay: 2800, ids: ['cp-label'],           type: 'text' },
+        { delay: 3100, ids: ['cp-arrowhead', 'cp-c3'], type: 'circle' },
+        { delay: 3200, ids: ['cp-tc3'],             type: 'text' },
       ];
-
       seq.forEach(({ delay, ids, type }) => {
         setTimeout(() => {
           ids.forEach(id => {
@@ -1030,79 +1154,135 @@
           });
         }, delay);
       });
-
-      setTimeout(() => { branchPlayBtn.disabled = false; }, 3800);
+      setTimeout(() => {
+        cpPlayBtn.disabled = false;
+        if (cpTopBtn) cpTopBtn.disabled = false;
+      }, 3800);
     }
 
-    setupBranchLines();
-    branchPlayBtn.addEventListener('click', playBranch);
+    setupCpLines();
+    cpPlayBtn.addEventListener('click', playCherryPick);
+    if (cpTopBtn) cpTopBtn.addEventListener('click', playCherryPick);
 
 
-    /* ===== Push / Pull ===== */
-    const localCommits  = document.getElementById('local-commits');
-    const remoteCommits = document.getElementById('remote-commits');
-    const ppPush = document.getElementById('pp-push');
-    const ppPull = document.getElementById('pp-pull');
+    /* ===== Pull vs Fetch ===== */
+    const pfMain     = document.getElementById('pf-main');
+    const pfTracking = document.getElementById('pf-tracking');
+    const pfRemote   = document.getElementById('pf-remote');
+    const pfStatus   = document.getElementById('pf-status');
+    const pfFetchBtn = document.getElementById('pf-fetch-btn');
+    const pfPullBtn  = document.getElementById('pf-pull-btn');
+    const pfPushBtn  = document.getElementById('pf-push-btn');
 
-    const initialLocal  = localCommits.innerHTML;
-    const initialRemote = remoteCommits.innerHTML;
+    const initMain     = pfMain.innerHTML;
+    const initTracking = pfTracking.innerHTML;
+    const initRemote   = pfRemote.innerHTML;
 
-    function resetPushPull() {
-      localCommits.innerHTML  = initialLocal;
-      remoteCommits.innerHTML = initialRemote;
+    function resetPullFetch() {
+      pfMain.innerHTML     = initMain;
+      pfTracking.innerHTML = initTracking;
+      pfRemote.innerHTML   = initRemote;
+      pfStatus.textContent = '';
+      pfStatus.className   = 'pf-status-msg';
     }
 
-    ppPush.addEventListener('click', () => {
-      const items = localCommits.querySelectorAll('.rc-item');
-      const notYetPushed = [...items].filter(i => !i.dataset.pushed);
-      if (notYetPushed.length === 0) return;
+    function makeCommitEl(hash, msg, dotColor, animClass) {
+      const d = document.createElement('div');
+      d.className = 'rc-item ' + animClass;
+      d.innerHTML = `<div class="rc-dot" style="background:${dotColor}"></div>
+        <div>
+          <div style="font-size:.72rem;color:var(--muted)">${hash}</div>
+          <div style="font-size:.75rem">${msg}</div>
+        </div>`;
+      return d;
+    }
 
-      notYetPushed.forEach((item, idx) => {
+    function showStatus(msg, type) {
+      pfStatus.textContent = msg;
+      pfStatus.className = 'pf-status-msg ' + type;
+    }
+
+    pfFetchBtn.addEventListener('click', () => {
+      // fetch: copy remote new commits to tracking only
+      const remoteItems = pfRemote.querySelectorAll('.rc-item');
+      const trackingItems = pfTracking.querySelectorAll('.rc-item');
+      if (remoteItems.length <= trackingItems.length) {
+        showStatus(t('pf.uptodate'), 'fetch');
+        return;
+      }
+      const newItems = [...remoteItems].slice(trackingItems.length);
+      newItems.forEach((item, i) => {
+        setTimeout(() => {
+          const hash = item.querySelector('[style*="0.72rem"]').textContent;
+          const msg  = item.querySelector('[style*="0.75rem"]').textContent;
+          const el = makeCommitEl(hash, msg, '#f59e0b', 'pull-anim');
+          pfTracking.appendChild(el);
+          setTimeout(() => { el.style.animation = 'none'; el.classList.remove('pull-anim'); }, 650);
+        }, i * 300);
+      });
+      showStatus(t('pf.fetchdone'), 'fetch');
+    });
+
+    pfPullBtn.addEventListener('click', () => {
+      // pull: fetch + merge into main
+      const remoteItems  = pfRemote.querySelectorAll('.rc-item');
+      const mainItems    = pfMain.querySelectorAll('.rc-item');
+      const trackItems   = pfTracking.querySelectorAll('.rc-item');
+      if (remoteItems.length <= mainItems.length) {
+        showStatus(t('pf.uptodate'), 'pull');
+        return;
+      }
+      const newItems = [...remoteItems].slice(mainItems.length);
+      newItems.forEach((item, i) => {
+        setTimeout(() => {
+          const hash = item.querySelector('[style*="0.72rem"]').textContent;
+          const msg  = item.querySelector('[style*="0.75rem"]').textContent;
+          // update tracking
+          if (pfTracking.querySelectorAll('.rc-item').length <= trackItems.length + i) {
+            const te = makeCommitEl(hash, msg, '#f59e0b', 'pull-anim');
+            pfTracking.appendChild(te);
+            setTimeout(() => { te.style.animation = 'none'; te.classList.remove('pull-anim'); }, 650);
+          }
+          // update main
+          setTimeout(() => {
+            const me = makeCommitEl(hash, msg, '#22c55e', 'pull-anim');
+            pfMain.appendChild(me);
+            setTimeout(() => { me.style.animation = 'none'; me.classList.remove('pull-anim'); }, 650);
+          }, 350);
+        }, i * 400);
+      });
+      showStatus(t('pf.pulldone'), 'pull');
+    });
+
+    pfPushBtn.addEventListener('click', () => {
+      const mainItems   = pfMain.querySelectorAll('.rc-item');
+      const remoteItems = pfRemote.querySelectorAll('.rc-item');
+      if (mainItems.length <= remoteItems.length) {
+        showStatus(t('pf.uptodate'), 'push');
+        return;
+      }
+      const newItems = [...mainItems].slice(remoteItems.length);
+      newItems.forEach((item, i) => {
         setTimeout(() => {
           item.classList.add('push-anim');
           item.dataset.pushed = '1';
-
-          const clone = item.cloneNode(true);
-          clone.classList.remove('rc-local', 'push-anim');
-          clone.classList.add('rc-remote', 'pull-anim');
+          const hash = item.querySelector('[style*="0.72rem"]').textContent;
+          const msg  = item.querySelector('[style*="0.75rem"]').textContent;
           setTimeout(() => {
-            clone.style.animation = 'none';
-            clone.classList.remove('pull-anim');
-            remoteCommits.appendChild(clone);
-          }, 600 + idx * 200);
-        }, idx * 200);
+            const re = makeCommitEl(hash, msg, '#22c55e', 'pull-anim');
+            pfRemote.appendChild(re);
+            setTimeout(() => { re.style.animation = 'none'; re.classList.remove('pull-anim'); }, 650);
+          }, 400 + i * 200);
+        }, i * 200);
       });
-    });
-
-    ppPull.addEventListener('click', () => {
-      const hash = Math.random().toString(16).slice(2, 9);
-      const newItem = document.createElement('div');
-      newItem.className = 'rc-item rc-new pull-anim';
-      newItem.innerHTML = `
-        <div class="rc-dot" style="background:#f59e0b"></div>
-        <div>
-          <div style="font-size:.72rem;color:var(--muted)">${hash}</div>
-          <div style="font-size:.75rem">remote: hotfix update</div>
-        </div>`;
-      remoteCommits.appendChild(newItem);
-
-      setTimeout(() => {
-        const localClone = newItem.cloneNode(true);
-        localClone.classList.remove('rc-new', 'pull-anim');
-        localClone.classList.add('rc-local', 'pull-anim');
-        localCommits.appendChild(localClone);
-        setTimeout(() => {
-          localClone.style.animation = 'none';
-          localClone.classList.remove('pull-anim');
-        }, 700);
-      }, 300);
+      showStatus(t('pf.pushdone'), 'push');
     });
 
     /* ===== i18n ===== */
     const i18n = {
       en: {
         'page.title': 'Git Cheat Sheet',
-        'page.desc': 'Visualize add, commit, branch, merge, and push/pull flows with animations.',
+        'page.desc': 'Visualize add, commit, cherry-pick, revert, reset, and pull/fetch flows with animations.',
         's1.title': '3 Areas — git add &amp; commit Flow',
         'empty': 'Empty',
         'clean': 'Clean',
@@ -1114,47 +1294,61 @@
         'c.patch': '# select changes in chunks',
         'c.commit': '# Commit',
         'c.status': '# Check status',
-        's2.title': 'Branch &amp; Merge — Fork and Join',
-        'c.branch': '# Branch operations',
-        'c.list': '# list branches',
-        'c.create': '# create branch',
-        'c.switch': '# switch branch (Git 2.23+)',
-        'c.checkout': '# create + switch (traditional method)',
-        'c.merge': '# Merge',
-        'c.mergeto': '# merge feature into main',
-        'c.noff': '# always create a merge commit',
-        'c.del': '# Delete branch',
-        'c.delbranch': '# delete merged branch',
-        's3.title': 'Remote Repository — push &amp; pull',
-        'c.addremote': '# Register remote',
-        'c.push': '# Push',
+        's2.title': 'Cherry-pick',
+        'cp.label': 'git cherry-pick F2',
+        'c.cp': '# Cherry-pick: copy a specific commit to current branch',
+        'c.cp1': '# apply one commit',
+        'c.cp2': '# apply a range',
+        'c.cp3': '# apply without committing',
+        's3.title': 'Revert',
+        's3.revert.title': 'git revert — Safe Undo',
+        's3.revert.desc': 'Adds a new commit C\' that undoes C\'s changes. History is preserved — safe for team repos.',
+        's3.revert2.title': 'Revert of a Revert',
+        's3.revert2.desc': 'Reverting C\' creates C\'\' which re-applies C\'s changes. Critical: if you revert a feature branch merge and later re-merge the same branch, Git skips those commits — you must revert the revert first.',
+        'c.rv': '# Revert: safe undo — adds a new "undo" commit',
+        'c.rv1': '# revert one commit',
+        'c.rv2': '# revert last commit',
+        'c.rv4': '# revert a range of commits',
+        'c.rv3': '# revert of revert → re-applies original',
+        's4.title': 'Reset',
+        's4.reset.title': 'git reset — Rewrites History',
+        's4.reset.desc': '--hard erases C from history. Using it on pushed commits forces divergence with remote — requires force push.',
+        'rm.soft': '--soft: keep staged',
+        'rm.mixed': '--mixed: keep unstaged',
+        'rm.hard': '--hard: discard all ⚠️',
+        'c.rs': '# Reset: move HEAD (and branch pointer) — rewrites history',
+        'c.rs1': '# undo commit, keep staged',
+        'c.rs2': '# undo commit + unstage (default)',
+        'c.rs3': '# undo commit + discard changes ⚠️',
+        'c.rs4': '# Recover a commit lost by reset (within ~30 days)',
+        'c.rs5': '# find the lost commit hash',
+        'c.rs6': '# restore to that commit',
+        's5.title': 'pull vs fetch — Know the Difference',
+        'pf.local': 'Local',
+        'pf.mainbranch': 'main (local)',
+        'pf.tracking': 'origin/main (tracking)',
+        'pf.fetch': '← fetch',
+        'pf.pull': '⇐ pull',
+        'pf.push': 'push →',
+        'pf.fetchdone': 'fetch: downloaded to origin/main. Local main is untouched.',
+        'pf.pulldone': 'pull: fetch + merge into local main.',
+        'pf.pushdone': 'push: local commits sent to remote.',
+        'pf.uptodate': 'Already up to date.',
+        'c.fetch': '# fetch: download commits → origin/main only. Does NOT touch local main',
+        'c.fetchonly': '# safe — no auto-merge',
+        'c.fetchorigin': '# fetch from origin explicitly',
+        'c.fetchlog': '# see what was fetched',
+        'c.fetchmerge': '# merge manually after reviewing',
+        'c.pull': '# pull = fetch + merge (or rebase) in one step',
+        'c.pullmerge': '# fetch + merge',
+        'c.rebase': '# fetch + rebase (keeps history linear)',
+        'c.push': '# push: send local commits to remote',
         'c.pushto': '# push to origin main',
         'c.pushu': '# set tracking branch and push',
-        'c.pullfetch': '# Pull / Fetch',
-        'c.pullmerge': '# fetch + merge',
-        'c.fetchonly': '# fetch remote changes (without merge)',
-        'c.rebase': '# fetch + rebase (keeps history clean)',
-        's4.title': 'Frequently Used Commands Quick Reference',
-        'ref.setup': 'Setup',
-        'ref.init': 'Initialize repository',
-        'ref.clone': 'Clone a repository',
-        'ref.config': 'Set user name',
-        'ref.status': 'Status',
-        'ref.wtstatus': 'Working tree status',
-        'ref.log': 'Commit history (compact)',
-        'ref.diff': 'Show changes',
-        'ref.undo': 'Undo',
-        'ref.restore': 'Discard working tree changes',
-        'ref.unstage': 'Unstage file',
-        'ref.revert': 'Revert a commit',
-        'ref.stash': 'Stash',
-        'ref.stashsave': 'Save changes temporarily',
-        'ref.stashpop': 'Restore latest stash',
-        'ref.stashlist': 'List stashes',
       },
       ja: {
         'page.title': 'Git チートシート',
-        'page.desc': 'add・commit・branch・merge・push/pull の流れをアニメーションで視覚化。',
+        'page.desc': 'add・commit・cherry-pick・revert・reset・pull/fetch の流れをアニメーションで視覚化。',
         's1.title': '3 つのエリア — git add &amp; commit の流れ',
         'empty': '空です',
         'clean': 'クリーン',
@@ -1166,43 +1360,57 @@
         'c.patch': '# 変更を chunk 単位で選択',
         'c.commit': '# コミット',
         'c.status': '# 状態確認',
-        's2.title': 'ブランチ &amp; マージ — 分岐と合流',
-        'c.branch': '# ブランチ操作',
-        'c.list': '# ブランチ一覧',
-        'c.create': '# ブランチ作成',
-        'c.switch': '# ブランチ切り替え (Git 2.23+)',
-        'c.checkout': '# 作成 + 切り替え (旧来の方法)',
-        'c.merge': '# マージ',
-        'c.mergeto': '# feature を main にマージ',
-        'c.noff': '# マージコミットを必ず作成',
-        'c.del': '# ブランチ削除',
-        'c.delbranch': '# マージ済みのブランチを削除',
-        's3.title': 'リモートリポジトリ — push &amp; pull',
-        'c.addremote': '# リモートを登録',
-        'c.push': '# プッシュ',
-        'c.pushto': '# origin の main へ送信',
-        'c.pushu': '# 追跡ブランチを設定して push',
-        'c.pullfetch': '# プル / フェッチ',
+        's2.title': 'Cherry-pick',
+        'cp.label': 'git cherry-pick F2',
+        'c.cp': '# Cherry-pick: 別ブランチの特定コミットだけを現在ブランチへコピー',
+        'c.cp1': '# 1つのコミットを適用',
+        'c.cp2': '# 範囲指定で適用',
+        'c.cp3': '# コミットせず適用（-n）',
+        's3.title': 'Revert',
+        's3.revert.title': 'git revert — 安全な取り消し',
+        's3.revert.desc': '新しいコミット C\' を追加して C の変更を打ち消す。履歴は保持されるため、チーム開発でも安全。',
+        's3.revert2.title': 'revert の revert',
+        's3.revert2.desc': 'C\' を revert すると C\'\' が作られ C の変更が復活する。revert 済みのブランチを再マージしても Git はそのコミットをスキップするため、必ず revert-of-revert が必要。',
+        'c.rv': '# Revert: 安全な取り消し — 「取り消しコミット」を追加する',
+        'c.rv1': '# 特定コミットをリバート',
+        'c.rv2': '# 最新コミットをリバート',
+        'c.rv4': '# 範囲指定でリバート',
+        'c.rv3': '# revert の revert → 元の変更を復活',
+        's4.title': 'Reset',
+        's4.reset.title': 'git reset — 危険な履歴書き換え',
+        's4.reset.desc': '--hard は C を履歴から消す。push 済みコミットに使うとリモートと乖離し、force push が必要になる。',
+        'rm.soft': '--soft: ステージに残す',
+        'rm.mixed': '--mixed: 作業ツリーに残す',
+        'rm.hard': '--hard: 全破棄 ⚠️',
+        'c.rs': '# Reset: HEAD（とブランチポインタ）を移動 — 履歴を書き換える',
+        'c.rs1': '# コミット取り消し、ステージは保持',
+        'c.rs2': '# コミット取り消し + アンステージ（デフォルト）',
+        'c.rs3': '# コミット取り消し + 変更を全破棄 ⚠️',
+        'c.rs4': '# reset で消えたコミットを復元（30日以内）',
+        'c.rs5': '# 消えたコミットのハッシュを探す',
+        'c.rs6': '# そのコミットに戻す',
+        's5.title': 'pull と fetch の違い',
+        'pf.local': 'ローカル',
+        'pf.mainbranch': 'main（ローカル）',
+        'pf.tracking': 'origin/main（追跡ブランチ）',
+        'pf.fetch': '← fetch',
+        'pf.pull': '⇐ pull',
+        'pf.push': 'push →',
+        'pf.fetchdone': 'fetch: origin/main を更新。ローカルの main には影響なし。',
+        'pf.pulldone': 'pull: fetch + ローカル main へ自動マージ。',
+        'pf.pushdone': 'push: ローカルのコミットをリモートへ送信。',
+        'pf.uptodate': 'すでに最新です。',
+        'c.fetch': '# fetch: リモートのコミットを origin/main のみに取得。local main は変更しない',
+        'c.fetchonly': '# 安全 — 自動マージなし',
+        'c.fetchorigin': '# origin を明示して fetch',
+        'c.fetchlog': '# fetch 内容を確認',
+        'c.fetchmerge': '# 確認後に手動マージ',
+        'c.pull': '# pull = fetch + merge（または rebase）を一度に実行',
         'c.pullmerge': '# fetch + merge',
-        'c.fetchonly': '# リモートの変更を取得 (mergeしない)',
-        'c.rebase': '# fetch + rebase（履歴をきれいに保つ）',
-        's4.title': 'よく使うコマンド クイックリファレンス',
-        'ref.setup': 'セットアップ',
-        'ref.init': 'リポジトリを初期化',
-        'ref.clone': 'リポジトリをコピー',
-        'ref.config': 'ユーザー名を設定',
-        'ref.status': '状態確認',
-        'ref.wtstatus': '作業ツリーの状態',
-        'ref.log': 'コミット履歴（簡易）',
-        'ref.diff': '変更内容の差分',
-        'ref.undo': '取り消し',
-        'ref.restore': '作業ツリーの変更を破棄',
-        'ref.unstage': 'ステージングを解除',
-        'ref.revert': 'コミットを打ち消す',
-        'ref.stash': 'スタッシュ',
-        'ref.stashsave': '変更を一時保存',
-        'ref.stashpop': '最新スタッシュを復元',
-        'ref.stashlist': 'スタッシュ一覧',
+        'c.rebase': '# fetch + rebase（履歴を線形に保つ）',
+        'c.push': '# push: ローカルのコミットをリモートへ送信',
+        'c.pushto': '# origin の main へ push',
+        'c.pushu': '# 追跡ブランチを設定して push',
       }
     };
 
